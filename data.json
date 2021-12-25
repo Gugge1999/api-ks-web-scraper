@@ -1,0 +1,13 @@
+{
+  "watches": [
+    {
+      "id": 1,
+      "link": "https://www.link1.com",
+      "storedWatch": "Stored watch",
+      "scrapedWatch": "Scraped watch",
+      "name": "Sinn 556",
+      "last scraped": "25-12-2021",
+      "isActive": true
+    }
+  ]
+}
