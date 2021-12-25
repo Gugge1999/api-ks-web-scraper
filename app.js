@@ -21,7 +21,7 @@ app.delete('/:id', function (req, res) {
     return watch.id !== watchToRemove;
   });
   fs.writeFileSync('data.json', JSON.stringify(json, null, 2));
-  res.send(`Watch with id: ${req.params.id} deleted.`);
+  res.status(200).send(`Watch with id: ${req.params.id} deleted.`);
 });
 
 app.post('/add-watch', function (req, res) {
@@ -41,10 +41,8 @@ app.post('/add-watch', function (req, res) {
       fs.writeFile('data.json', json, function (err) {
         if (err) console.log('error', err);
         else {
-          let rawdata = fs.readFileSync('data.json');
-          let obj = JSON.parse(rawdata);
           //obj.watches[1]; // För att hämta för elementet
-          res.send(obj); // Hämta alla klockor
+          res.status(201).send(`Added watch with name: ${req.body.name}`); // Hämta alla klockor
         }
       });
     }
@@ -54,7 +52,7 @@ app.post('/add-watch', function (req, res) {
 app.get('/watches', (req, res) => {
   let rawdata = fs.readFileSync('data.json');
   let obj = JSON.parse(rawdata);
-  res.send(obj);
+  res.status(200).send(obj);
 });
 
 app.listen(port, () => {
