@@ -8,6 +8,15 @@
       "name": "Sinn 556",
       "last scraped": "25-12-2021",
       "isActive": true
+    },
+    {
+      "id": 5,
+      "link": "post",
+      "name": "post name",
+      "storedWatch": "Stored watch",
+      "scrapedWatch": "Scraped watch",
+      "last scraped": "post date",
+      "isActive": true
     }
   ]
 }
