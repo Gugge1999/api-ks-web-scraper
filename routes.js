@@ -31,7 +31,7 @@ router.delete('/:id', function (req, res) {
     if (err) {
       logger.log({
         level: 'error',
-        message: `Could not delete in route: delete/:id. Error message ${err.message}`,
+        message: `Could not delete watch with id ${watchToRemove} in route: delete/:id. Error message ${err.message}`,
       });
     } else {
       res.status(200).send(`Watch with id: ${req.params.id} deleted.`);
@@ -65,7 +65,7 @@ router.post('/add-watch', function (req, res) {
           });
         } else {
           //obj.watches[1]; // För att hämta för elementet
-          res.status(201).send(`Added watch with name: ${req.body.name}`); // Hämta alla klockor
+          res.status(201).send(`Added watch with name: ${req.body.name}`);
         }
       });
     }
