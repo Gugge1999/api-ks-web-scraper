@@ -1,0 +1,72 @@
+{
+  "watches": [
+    {
+      "id": 1,
+      "link": "https://www.link1.com",
+      "label": "Sinn 556",
+      "storedWatch": "Stored watch",
+      "scrapedWatch": "Scraped watch",
+      "lastEmailSent": "25-12-2021",
+      "isActive": true
+    },
+    {
+      "id": 5,
+      "link": "post",
+      "label": "post name",
+      "storedWatch": "Stored watch",
+      "scrapedWatch": "Scraped watch",
+      "lastEmailSent": "25-12-2021",
+      "isActive": true
+    },
+    {
+      "link": "new 2",
+      "label": "post name",
+      "storedWatch": "Stored watch",
+      "scrapedWatch": "Scraped watch",
+      "last scraped": "post date",
+      "isActive": true,
+      "addedOn": "2021-12-27 18:36:51",
+      "id": "49023c3a-850f-45b8-a0a2-b22cbfcb7a1c"
+    },
+    {
+      "link": "new 2",
+      "label": "post name",
+      "storedWatch": "Stored watch",
+      "scrapedWatch": "Scraped watch",
+      "last scraped": "post date",
+      "isActive": true,
+      "addedOn": "2021-12-30 17:57:13",
+      "id": "8a63effe-33da-4c3d-87f1-d57070b48299"
+    },
+    {
+      "link": "new 2",
+      "label": "post name",
+      "storedWatch": "Stored watch",
+      "scrapedWatch": "Scraped watch",
+      "last scraped": "post date",
+      "isActive": true,
+      "addedOn": "2021-12-30 17:58:06",
+      "id": "1dc7b4c9-5aef-47f4-ab06-8530679dc717"
+    },
+    {
+      "link": "new 2",
+      "label": "post name",
+      "storedWatch": "Stored watch",
+      "scrapedWatch": "Scraped watch",
+      "last scraped": "post date",
+      "isActive": true,
+      "addedOn": "2021-12-30 18:00:57",
+      "id": "e83b4454-11c0-4543-8896-976f4b0bc1f5"
+    },
+    {
+      "link": "new 2",
+      "label": "post name",
+      "storedWatch": "Stored watch",
+      "scrapedWatch": "Scraped watch",
+      "last scraped": "post date",
+      "isActive": true,
+      "addedOn": "2021-12-30 18:06:28",
+      "id": "3c081660-67f2-465b-94f6-933ba06c05f0"
+    }
+  ]
+}
