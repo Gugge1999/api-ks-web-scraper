@@ -10,6 +10,8 @@ const port = 3000;
 
 ScraperService.run();
 
+// Byt kanske till en riktig databas. MySql, mongoDB eller RethinkDB
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
