@@ -64,4 +64,10 @@ router.get('/watches', (req, res) => {
   res.status(200).send(obj);
 });
 
+router.get('/watch/:id', (req, res) => {
+  let storedWatches = JSON.parse(fs.readFileSync('src/data/data.json'));
+  let watch = storedWatches.watches.find((watch) => watch.id === req.params.id);
+  res.status(200).send(watch);
+});
+
 module.exports = router;
