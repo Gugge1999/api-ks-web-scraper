@@ -1,4 +1,3 @@
-// web_scraper/src/config.js
 'use strict';
 require('dotenv').config();
 

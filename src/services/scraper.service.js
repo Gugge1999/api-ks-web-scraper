@@ -2,10 +2,10 @@
 const fs = require('fs');
 const rp = require('request-promise');
 const cheerio = require('cheerio');
-const config = require('../config/scraper_config');
-const NotificationService = require('./NotificationService');
-const TimeService = require('./TimeService');
-const logger = require('../services/LoggerService');
+const config = require('../../config/scraper_config');
+const notification = require('./notification.service');
+const time = require('./time-and-date.service');
+const logger = require('./logger.service');
 
 async function getWatch() {
   const response = await rp({
@@ -37,7 +37,7 @@ async function run() {
   try {
     watchObj.watch = await getWatch();
     let scrapedWatch = JSON.stringify(watchObj, null, 4);
-    let storedWatch = fs.readFileSync('data/stored_watch.json', 'utf8');
+    let storedWatch = fs.readFileSync('src/data/stored_watch.json', 'utf8');
     const colors = {
       blue: '\x1b[36m',
       yellow: '\x1b[33m',
@@ -48,7 +48,7 @@ async function run() {
       colors.blue + '-'.repeat(process.stdout.columns) + colors.white;
 
     console.log(line);
-    console.log(`${colors.green}Time: ${TimeService.getTime()}${colors.white}`);
+    console.log(`${colors.green}Time: ${time.currentTime()}${colors.white}`);
     console.log(`${colors.yellow}Scraped${colors.white}: ${scrapedWatch}`);
     console.log(`${colors.yellow}Data stored${colors.white}: ${storedWatch}`);
     console.log(`${line}\n`);
@@ -56,16 +56,16 @@ async function run() {
     if (storedWatch != scrapedWatch) {
       let emailText = `${
         watchObj.watch
-      }\n\nDetta mail skickades: ${TimeService.getTime()}`;
-      //await NotificationService.sendKernelNotification(emailText);
+      }\n\nDetta mail skickades: ${time.currentTime()}`;
+      //await notification.sendKernelNotification(emailText);
       console.log(
-        `Time with milliseconds after sending email: ${TimeService.getDateAndTime()}`
+        `Time with milliseconds after sending email: ${time.dateAndTime()}`
       );
-      console.log(`Email sent ${TimeService.getTime()}`);
+      console.log(`Email sent ${time.currentTime()}`);
 
       // Write to stored watch file
       fs.writeFile(
-        'data/stored_watch.json',
+        'src/data/stored_watch.json',
         JSON.stringify(watchObj, null, 4),
         function (err) {
           if (err) {
@@ -80,8 +80,8 @@ async function run() {
 
       // Email logging
       fs.appendFile(
-        'logs/email_logs.txt',
-        `Email sent: ${TimeService.getTime()}\nWatch name & date: ${
+        'src/logs/email_logs.txt',
+        `Email sent: ${time.currentTime()}\nWatch name & date: ${
           watchObj.watch
         }\n\n`,
         function (err) {
@@ -102,7 +102,7 @@ async function run() {
     });
     // Exit application if something went wrong
     try {
-      //await NotificationService.sendErrorNotification(err);
+      //await notification.sendErrorNotification(err);
     } catch (err) {
       logger.error({
         message: `Sending sendErrorNotification failed. Error Message: ${err.message}`,

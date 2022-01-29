@@ -1,5 +1,5 @@
 'use strict';
-const config = require('../config/scraper_config');
+const config = require('../../config/scraper_config');
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
