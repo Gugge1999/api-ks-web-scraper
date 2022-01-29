@@ -26,7 +26,7 @@ module.exports = {
     await transporter.sendMail({
       from: config.email.user,
       to: config.email.emailTo,
-      subject: `Web_Scraper: An error occured!`,
+      subject: `KS Web Scraper: An error occured!`,
       text: `Error message:\n\n${err}`,
     });
   },

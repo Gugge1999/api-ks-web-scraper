@@ -5,16 +5,7 @@ const cheerio = require('cheerio');
 const config = require('../config/scraper_config');
 const NotificationService = require('./NotificationService');
 const TimeService = require('./TimeService');
-const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, prettyPrint } = format;
-
-const logger = createLogger({
-  format: combine(timestamp(), prettyPrint()),
-  transports: [
-    new transports.Console(),
-    new transports.File({ filename: 'logs/ks_web_scraper.log' }),
-  ],
-});
+const logger = require('../services/LoggerService');
 
 async function getWatch() {
   const response = await rp({
@@ -78,8 +69,7 @@ async function run() {
         JSON.stringify(watchObj, null, 4),
         function (err) {
           if (err) {
-            logger.log({
-              level: 'error',
+            logger.error({
               message: `Write to stored watch file failed. Error Message: ${err.message}`,
             });
             throw err;
@@ -96,8 +86,7 @@ async function run() {
         }\n\n`,
         function (err) {
           if (err) {
-            logger.log({
-              level: 'error',
+            logger.error({
               message: `Email logging failed. Error Message: ${err.message}`,
             });
             throw err;
@@ -108,16 +97,14 @@ async function run() {
     }
     setTimeout(run, config.interval);
   } catch (err) {
-    logger.log({
-      level: 'error',
+    logger.error({
       message: `Exit application if something went wrong. Error Message: ${err.message}`,
     });
     // Exit application if something went wrong
     try {
       //await NotificationService.sendErrorNotification(err);
     } catch (err) {
-      logger.log({
-        level: 'error',
+      logger.error({
         message: `Sending sendErrorNotification failed. Error Message: ${err.message}`,
       });
       console.error('Sending error notification failed!');

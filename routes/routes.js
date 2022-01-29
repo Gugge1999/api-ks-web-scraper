@@ -1,17 +1,8 @@
 const router = require('express').Router();
 const fs = require('fs');
 const TimeService = require('../services/TimeService');
-const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, prettyPrint } = format;
 const { v4: uuidv4 } = require('uuid');
-
-const logger = createLogger({
-  format: combine(timestamp(), prettyPrint()),
-  transports: [
-    new transports.Console(),
-    new transports.File({ filename: 'logs/ks_web_scraper.log' }),
-  ],
-});
+const logger = require('../services/LoggerService');
 
 router.delete('/:id', function (req, res) {
   let watchToRemove = req.params.id;
@@ -23,8 +14,7 @@ router.delete('/:id', function (req, res) {
   });
   fs.writeFile('data/data.json', JSON.stringify(json, null, 2), (err) => {
     if (err) {
-      logger.log({
-        level: 'error',
+      logger.error({
         message: `Could not delete watch with id ${watchToRemove} in route: delete/:id. Error message ${err.message}`,
       });
     } else {
@@ -45,16 +35,14 @@ router.post('/add-watch', function (req, res) {
       newWatch['addedOn'] = TimeService.getDateAndTime();
       newWatch['id'] = uuidv4();
       obj.watches.push(newWatch); //add some data
-      logger.log({
-        level: 'error',
+      logger.error({
         message: `Logger test`,
       });
 
       let json = JSON.stringify(obj, null, 2); //convert it back to json
       fs.writeFile('data/data.json', json, function (err) {
         if (err) {
-          logger.log({
-            level: 'error',
+          logger.error({
             message: `Could not write to data.json in route: add-watches. Error message ${err.message}`,
           });
         } else {

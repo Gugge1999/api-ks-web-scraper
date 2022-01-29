@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = {
   getTime() {
@@ -6,8 +6,8 @@ module.exports = {
   },
 
   getDateAndTime() {
-    let datetime = new Date().toLocaleString("sv-SE", {
-      timeZone: "Europe/Stockholm",
+    let datetime = new Date().toLocaleString('sv-SE', {
+      timeZone: 'Europe/Stockholm',
     });
     return datetime;
   },
