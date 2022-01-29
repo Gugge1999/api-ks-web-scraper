@@ -1,4 +1,3 @@
-// web_scraper/src/srvices/NotificationService.js
 'use strict';
 const config = require('../config/scraper_config');
 const nodemailer = require('nodemailer');
