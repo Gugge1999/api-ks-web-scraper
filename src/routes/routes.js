@@ -15,7 +15,8 @@ router.delete('/:id', function (req, res) {
   fs.writeFile('src/data/data.json', JSON.stringify(json, null, 2), (err) => {
     if (err) {
       logger.error({
-        message: `Could not delete watch with id ${watchToRemove} in route: delete/:id. Error message ${err.message}`,
+        message: `Could not delete watch with id ${watchToRemove} in route: delete/:id.`,
+        stacktrace: err,
       });
     } else {
       res.status(200).send(`Watch with id: ${req.params.id} deleted.`);
@@ -30,7 +31,10 @@ router.post('/add-watch', function (req, res) {
     'utf8',
     function readFileCallback(err, data) {
       if (err) {
-        console.log(err);
+        logger.error({
+          message: `readFileCallback failed in route: add-watches.`,
+          stacktrace: err,
+        });
       } else {
         obj = JSON.parse(data); //now it an object
 
@@ -43,10 +47,11 @@ router.post('/add-watch', function (req, res) {
         });
 
         let json = JSON.stringify(obj, null, 2); //convert it back to json
-        fs.writeFile('src/data/data.json', json, function (err) {
+        fs.writeFile('fel/data/data.json', json, function (err) {
           if (err) {
             logger.error({
-              message: `Could not write to data.json in route: add-watches. Error message ${err.message}`,
+              message: `Could not write to data.json in route: add-watches.`,
+              stacktrace: err,
             });
           } else {
             //obj.watches[1]; // För att hämta för elementet

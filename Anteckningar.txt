@@ -1,6 +1,7 @@
 ----------------- TODO -----------------
 Fixa node supervisor. Se web_scraper_v2.
 
+Skicka med stack trace i logger
 
 ----------------- Hur appen ska fungera -----------------
 Loopa genom alla objekt i src/data/data.json i getWatch(), uppdatera scraped watch. I app.js kolla om det skiljer sig från storedWatch.

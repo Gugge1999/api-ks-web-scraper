@@ -34,6 +34,12 @@ async function run() {
     watch: '',
   };
 
+  // För att loopa över alla klockor i data.json
+  // for (var key of Object.keys(storedWatches.watches)) {
+  //   let watch = storedWatches.watches[key];
+  //   console.log(watch);
+  // }
+
   try {
     watchObj.watch = await getWatch();
     let scrapedWatch = JSON.stringify(watchObj, null, 4);
@@ -67,10 +73,12 @@ async function run() {
       fs.writeFile(
         'src/data/stored_watch.json',
         JSON.stringify(watchObj, null, 4),
+        // Behövs function (err)?
         function (err) {
           if (err) {
             logger.error({
-              message: `Write to stored watch file failed. Error Message: ${err.message}`,
+              message: `Write to stored watch file failed.`,
+              stacktrace: err,
             });
             throw err;
           }
@@ -87,7 +95,8 @@ async function run() {
         function (err) {
           if (err) {
             logger.error({
-              message: `Email logging failed. Error Message: ${err.message}`,
+              message: `Email logging failed.`,
+              stacktrace: err,
             });
             throw err;
           }
@@ -98,14 +107,16 @@ async function run() {
     setTimeout(run, config.interval);
   } catch (err) {
     logger.error({
-      message: `Exit application if something went wrong. Error Message: ${err.message}`,
+      message: `Exit application if something went wrong.`,
+      stacktrace: err,
     });
     // Exit application if something went wrong
     try {
       //await notification.sendErrorNotification(err);
     } catch (err) {
       logger.error({
-        message: `Sending sendErrorNotification failed. Error Message: ${err.message}`,
+        message: `Sending sendErrorNotification failed.`,
+        stacktrace: err,
       });
       console.error('Sending error notification failed!');
     }
