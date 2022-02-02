@@ -47,7 +47,7 @@ router.post('/add-watch', function (req, res) {
         });
 
         let json = JSON.stringify(obj, null, 2); //convert it back to json
-        fs.writeFile('fel/data/data.json', json, function (err) {
+        fs.writeFile('src/data/data.json', json, function (err) {
           if (err) {
             logger.error({
               message: `Could not write to data.json in route: add-watches.`,

@@ -7,9 +7,9 @@ const notification = require('./notification.service');
 const time = require('./time-and-date.service');
 const logger = require('./logger.service');
 
-async function getWatch() {
+async function getWatch(uri) {
   const response = await rp({
-    uri: config.uri,
+    uri: uri,
   });
 
   const $ = cheerio.load(response);
@@ -21,108 +21,119 @@ async function getWatch() {
     .trim();
   if (watchName === '') throw new Error('Watch name not found');
 
-  const date = $('.u-dt').attr('data-date-string');
+  const poster = $('.username').first().text();
 
   const watchLink = $('.contentRow-title').children().first().attr('href');
 
-  let watchInfo = `${watchName} ${date} https://klocksnack.se${watchLink}`;
+  let watchInfo = `${watchName} ${poster} https://klocksnack.se${watchLink}`;
   return watchInfo;
 }
 
 async function run() {
-  let watchObj = {
-    watch: '',
-  };
-
   // För att loopa över alla klockor i data.json
-  // for (var key of Object.keys(storedWatches.watches)) {
-  //   let watch = storedWatches.watches[key];
-  //   console.log(watch);
-  // }
+  let storedWatches = JSON.parse(fs.readFileSync('src/data/data.json'));
 
-  try {
-    watchObj.watch = await getWatch();
-    let scrapedWatch = JSON.stringify(watchObj, null, 4);
-    let storedWatch = fs.readFileSync('src/data/stored_watch.json', 'utf8');
-    const colors = {
-      blue: '\x1b[36m',
-      yellow: '\x1b[33m',
-      green: '\x1b[32m',
-      white: '\x1b[0m',
-    };
-    const line =
-      colors.blue + '-'.repeat(process.stdout.columns) + colors.white;
+  for (var i of Object.keys(storedWatches.watches)) {
+    let currentWatch = storedWatches.watches[i];
 
-    console.log(line);
-    console.log(`${colors.green}Time: ${time.currentTime()}${colors.white}`);
-    console.log(`${colors.yellow}Scraped${colors.white}: ${scrapedWatch}`);
-    console.log(`${colors.yellow}Data stored${colors.white}: ${storedWatch}`);
-    console.log(`${line}\n`);
-
-    if (storedWatch != scrapedWatch) {
-      let emailText = `${
-        watchObj.watch
-      }\n\nDetta mail skickades: ${time.currentTime()}`;
-      //await notification.sendKernelNotification(emailText);
-      console.log(
-        `Time with milliseconds after sending email: ${time.dateAndTime()}`
-      );
-      console.log(`Email sent ${time.currentTime()}`);
-
-      // Write to stored watch file
-      fs.writeFile(
-        'src/data/stored_watch.json',
-        JSON.stringify(watchObj, null, 4),
-        // Behövs function (err)?
-        function (err) {
-          if (err) {
-            logger.error({
-              message: `Write to stored watch file failed.`,
-              stacktrace: err,
-            });
-            throw err;
-          }
-          console.log('Wrote to stored_watch.json successfully');
-        }
-      );
-
-      // Email logging
-      fs.appendFile(
-        'src/logs/email_logs.txt',
-        `Email sent: ${time.currentTime()}\nWatch name & date: ${
-          watchObj.watch
-        }\n\n`,
-        function (err) {
-          if (err) {
-            logger.error({
-              message: `Email logging failed.`,
-              stacktrace: err,
-            });
-            throw err;
-          }
-          console.log('Wrote successfully to email_logs.txt');
-        }
-      );
+    if (currentWatch.isActive === false) {
+      continue;
     }
-    setTimeout(run, config.interval);
-  } catch (err) {
-    logger.error({
-      message: `Exit application if something went wrong.`,
-      stacktrace: err,
-    });
-    // Exit application if something went wrong
+
     try {
-      //await notification.sendErrorNotification(err);
+      let scrapedWatchObj = {
+        watch: '',
+      };
+      function sleep() {
+        console.log(`Timeout on watch: ${currentWatch.label}`);
+      }
+      // Timeout kan vara bra för att undvika för många requests...
+      setTimeout(sleep, Math.random() * 1000 + 1000); // mellan och 1 och 2 sekunder
+
+      scrapedWatchObj.watch = await getWatch(currentWatch.uri);
+
+      let scrapedWatch = JSON.stringify(scrapedWatchObj, null, 4);
+      let storedWatch = fs.readFileSync('src/data/stored_watch.json', 'utf8');
+      const colors = {
+        blue: '\x1b[36m',
+        yellow: '\x1b[33m',
+        green: '\x1b[32m',
+        white: '\x1b[0m',
+      };
+      const line =
+        colors.blue + '-'.repeat(process.stdout.columns) + colors.white;
+
+      console.log(line);
+      console.log(`${colors.green}Time: ${time.currentTime()}${colors.white}`);
+      console.log(`${colors.yellow}Scraped${colors.white}: ${scrapedWatch}`);
+      console.log(`${colors.yellow}Data stored${colors.white}: ${storedWatch}`);
+      console.log(`${line}\n`);
+
+      if (currentWatch.storedWatch != scrapedWatch) {
+        let emailText = `${
+          scrapedWatchObj.watch
+        }\n\nDetta mail skickades: ${time.currentTime()}`;
+        //await notification.sendKernelNotification(emailText);
+        console.log(`Email sent ${time.currentTime()}`);
+
+        // OM DET KRÅNGLAR ATT SKRIVA TILL FIL TESTA BYT TILL writeFileSync = inte async
+        fs.writeFile(
+          'src/data/stored_watch.json',
+          JSON.stringify(scrapedWatchObj, null, 4),
+          // Behövs function (err)?
+          function (err) {
+            if (err) {
+              logger.error({
+                message: `Write to stored watch file failed.`,
+                stacktrace: err,
+              });
+              throw err;
+            }
+            console.log('Wrote to stored_watch.json successfully');
+          }
+        );
+
+        // Email logging
+        fs.appendFile(
+          'src/logs/email_logs.txt',
+          `Email sent: ${time.currentTime()}\nWatch name & date: ${
+            scrapedWatchObj.watch
+          }\n\n`,
+          function (err) {
+            if (err) {
+              logger.error({
+                message: `Email logging failed.`,
+                stacktrace: err,
+              });
+              throw err;
+            }
+            console.log('Wrote successfully to email_logs.txt');
+          }
+        );
+      }
+      if (parseInt(i) + 1 == storedWatches.watches.length) {
+        // Tror att det kommer funka... Testa med typ 30 s
+        setTimeout(run, config.interval);
+      }
     } catch (err) {
       logger.error({
-        message: `Sending sendErrorNotification failed.`,
+        message: `Exit application if something went wrong.`,
         stacktrace: err,
       });
-      console.error('Sending error notification failed!');
+      // Exit application if something went wrong
+      try {
+        //await notification.sendErrorNotification(err);
+      } catch (err) {
+        logger.error({
+          message: `Sending sendErrorNotification failed.`,
+          stacktrace: err,
+        });
+        console.error('Sending error notification failed!');
+      }
+      console.error(err);
+      console.log('Program exit');
+      process.exitCode = 1;
     }
-    console.error(err);
-    console.log('Program exit');
-    process.exitCode = 1;
   }
 }
 

@@ -1,7 +1,25 @@
 ----------------- TODO -----------------
 Fixa node supervisor. Se web_scraper_v2.
 
+
 Skicka med stack trace i logger
+
+
+Byt kanske till en riktig databas. MySql, mongoDB eller RethinkDB
+https://able.bio/rhett/creating-a-web-app-with-a-raspberry-pi-express-and-postgresql--3c90a372#database
+
+
+Det kanske går att hosta på Azure med min MSDN licens?
+
+
+Fixa login
+  Kanske bra tutorial: https://codeshack.io/basic-login-system-nodejs-express-mysql/
+
+
+Skapa ett object av watch? Kanske måste byta till Typescript då...
+
+
+Gör refactoring på alla "watch-namn" i scraper.serivce
 
 ----------------- Hur appen ska fungera -----------------
 Loopa genom alla objekt i src/data/data.json i getWatch(), uppdatera scraped watch. I app.js kolla om det skiljer sig från storedWatch.
