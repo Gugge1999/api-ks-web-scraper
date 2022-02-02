@@ -11,7 +11,8 @@
     "ignore": [
       "src/logs/email_logs.txt",
       "src/data/stored_watch.json",
-      "src/data/data.json"
+      "src/data/data.json",
+      "src/watch-scraper.db"
     ]
   },
   "author": "",

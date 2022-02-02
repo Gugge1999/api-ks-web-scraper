@@ -6,6 +6,7 @@ const config = require('../../config/scraper_config');
 const notification = require('./notification.service');
 const time = require('./time-and-date.service');
 const logger = require('./logger.service');
+const database = require('../database/db');
 
 async function getWatch(uri) {
   const response = await rp({
@@ -30,6 +31,14 @@ async function getWatch(uri) {
 }
 
 async function run() {
+  let allWatches = database.getAllWatches();
+  console.log('Label test: ' + allWatches[0].label);
+
+  database.updateStoredWatch(
+    'ingen funktion kallad test',
+    'bb1e54f4-7c0c-45f1-9d48-c5fb57a4efc7'
+  );
+
   // För att loopa över alla klockor i data.json
   let storedWatches = JSON.parse(fs.readFileSync('src/data/data.json'));
 
