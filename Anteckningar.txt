@@ -1,7 +1,6 @@
 ----------------- TODO -----------------
 Fixa node supervisor. Se web_scraper_v2.
 
-
 Ändra till "Binding Parameters" i sqlite3
 
 Det kanske går att hosta på Azure med min MSDN licens?

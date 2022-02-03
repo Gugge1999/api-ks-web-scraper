@@ -8,28 +8,6 @@ const time = require('./time-and-date.service');
 const logger = require('./logger.service');
 const database = require('../database/db');
 
-async function getWatch(uri) {
-  const response = await rp({
-    uri: uri,
-  });
-
-  const $ = cheerio.load(response);
-  const watchName = $('.contentRow-title')
-    .children()
-    .first()
-    .text()
-    .replace(/Tillbakadragen|Avslutad|Säljes|OHPF|Bytes|\//gi, '') // Remove sale status of the watch
-    .trim();
-  if (watchName === '') throw new Error('Watch name not found');
-
-  const poster = $('.username').first().text();
-
-  const watchLink = $('.contentRow-title').children().first().attr('href');
-
-  let watchInfo = `${watchName} ${poster} https://klocksnack.se${watchLink}`;
-  return watchInfo;
-}
-
 async function run() {
   let allWatches = database.getAllWatches();
   console.log('Label test: ' + allWatches[0].label);
@@ -59,7 +37,7 @@ async function run() {
       // Timeout kan vara bra för att undvika för många requests...
       setTimeout(sleep, Math.random() * 1000 + 1000); // mellan och 1 och 2 sekunder
 
-      scrapedWatchObj.watch = await getWatch(currentWatch.uri);
+      //scrapedWatchObj.watch = await getWatch(currentWatch.uri);
 
       let scrapedWatch = JSON.stringify(scrapedWatchObj, null, 4);
       let storedWatch = fs.readFileSync('src/data/stored_watch.json', 'utf8');
@@ -147,6 +125,26 @@ async function run() {
 }
 
 module.exports = {
-  getWatch,
+  async getWatch(uri) {
+    const response = await rp({
+      uri: uri,
+    });
+
+    const $ = cheerio.load(response);
+    const watchName = $('.contentRow-title')
+      .children()
+      .first()
+      .text()
+      .replace(/Tillbakadragen|Avslutad|Säljes|OHPF|Bytes|\//gi, '') // Remove sale status of the watch
+      .trim();
+    if (watchName === '') throw new Error('Watch name not found');
+
+    const poster = $('.username').first().text();
+
+    const watchLink = $('.contentRow-title').children().first().attr('href');
+
+    let watchInfo = `${watchName} ${poster} https://klocksnack.se${watchLink}`;
+    return watchInfo;
+  },
   run,
 };
