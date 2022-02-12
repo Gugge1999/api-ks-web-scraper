@@ -37,7 +37,7 @@ async function run() {
       // Timeout kan vara bra för att undvika för många requests...
       setTimeout(sleep, Math.random() * 1000 + 1000); // mellan och 1 och 2 sekunder
 
-      //scrapedWatchObj.watch = await getWatch(currentWatch.uri);
+      //scrapedWatchObj.watch = await scrapeWatchInfo(currentWatch.uri);
 
       let scrapedWatch = JSON.stringify(scrapedWatchObj, null, 4);
       let storedWatch = fs.readFileSync('src/data/stored_watch.json', 'utf8');
@@ -125,7 +125,7 @@ async function run() {
 }
 
 module.exports = {
-  async getWatch(uri) {
+  async scrapeWatchInfo(uri) {
     const response = await rp({
       uri: uri,
     });

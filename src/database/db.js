@@ -9,12 +9,7 @@ const db = require('better-sqlite3')('src/watch-scraper.db', {
 });
 const logger = require('../services/logger.service');
 
-function getAllWatches() {
-  const allWatches = db.prepare('SELECT * FROM Watches').all();
-  return allWatches;
-}
-
-async function getWatch(uri) {
+async function scrapeWatchInfo(uri) {
   let watchInfo = {
     watchName: '',
     poster: '',
@@ -43,10 +38,34 @@ async function getWatch(uri) {
   return watchInfo;
 }
 
+function getAllWatches() {
+  const allWatches = db.prepare('SELECT * FROM Watches').all();
+  const newArr = allWatches.map((obj, i) => ({
+    ...obj,
+    active: JSON.parse(obj.active),
+  }));
+  return newArr;
+}
+
+async function updateIsActive(isActive, id) {
+  try {
+    db.prepare('UPDATE Watches SET active = ? WHERE id = ?').run(
+      isActive.toString(),
+      id
+    );
+  } catch (err) {
+    logger.error({
+      message: `updateIsActive() failed.`,
+      stacktrace: err,
+    });
+  }
+}
+
 async function addNewWatch(label, uri) {
   try {
     // Ändra till egen service. Nånting krånglar med async / await...
-    let watchInfo = await getWatch(uri);
+    let watchInfo = await scrapeWatchInfo(uri);
+    scrapeAllWatches();
 
     const stmt = db.prepare(
       'INSERT INTO Watches VALUES (' +
@@ -80,7 +99,7 @@ async function addNewWatch(label, uri) {
   }
 }
 
-function updateStoredWatch(newWatch, id) {
+async function updateStoredWatch(newWatch, id) {
   try {
     db.prepare('UPDATE Watches SET stored_watch = ? WHERE id = ?').run(
       newWatch,
@@ -94,8 +113,44 @@ function updateStoredWatch(newWatch, id) {
   }
 }
 
+async function scrapeAllWatches() {
+  const allWatches = getAllWatches();
+
+  // for (let i = 0; i < allWatches.length; i++) {
+  //   const storedWatch = allWatches[i];
+  //   if (storedWatch.active === 'false') {
+  //     continue;
+  //   }
+  //   setTimeout(() => {
+  //     console.log(`Timeout kan vara bra för att undvika för många requests`);
+  //   }, Math.random() * 500 + 500);
+
+  //   let scrapedWatch = await scrapeWatchInfo(storedWatch.uri);
+
+  //   if (
+  //     storedWatch.stored_watch !=
+  //     `${scrapedWatch.watchName} ${scrapedWatch.poster}`
+  //   ) {
+  //     // Uppdatera allt som ska uppdateras
+  //   }
+  // }
+
+  // Sudo kod:
+
+  // Loopa genom alla klockor i allWatches som har active = true
+  // för varje klocka anropa scrapeWatchInfo (random delay mellan 0.5 och 1 sekund)
+  // kolla om allWatches[i].stored_watch skiljer sig från watchInfo.watchName + watchInfo.poster ( från scrapeWatchInfo )
+  //
+  // Om det skiljer sig: uppdatera stored_watch, link_to_stored_watch, last_email_sent
+  // Skicka email till användare
+  //
+  //
+}
+
 module.exports = {
   getAllWatches,
   addNewWatch,
+  updateIsActive,
   updateStoredWatch,
+  scrapeAllWatches,
 };
