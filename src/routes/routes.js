@@ -14,7 +14,12 @@ router.get('/all-watches', (req, res) => {
 
 router.put('/update-is-active', (req, res) => {
   database.updateIsActive(req.body.isActive, req.body.id);
-  res.status(200).json(`Updated active status on: ` + req.body.label);
+  res.status(200).json(`Updated active status on: ${req.body.label}`);
+});
+
+router.delete('/delete-watch/:id', (req, res) => {
+  database.deleteWatch(req.params.id);
+  res.status(200).json('Deleted watch: ');
 });
 
 module.exports = router;

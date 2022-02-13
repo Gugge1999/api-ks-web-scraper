@@ -113,9 +113,20 @@ async function updateStoredWatch(newWatch, id) {
   }
 }
 
-async function scrapeAllWatches() {
-  const allWatches = getAllWatches();
+async function deleteWatch(id) {
+  try {
+    const stmt = db.prepare('DELETE FROM Watches WHERE id = ?');
+    stmt.run(id);
+  } catch (err) {
+    logger.error({
+      message: `deleteWatch() failed.`,
+      stacktrace: err,
+    });
+  }
+}
 
+async function scrapeAllWatches() {
+  //const allWatches = getAllWatches();
   // for (let i = 0; i < allWatches.length; i++) {
   //   const storedWatch = allWatches[i];
   //   if (storedWatch.active === 'false') {
@@ -124,9 +135,7 @@ async function scrapeAllWatches() {
   //   setTimeout(() => {
   //     console.log(`Timeout kan vara bra för att undvika för många requests`);
   //   }, Math.random() * 500 + 500);
-
   //   let scrapedWatch = await scrapeWatchInfo(storedWatch.uri);
-
   //   if (
   //     storedWatch.stored_watch !=
   //     `${scrapedWatch.watchName} ${scrapedWatch.poster}`
@@ -134,9 +143,7 @@ async function scrapeAllWatches() {
   //     // Uppdatera allt som ska uppdateras
   //   }
   // }
-
   // Sudo kod:
-
   // Loopa genom alla klockor i allWatches som har active = true
   // för varje klocka anropa scrapeWatchInfo (random delay mellan 0.5 och 1 sekund)
   // kolla om allWatches[i].stored_watch skiljer sig från watchInfo.watchName + watchInfo.poster ( från scrapeWatchInfo )
@@ -152,5 +159,6 @@ module.exports = {
   addNewWatch,
   updateIsActive,
   updateStoredWatch,
+  deleteWatch,
   scrapeAllWatches,
 };
