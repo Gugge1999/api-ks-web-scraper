@@ -1,44 +1,15 @@
 'use strict';
-const time = require('../services/time-and-date.service');
+const timeService = require('../services/time-and-date.service');
 const { v4: uuidv4 } = require('uuid');
-const scraper = require('../services/scraper.service');
-const rp = require('request-promise');
-const cheerio = require('cheerio');
+const scraperService = require('../services/scraper.service');
 const db = require('better-sqlite3')('src/watch-scraper.db', {
   fileMustExist: true,
 });
 const logger = require('../services/logger.service');
+const notificationService = require('../services/notification.service');
+const config = require('../../config/scraper.config');
 
-async function scrapeWatchInfo(uri) {
-  let watchInfo = {
-    watchName: '',
-    poster: '',
-    watchLink: '',
-  };
-  const response = await rp({
-    uri: uri,
-  });
-
-  const $ = cheerio.load(response);
-  watchInfo.watchName = $('.contentRow-title')
-    .children()
-    .first()
-    .text()
-    .replace(/Tillbakadragen|Avslutad|Säljes|OHPF|Bytes|\//gi, '') // Remove sale status of the watch
-    .trim();
-  if (watchInfo.watchName === '') throw new Error('Watch name not found');
-
-  watchInfo.poster = $('.username').first().text();
-
-  watchInfo.watchLink = `https://klocksnack.se${$('.contentRow-title')
-    .children()
-    .first()
-    .attr('href')}`;
-
-  return watchInfo;
-}
-
-function getAllWatches() {
+async function getAllWatches() {
   const allWatches = db.prepare('SELECT * FROM Watches').all();
   const newArr = allWatches.map((obj, i) => ({
     ...obj,
@@ -47,7 +18,7 @@ function getAllWatches() {
   return newArr;
 }
 
-async function updateIsActive(isActive, id) {
+async function updateActiveStatus(isActive, id) {
   try {
     db.prepare('UPDATE Watches SET active = ? WHERE id = ?').run(
       isActive.toString(),
@@ -55,7 +26,7 @@ async function updateIsActive(isActive, id) {
     );
   } catch (err) {
     logger.error({
-      message: `updateIsActive() failed.`,
+      message: `updateActiveStatus() failed.`,
       stacktrace: err,
     });
   }
@@ -64,8 +35,7 @@ async function updateIsActive(isActive, id) {
 async function addNewWatch(label, uri) {
   try {
     // Ändra till egen service. Nånting krånglar med async / await...
-    let watchInfo = await scrapeWatchInfo(uri);
-    scrapeAllWatches();
+    let watchInfo = await scraperService.scrapeWatchInfo(uri);
 
     const stmt = db.prepare(
       'INSERT INTO Watches VALUES (' +
@@ -89,7 +59,7 @@ async function addNewWatch(label, uri) {
       scraped_watch: 'scraped watch',
       active: 'true',
       last_email_sent: '',
-      added: time.dateAndTime(),
+      added: timeService.dateAndTime(),
     });
   } catch (err) {
     logger.error({
@@ -99,12 +69,15 @@ async function addNewWatch(label, uri) {
   }
 }
 
-async function updateStoredWatch(newWatch, id) {
+async function updateStoredWatch(newStoredWatch, linkToWatch, id) {
   try {
-    db.prepare('UPDATE Watches SET stored_watch = ? WHERE id = ?').run(
-      newWatch,
-      id
-    );
+    db.prepare(
+      'UPDATE Watches SET ' +
+        'stored_watch = ?, ' +
+        'link_to_stored_watch = ?, ' +
+        'last_email_sent = ? ' +
+        'WHERE id = ? '
+    ).run(newStoredWatch, linkToWatch, timeService.dateAndTime(), id);
   } catch (err) {
     logger.error({
       message: `updateStoredWatch() failed.`,
@@ -125,39 +98,47 @@ async function deleteWatch(id) {
   }
 }
 
+// Flytta till scraper serivce. Se upp för circle dependencies
 async function scrapeAllWatches() {
-  //const allWatches = getAllWatches();
-  // for (let i = 0; i < allWatches.length; i++) {
-  //   const storedWatch = allWatches[i];
-  //   if (storedWatch.active === 'false') {
-  //     continue;
-  //   }
-  //   setTimeout(() => {
-  //     console.log(`Timeout kan vara bra för att undvika för många requests`);
-  //   }, Math.random() * 500 + 500);
-  //   let scrapedWatch = await scrapeWatchInfo(storedWatch.uri);
-  //   if (
-  //     storedWatch.stored_watch !=
-  //     `${scrapedWatch.watchName} ${scrapedWatch.poster}`
-  //   ) {
-  //     // Uppdatera allt som ska uppdateras
-  //   }
-  // }
-  // Sudo kod:
-  // Loopa genom alla klockor i allWatches som har active = true
-  // för varje klocka anropa scrapeWatchInfo (random delay mellan 0.5 och 1 sekund)
-  // kolla om allWatches[i].stored_watch skiljer sig från watchInfo.watchName + watchInfo.poster ( från scrapeWatchInfo )
-  //
-  // Om det skiljer sig: uppdatera stored_watch, link_to_stored_watch, last_email_sent
-  // Skicka email till användare
-  //
-  //
+  console.log(`Start scrape at: ${timeService.currentTime()}`);
+  const allWatches = await getAllWatches();
+  for (let i = 0; i < allWatches.length; i++) {
+    const storedWatch = allWatches[i];
+
+    if (storedWatch.active === false) {
+      continue;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    console.log(`Testing purposes... ${storedWatch.added}`);
+    let scrapedWatch = await scraperService.scrapeWatchInfo(storedWatch.uri);
+    if (
+      storedWatch.stored_watch !=
+      `${scrapedWatch.watchName} ${scrapedWatch.poster}`
+    ) {
+      await updateStoredWatch(
+        `${scrapedWatch.watchName} ${scrapedWatch.poster}`,
+        scrapedWatch.watchLink,
+        storedWatch.id
+      );
+
+      // let emailText = `${
+      //   scrapedWatch.watchName
+      // }\n\nDetta mail skickades: ${timeService.currentTime()}`;
+      // await notificationService.sendKernelNotification(emailText);
+
+      // Kom att skicka en error notification
+    }
+  }
+  console.log(`End scrape at: ${timeService.currentTime()}`);
+  setTimeout(scrapeAllWatches, config.interval);
 }
 
 module.exports = {
   getAllWatches,
   addNewWatch,
-  updateIsActive,
+  updateActiveStatus,
   updateStoredWatch,
   deleteWatch,
   scrapeAllWatches,

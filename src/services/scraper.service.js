@@ -2,12 +2,13 @@
 const fs = require('fs');
 const rp = require('request-promise');
 const cheerio = require('cheerio');
-const config = require('../../config/scraper_config');
+const config = require('../../config/scraper.config');
 const notification = require('./notification.service');
 const time = require('./time-and-date.service');
 const logger = require('./logger.service');
-const database = require('../database/db');
 
+// Kan förmodligen ta bort metoden run och i export
+// Någon typ av run behövs för att kontinuerligt kolla om det finns någon ny klocka
 async function run() {
   let allWatches = database.getAllWatches();
   console.log('Label test: ' + allWatches[0].label);
@@ -124,27 +125,38 @@ async function run() {
   }
 }
 
+async function scrapeWatchInfo(uri) {
+  let watchInfo = {
+    watchName: '',
+    poster: '',
+    watchLink: '',
+  };
+
+  const response = await rp({
+    uri: uri,
+  });
+
+  const $ = cheerio.load(response);
+
+  watchInfo.watchName = $('.contentRow-title')
+    .children() // kan chrildren tas bort?
+    .first() // Kan first tas bort?
+    .text()
+    .replace(/Tillbakadragen|Avslutad|Säljes|OHPF|Bytes|\//gi, '') // Remove sale status of the watch
+    .trim();
+  if (watchInfo.watchName === '') throw new Error('Watch name not found');
+
+  watchInfo.poster = $('.username').first().text();
+
+  watchInfo.watchLink = `https://klocksnack.se${$('.contentRow-title')
+    .children()
+    .first()
+    .attr('href')}`;
+
+  return watchInfo;
+}
+
 module.exports = {
-  async scrapeWatchInfo(uri) {
-    const response = await rp({
-      uri: uri,
-    });
-
-    const $ = cheerio.load(response);
-    const watchName = $('.contentRow-title')
-      .children()
-      .first()
-      .text()
-      .replace(/Tillbakadragen|Avslutad|Säljes|OHPF|Bytes|\//gi, '') // Remove sale status of the watch
-      .trim();
-    if (watchName === '') throw new Error('Watch name not found');
-
-    const poster = $('.username').first().text();
-
-    const watchLink = $('.contentRow-title').children().first().attr('href');
-
-    let watchInfo = `${watchName} ${poster} https://klocksnack.se${watchLink}`;
-    return watchInfo;
-  },
+  scrapeWatchInfo,
   run,
 };
