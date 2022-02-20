@@ -1,6 +1,7 @@
 'use strict';
-const config = require('../../config/scraper.config');
 const nodemailer = require('nodemailer');
+
+const config = require('../../config/scraper.config');
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.zoho.eu',

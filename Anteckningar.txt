@@ -8,6 +8,7 @@
 [  ]   Läs på better-sqlite3 docs och kolla andra repos och async behövs. 
        Det kanske försämrar prestandan
 
+
 [  ]   Fixa node supervisor. Se web_scraper_v2.
   
   

@@ -104,9 +104,7 @@ async function scrapeAllWatches() {
   for (let i = 0; i < allWatches.length; i++) {
     const storedWatch = allWatches[i];
 
-    if (storedWatch.active === false) {
-      continue;
-    }
+    if (storedWatch.active === false) continue;
 
     await new Promise((resolve) => setTimeout(resolve, 500));
 

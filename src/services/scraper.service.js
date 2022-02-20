@@ -2,6 +2,7 @@
 const fs = require('fs');
 const rp = require('request-promise');
 const cheerio = require('cheerio');
+
 const config = require('../../config/scraper.config');
 const notification = require('./notification.service');
 const time = require('./time-and-date.service');
