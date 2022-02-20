@@ -1,6 +1,6 @@
 'use strict';
 const { v4: uuidv4 } = require('uuid');
-const db = require('better-sqlite3')('src/watch-scraper.db', {
+const db = require('better-sqlite3')('src/data/watch-scraper.db', {
   fileMustExist: true,
 });
 
