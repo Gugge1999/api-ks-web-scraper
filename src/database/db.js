@@ -1,10 +1,11 @@
 'use strict';
-const timeService = require('../services/time-and-date.service');
 const { v4: uuidv4 } = require('uuid');
-const scraperService = require('../services/scraper.service');
 const db = require('better-sqlite3')('src/watch-scraper.db', {
   fileMustExist: true,
 });
+
+const timeService = require('../services/time-and-date.service');
+const scraperService = require('../services/scraper.service');
 const logger = require('../services/logger.service');
 const notificationService = require('../services/notification.service');
 const config = require('../../config/scraper.config');
@@ -44,7 +45,6 @@ async function addNewWatch(label, uri) {
         '@label, ' +
         '@stored_watch, ' +
         '@link_to_stored_watch, ' +
-        '@scraped_watch, ' +
         '@active, ' +
         '@last_email_sent, ' +
         '@added)'
@@ -56,7 +56,6 @@ async function addNewWatch(label, uri) {
       label: label,
       stored_watch: `${watchInfo.watchName} ${watchInfo.poster}`, // Unique enough?
       link_to_stored_watch: watchInfo.watchLink,
-      scraped_watch: 'scraped watch',
       active: 'true',
       last_email_sent: '',
       added: timeService.dateAndTime(),
