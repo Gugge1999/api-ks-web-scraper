@@ -11,20 +11,34 @@ const notificationService = require('../services/notification.service');
 const config = require('../../config/scraper.config');
 
 async function getAllWatches() {
-  const allWatches = db.prepare('SELECT * FROM Watches').all();
-  const newArr = allWatches.map((obj, i) => ({
-    ...obj,
-    active: JSON.parse(obj.active),
-  }));
-  return newArr;
+  try {
+    const allWatches = db.prepare('SELECT * FROM Watches').all();
+
+    // Convert column active from string to boolean
+    const newArr = allWatches.map((obj, i) => ({
+      ...obj,
+      active: JSON.parse(obj.active),
+    }));
+
+    return newArr;
+  } catch (err) {
+    logger.error({
+      message: `getAllWatches() failed.`,
+      stacktrace: err,
+    });
+  }
 }
 
 async function updateActiveStatus(isActive, id) {
   try {
-    db.prepare('UPDATE Watches SET active = ? WHERE id = ?').run(
-      isActive.toString(),
-      id
+    const stmt = db.prepare(
+      'UPDATE Watches SET active = @active WHERE id = @id'
     );
+
+    stmt.run({
+      active: isActive.toString(),
+      id: id,
+    });
   } catch (err) {
     logger.error({
       message: `updateActiveStatus() failed.`,
@@ -35,7 +49,6 @@ async function updateActiveStatus(isActive, id) {
 
 async function addNewWatch(label, uri) {
   try {
-    // Ändra till egen service. Nånting krånglar med async / await...
     let watchInfo = await scraperService.scrapeWatchInfo(uri);
 
     const stmt = db.prepare(
@@ -54,7 +67,7 @@ async function addNewWatch(label, uri) {
       id: uuidv4(),
       uri: uri,
       label: label,
-      stored_watch: `${watchInfo.watchName} ${watchInfo.poster}`, // Unique enough?
+      stored_watch: `${watchInfo.watchName} ${watchInfo.poster}`, // Unique enough? Kanske bättre att köra namn + datum när annonsen laddades upp. Det går att få tag på datum även om det står idag.
       link_to_stored_watch: watchInfo.watchLink,
       active: 'true',
       last_email_sent: '',
@@ -68,15 +81,22 @@ async function addNewWatch(label, uri) {
   }
 }
 
-async function updateStoredWatch(newStoredWatch, linkToWatch, id) {
+async function updateStoredWatch(newStoredWatch, newLinkToWatch, id) {
   try {
-    db.prepare(
+    const stmt = db.prepare(
       'UPDATE Watches SET ' +
-        'stored_watch = ?, ' +
-        'link_to_stored_watch = ?, ' +
-        'last_email_sent = ? ' +
-        'WHERE id = ? '
-    ).run(newStoredWatch, linkToWatch, timeService.dateAndTime(), id);
+        'stored_watch = @stored_watch, ' +
+        'link_to_stored_watch = @link_to_stored_watch, ' +
+        'last_email_sent = @last_email_sent ' +
+        'WHERE id = @id '
+    );
+
+    stmt.run({
+      stored_watch: newStoredWatch,
+      link_to_stored_watch: newLinkToWatch,
+      last_email_sent: timeService.dateAndTime(),
+      id: id,
+    });
   } catch (err) {
     logger.error({
       message: `updateStoredWatch() failed.`,
@@ -88,6 +108,7 @@ async function updateStoredWatch(newStoredWatch, linkToWatch, id) {
 async function deleteWatch(id) {
   try {
     const stmt = db.prepare('DELETE FROM Watches WHERE id = ?');
+
     stmt.run(id);
   } catch (err) {
     logger.error({
