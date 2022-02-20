@@ -122,9 +122,9 @@ async function scrapeAllWatches() {
         storedWatch.id
       );
 
-      // let emailText = `${
-      //   scrapedWatch.watchName
-      // }\n\nDetta mail skickades: ${timeService.currentTime()}`;
+      let emailText = `${
+        scrapedWatch.watchName
+      }\n\nDetta mail skickades: ${timeService.currentTime()}`;
       // await notificationService.sendKernelNotification(emailText);
 
       // Kom att skicka en error notification
@@ -132,6 +132,16 @@ async function scrapeAllWatches() {
   }
   console.log(`End scrape at: ${timeService.currentTime()}`);
   setTimeout(scrapeAllWatches, config.interval);
+}
+
+function backupDatebase() {
+  db.backup(`src/data/backup-watch-scraper-${timeService.todaysDate()}.db`)
+    .then(() => {
+      console.log('backup complete!');
+    })
+    .catch((err) => {
+      console.log('backup failed:', err);
+    });
 }
 
 module.exports = {

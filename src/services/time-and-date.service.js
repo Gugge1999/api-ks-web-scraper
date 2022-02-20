@@ -10,7 +10,12 @@ function dateAndTime() {
   });
 }
 
+function todaysDate() {
+  return new Date().toISOString().slice(0, 10); // Format: yyyy-mm-dd
+}
+
 module.exports = {
   currentTime,
   dateAndTime,
+  todaysDate,
 };
