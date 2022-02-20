@@ -4,10 +4,10 @@ const db = require('better-sqlite3')('src/data/watch-scraper.db', {
   fileMustExist: true,
 });
 
-const timeService = require('../services/time-and-date.service');
-const scraperService = require('../services/scraper.service');
-const logger = require('../services/logger.service');
-const notificationService = require('../services/notification.service');
+const timeService = require('./time-and-date.service');
+const logger = require('./logger.service');
+const notificationService = require('./notification.service');
+const scraperService = require('./scraper.service');
 const config = require('../../config/scraper.config');
 
 async function getAllWatches() {
@@ -118,7 +118,7 @@ async function deleteWatch(id) {
   }
 }
 
-// Flytta till scraper serivce. Se upp för circle dependencies
+// Flytta till scraper service
 async function scrapeAllWatches() {
   console.log(`Start scrape at: ${timeService.currentTime()}`);
   const allWatches = await getAllWatches();
@@ -127,7 +127,7 @@ async function scrapeAllWatches() {
 
     if (storedWatch.active === false) continue;
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     console.log(`Testing purposes... ${storedWatch.added}`);
     let scrapedWatch = await scraperService.scrapeWatchInfo(storedWatch.uri);
@@ -149,7 +149,7 @@ async function scrapeAllWatches() {
       // Kom att skicka en error notification
     }
   }
-  console.log(`End scrape at: ${timeService.currentTime()}`);
+  console.log(`End scrape at:   ${timeService.currentTime()}`);
   setTimeout(scrapeAllWatches, config.interval);
 }
 
@@ -170,4 +170,5 @@ module.exports = {
   updateStoredWatch,
   deleteWatch,
   scrapeAllWatches,
+  backupDatebase,
 };

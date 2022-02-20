@@ -1,4 +1,10 @@
 ----------------- TODO -----------------
+[  ]   Lägg till ESLint
+
+[  ]   Byt från request-promise, DEPRECATED. Se: https://github.com/request/request-promise 
+       node-fetch verkar bra: https://www.npmjs.com/package/node-fetch
+
+
 [  ]   Fixa getStatus(). Den visar status och interval
   
   
