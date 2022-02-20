@@ -1,5 +1,5 @@
 'use strict';
-const config = require('../../config/scraper_config');
+const config = require('../../config/scraper.config');
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
@@ -12,21 +12,25 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+async function sendKernelNotification(emailText) {
+  await transporter.sendMail({
+    from: process.env.EMAIL,
+    to: process.env.EMAILTO,
+    subject: `Ny klocka tillgänglig! ⌚`,
+    text: emailText,
+  });
+}
+
+async function sendErrorNotification(err) {
+  await transporter.sendMail({
+    from: config.email.user,
+    to: config.email.emailTo,
+    subject: `KS Web Scraper: An error occured!`,
+    text: `Error message:\n\n${err}`,
+  });
+}
+
 module.exports = {
-  async sendKernelNotification(emailText) {
-    await transporter.sendMail({
-      from: process.env.EMAIL,
-      to: process.env.EMAILTO,
-      subject: `Ny klocka tillgänglig! ⌚`,
-      text: emailText,
-    });
-  },
-  async sendErrorNotification(err) {
-    await transporter.sendMail({
-      from: config.email.user,
-      to: config.email.emailTo,
-      subject: `KS Web Scraper: An error occured!`,
-      text: `Error message:\n\n${err}`,
-    });
-  },
+  sendKernelNotification,
+  sendErrorNotification,
 };
