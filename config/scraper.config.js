@@ -9,5 +9,5 @@ module.exports = {
     pass: process.env.PASSWORD,
     emailTo: process.env.EMAILTO,
   },
-  interval: 100 * 1000 * 60, // in milliseconds
+  interval: 10 * 60000, // milliseconds = minutes × 60,000
 };
