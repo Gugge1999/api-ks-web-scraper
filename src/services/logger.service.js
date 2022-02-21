@@ -1,14 +1,13 @@
 'use strict';
-const { createLogger, format, transports } = require('winston');
+import { createLogger, format, transports } from 'winston';
+
 const { combine, timestamp, prettyPrint, errors } = format;
 
-const time = require('./time-and-date.service');
-
-const logger = createLogger({
+export const logger = createLogger({
   format: combine(
     errors({ stack: true }), // <-- use errors format
     timestamp({
-      format: time.dateAndTime,
+      format: 'YYYY-MM-DD HH:mm:ss',
     }),
     prettyPrint()
   ),
@@ -17,5 +16,3 @@ const logger = createLogger({
     new transports.File({ filename: 'src/logs/ks_web_scraper.log' }),
   ],
 });
-
-module.exports = logger;

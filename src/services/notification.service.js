@@ -1,19 +1,19 @@
 'use strict';
-const nodemailer = require('nodemailer');
+import { createTransport } from 'nodemailer';
 
-const config = require('../../config/scraper.config');
+import { email } from '../../config/scraper.config.js';
 
-const transporter = nodemailer.createTransport({
+const transporter = createTransport({
   host: 'smtp.zoho.eu',
   port: 465,
   secure: true,
   auth: {
-    user: config.email.user,
-    pass: config.email.pass,
+    user: email.user,
+    pass: email.pass,
   },
 });
 
-async function sendKernelNotification(emailText) {
+export async function sendKernelNotification(emailText) {
   await transporter.sendMail({
     from: process.env.EMAIL,
     to: process.env.EMAILTO,
@@ -22,16 +22,11 @@ async function sendKernelNotification(emailText) {
   });
 }
 
-async function sendErrorNotification(err) {
+export async function sendErrorNotification(err) {
   await transporter.sendMail({
-    from: config.email.user,
-    to: config.email.emailTo,
+    from: email.user,
+    to: email.emailTo,
     subject: `KS Web Scraper: An error occured!`,
     text: `Error message:\n\n${err}`,
   });
 }
-
-module.exports = {
-  sendKernelNotification,
-  sendErrorNotification,
-};

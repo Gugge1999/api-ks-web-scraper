@@ -1,6 +1,9 @@
 'use strict';
-const router = require('express').Router();
-const db = require('../services/db.service');
+import express from 'express';
+
+import * as db from '../services/db.service.js';
+
+const router = express.Router();
 
 router.get('/is-api-active', (req, res) => {
   res.status(200).json('API is active');
@@ -26,4 +29,4 @@ router.delete('/delete-watch/:id', async (req, res) => {
   res.status(200).json(`Deleted watch with id: ${req.params.id}`);
 });
 
-module.exports = router;
+export default router;

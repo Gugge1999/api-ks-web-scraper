@@ -1,16 +1,21 @@
 'use strict';
-const { v4: uuidv4 } = require('uuid');
-const db = require('better-sqlite3')('src/data/watch-scraper.db', {
+import { v4 as uuidv4 } from 'uuid';
+import Database from 'better-sqlite3';
+
+import * as timeService from './time-and-date.service.js';
+import { logger } from './logger.service.js';
+import {
+  sendKernelNotification,
+  sendErrorNotification,
+} from './notification.service.js';
+import { scrapeWatchInfo } from './scraper.service.js';
+import { interval } from '../../config/scraper.config.js';
+
+const db = new Database('src/data/watch-scraper.db', {
   fileMustExist: true,
 });
 
-const timeService = require('./time-and-date.service');
-const logger = require('./logger.service');
-const notificationService = require('./notification.service');
-const scraperService = require('./scraper.service');
-const config = require('../../config/scraper.config');
-
-async function getAllWatches() {
+export async function getAllWatches() {
   try {
     const allWatches = db.prepare('SELECT * FROM Watches').all();
 
@@ -29,7 +34,7 @@ async function getAllWatches() {
   }
 }
 
-async function updateActiveStatus(isActive, id) {
+export async function updateActiveStatus(isActive, id) {
   try {
     const stmt = db.prepare(
       'UPDATE Watches SET active = @active WHERE id = @id'
@@ -47,9 +52,9 @@ async function updateActiveStatus(isActive, id) {
   }
 }
 
-async function addNewWatch(label, uri) {
+export async function addNewWatch(label, uri) {
   try {
-    let watchInfo = await scraperService.scrapeWatchInfo(uri);
+    let watchInfo = await scrapeWatchInfo(uri);
 
     const stmt = db.prepare(
       'INSERT INTO Watches VALUES (' +
@@ -81,7 +86,7 @@ async function addNewWatch(label, uri) {
   }
 }
 
-async function updateStoredWatch(newStoredWatch, newLinkToWatch, id) {
+export async function updateStoredWatch(newStoredWatch, newLinkToWatch, id) {
   try {
     const stmt = db.prepare(
       'UPDATE Watches SET ' +
@@ -105,7 +110,7 @@ async function updateStoredWatch(newStoredWatch, newLinkToWatch, id) {
   }
 }
 
-async function deleteWatch(id) {
+export async function deleteWatch(id) {
   try {
     const stmt = db.prepare('DELETE FROM Watches WHERE id = ?');
 
@@ -119,7 +124,7 @@ async function deleteWatch(id) {
 }
 
 // Flytta till scraper service
-async function scrapeAllWatches() {
+export async function scrapeAllWatches() {
   console.log(`Start scrape at: ${timeService.currentTime()}`);
   const allWatches = await getAllWatches();
   for (let i = 0; i < allWatches.length; i++) {
@@ -130,7 +135,7 @@ async function scrapeAllWatches() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     console.log(`Testing purposes... ${storedWatch.added}`);
-    let scrapedWatch = await scraperService.scrapeWatchInfo(storedWatch.uri);
+    let scrapedWatch = await scrapeWatchInfo(storedWatch.uri);
     if (
       storedWatch.stored_watch !=
       `${scrapedWatch.watchName} ${scrapedWatch.poster}`
@@ -150,11 +155,11 @@ async function scrapeAllWatches() {
     }
   }
   console.log(`End scrape at:   ${timeService.currentTime()}`);
-  setTimeout(scrapeAllWatches, config.interval);
+  setTimeout(scrapeAllWatches, interval);
 }
 
-function backupDatebase() {
-  db.backup(`src/data/backup-watch-scraper-${timeService.todaysDate()}.db`)
+export function backupDatebase() {
+  db.backup(`src/data/backup-watch-scraper-${todaysDate()}.db`)
     .then(() => {
       console.log('backup complete!');
     })
@@ -162,13 +167,3 @@ function backupDatebase() {
       console.log('backup failed:', err);
     });
 }
-
-module.exports = {
-  getAllWatches,
-  addNewWatch,
-  updateActiveStatus,
-  updateStoredWatch,
-  deleteWatch,
-  scrapeAllWatches,
-  backupDatebase,
-};

@@ -1,21 +1,17 @@
 'use strict';
 
-function currentTime() {
+// Döpa om klassent till timestamp? Något generellt...
+
+export function currentTime() {
   return new Date().toLocaleString();
 }
 
-function dateAndTime() {
+export function dateAndTime() {
   return new Date().toLocaleString('sv-SE', {
     timeZone: 'Europe/Stockholm',
   });
 }
 
-function todaysDate() {
+export function todaysDate() {
   return new Date().toISOString().slice(0, 10); // Format: yyyy-mm-dd
 }
-
-module.exports = {
-  currentTime,
-  dateAndTime,
-  todaysDate,
-};

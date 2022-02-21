@@ -1,19 +1,18 @@
 'use strict';
-const rp = require('request-promise');
-const cheerio = require('cheerio');
+import fetch from 'node-fetch';
+import cheerio from 'cheerio';
 
-async function scrapeWatchInfo(uri) {
+export async function scrapeWatchInfo(uri) {
   let watchInfo = {
     watchName: '',
     poster: '',
     watchLink: '',
   };
 
-  const response = await rp({
-    uri: uri,
-  });
+  const response = await fetch(uri);
+  const body = await response.text();
 
-  const $ = cheerio.load(response);
+  const $ = cheerio.load(body);
 
   watchInfo.watchName = $('.contentRow-title')
     .children() // kan chrildren tas bort?
@@ -32,7 +31,3 @@ async function scrapeWatchInfo(uri) {
 
   return watchInfo;
 }
-
-module.exports = {
-  scrapeWatchInfo,
-};

@@ -1,17 +1,17 @@
 'use strict';
-const express = require('express');
-const cors = require('cors');
-const routes = require('./routes/routes');
-const db = require('./services/db.service');
+import express, { json } from 'express';
+import cors from 'cors';
+import routes from './routes/routes.js';
+import { scrapeAllWatches } from './services/db.service.js';
 
 const app = express();
-app.use(express.json());
+app.use(json()); // Behövs det? Är det default?
 app.use(cors()); // Add cors before the routes are defined
 app.use(routes);
-const port = 3000;
+const port = 3000; // Vad är default port?
 
 app.listen(port, () => {
   console.log(`Express app listening at http://localhost:${port}`);
 });
 
-db.scrapeAllWatches();
+scrapeAllWatches();

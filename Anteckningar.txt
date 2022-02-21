@@ -1,8 +1,6 @@
 ----------------- TODO -----------------
-[  ]   Lägg till ESLint
-
-[  ]   Byt från request-promise, DEPRECATED. Se: https://github.com/request/request-promise 
-       node-fetch verkar bra: https://www.npmjs.com/package/node-fetch
+[  ]   Lägg till ESLint. Det kanske går att ta bort 'use strict då...'
+       Se under "Tips along the way": https://electerious.medium.com/from-commonjs-to-es-modules-how-to-modernize-your-node-js-app-ad8cdd4fb662
 
 
 [  ]   Fixa getStatus(). Den visar status och interval
