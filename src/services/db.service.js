@@ -4,12 +4,7 @@ import Database from 'better-sqlite3';
 
 import * as timeService from './time-and-date.service.js';
 import { logger } from './logger.service.js';
-import {
-  sendKernelNotification,
-  sendErrorNotification,
-} from './notification.service.js';
 import { scrapeWatchInfo } from './scraper.service.js';
-import { interval } from '../../config/scraper.config.js';
 
 const db = new Database('src/data/watch-scraper.db', {
   fileMustExist: true,
@@ -121,41 +116,6 @@ export async function deleteWatch(id) {
       stacktrace: err,
     });
   }
-}
-
-// Flytta till scraper service
-export async function scrapeAllWatches() {
-  console.log(`Start scrape at: ${timeService.currentTime()}`);
-  const allWatches = await getAllWatches();
-  for (let i = 0; i < allWatches.length; i++) {
-    const storedWatch = allWatches[i];
-
-    if (storedWatch.active === false) continue;
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    console.log(`Testing purposes... ${storedWatch.added}`);
-    let scrapedWatch = await scrapeWatchInfo(storedWatch.uri);
-    if (
-      storedWatch.stored_watch !=
-      `${scrapedWatch.watchName} ${scrapedWatch.poster}`
-    ) {
-      await updateStoredWatch(
-        `${scrapedWatch.watchName} ${scrapedWatch.poster}`,
-        scrapedWatch.watchLink,
-        storedWatch.id
-      );
-
-      let emailText = `${
-        scrapedWatch.watchName
-      }\n\nDetta mail skickades: ${timeService.currentTime()}`;
-      // await notificationService.sendKernelNotification(emailText);
-
-      // Kom att skicka en error notification
-    }
-  }
-  console.log(`End scrape at:   ${timeService.currentTime()}`);
-  setTimeout(scrapeAllWatches, interval);
 }
 
 export function backupDatebase() {
