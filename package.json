@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/app.js",
+    "lint": "npx eslint src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "nodemonConfig": {
@@ -28,5 +29,8 @@
     "request": "^2.88.2",
     "uuid": "^8.3.2",
     "winston": "^3.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.9.0"
   }
 }

@@ -15,7 +15,7 @@ export async function getAllWatches() {
     const allWatches = db.prepare('SELECT * FROM Watches').all();
 
     // Convert column active from string to boolean
-    const newArr = allWatches.map((obj, i) => ({
+    const newArr = allWatches.map((obj) => ({
       ...obj,
       active: JSON.parse(obj.active),
     }));
@@ -119,7 +119,7 @@ export async function deleteWatch(id) {
 }
 
 export function backupDatebase() {
-  db.backup(`src/data/backup-watch-scraper-${todaysDate()}.db`)
+  db.backup(`src/data/backup-watch-scraper-${timeService.todaysDate()}.db`)
     .then(() => {
       console.log('backup complete!');
     })
