@@ -1,4 +1,3 @@
-'use strict';
 import express from 'express';
 
 import * as db from '../services/db.service.js';
@@ -15,7 +14,7 @@ router.post('/add-watch', async (req, res) => {
 });
 
 router.get('/all-watches', async (req, res) => {
-  let allWatches = await db.getAllWatches();
+  const allWatches = await db.getAllWatches();
   res.status(200).json(allWatches);
 });
 

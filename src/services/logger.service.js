@@ -1,9 +1,8 @@
-'use strict';
 import { createLogger, format, transports } from 'winston';
 
 const { combine, timestamp, prettyPrint, errors } = format;
 
-export const logger = createLogger({
+const logger = createLogger({
   format: combine(
     errors({ stack: true }), // <-- use errors format
     timestamp({
@@ -16,3 +15,5 @@ export const logger = createLogger({
     new transports.File({ filename: 'src/logs/ks_web_scraper.log' }),
   ],
 });
+
+export default logger;

@@ -1,9 +1,8 @@
-'use strict';
 import { v4 as uuidv4 } from 'uuid';
 import Database from 'better-sqlite3';
 
 import * as timeService from './time-and-date.service.js';
-import { logger } from './logger.service.js';
+import logger from './logger.service.js';
 import { scrapeWatchInfo } from './scraper.service.js';
 
 const db = new Database('src/data/watch-scraper.db', {
@@ -37,7 +36,7 @@ export async function updateActiveStatus(isActive, id) {
 
     stmt.run({
       active: isActive.toString(),
-      id: id,
+      id,
     });
   } catch (err) {
     logger.error({
@@ -49,7 +48,7 @@ export async function updateActiveStatus(isActive, id) {
 
 export async function addNewWatch(label, uri) {
   try {
-    let watchInfo = await scrapeWatchInfo(uri);
+    const watchInfo = await scrapeWatchInfo(uri);
 
     const stmt = db.prepare(
       'INSERT INTO Watches VALUES (' +
@@ -65,8 +64,8 @@ export async function addNewWatch(label, uri) {
 
     stmt.run({
       id: uuidv4(),
-      uri: uri,
-      label: label,
+      uri,
+      label,
       stored_watch: `${watchInfo.watchName} ${watchInfo.poster}`, // Unique enough? Kanske bättre att köra namn + datum när annonsen laddades upp. Det går att få tag på datum även om det står idag.
       link_to_stored_watch: watchInfo.watchLink,
       active: 'true',
@@ -95,7 +94,7 @@ export async function updateStoredWatch(newStoredWatch, newLinkToWatch, id) {
       stored_watch: newStoredWatch,
       link_to_stored_watch: newLinkToWatch,
       last_email_sent: timeService.dateAndTime(),
-      id: id,
+      id,
     });
   } catch (err) {
     logger.error({

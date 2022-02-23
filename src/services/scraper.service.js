@@ -1,4 +1,3 @@
-'use strict';
 import fetch from 'node-fetch';
 import cheerio from 'cheerio';
 
@@ -9,10 +8,10 @@ import {
 } from './notification.service.js';
 import * as timeService from './time-and-date.service.js';
 import { updateStoredWatch, getAllWatches } from './db.service.js';
-import { logger } from './logger.service.js';
+import logger from './logger.service.js';
 
 export async function scrapeWatchInfo(uri) {
-  let watchInfo = {
+  const watchInfo = {
     watchName: '',
     poster: '',
     watchLink: '',
@@ -48,17 +47,19 @@ export async function scrapeWatchInfo(uri) {
 export async function scrapeAllWatches() {
   console.log(`Start scrape at: ${timeService.currentTime()}`);
   const allWatches = await getAllWatches();
-  for (let i = 0; i < allWatches.length; i++) {
+  for (let i = 0; i < allWatches.length; i += 1) {
     const storedWatch = allWatches[i];
 
-    if (storedWatch.active === false) continue;
+    if (storedWatch.active === false) {
+      continue;
+    }
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log('Timeout...');
 
-    let scrapedWatch = await scrapeWatchInfo(storedWatch.uri);
+    const scrapedWatch = await scrapeWatchInfo(storedWatch.uri);
     if (
-      storedWatch.stored_watch !=
+      storedWatch.stored_watch !==
       `${scrapedWatch.watchName} ${scrapedWatch.poster}`
     ) {
       await updateStoredWatch(
@@ -67,7 +68,7 @@ export async function scrapeAllWatches() {
         storedWatch.id
       );
 
-      let emailText = `${
+      const emailText = `${
         scrapedWatch.watchName
       }\n\nDetta mail skickades: ${timeService.currentTime()}`;
       try {

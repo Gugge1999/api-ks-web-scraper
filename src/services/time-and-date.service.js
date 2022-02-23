@@ -1,5 +1,3 @@
-'use strict';
-
 // Döpa om klassent till timestamp? Något generellt...
 
 export function currentTime() {

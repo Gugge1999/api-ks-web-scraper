@@ -1,4 +1,3 @@
-'use strict';
 import { createTransport } from 'nodemailer';
 
 import { email } from '../../config/scraper.config.js';
