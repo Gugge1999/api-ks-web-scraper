@@ -1,5 +1,3 @@
-// Döpa om klassent till timestamp? Något generellt...
-
 export function currentTime() {
   return new Date().toLocaleString();
 }
