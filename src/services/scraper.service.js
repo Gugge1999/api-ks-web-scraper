@@ -45,6 +45,7 @@ export async function scrapeWatchInfo(uri) {
 }
 
 export async function scrapeAllWatches() {
+  console.log('Scraping all watches.');
   const allWatches = await getAllWatches();
   for (let i = 0; i < allWatches.length; i += 1) {
     const storedWatch = allWatches[i];
@@ -70,10 +71,10 @@ export async function scrapeAllWatches() {
         scrapedWatch.watchName
       }\n\nDetta mail skickades: ${timeService.currentTime()}`;
       try {
-        await sendKernelNotification(emailText);
-        console.log('Email sent.');
+        //await sendKernelNotification(emailText);
+        //console.log('Email sent.');
       } catch (err) {
-        await sendErrorNotification(err);
+        //await sendErrorNotification(err);
         logger.error({
           message: 'sendErrorNotification failed.',
           stacktrace: err,
