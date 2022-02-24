@@ -46,7 +46,8 @@ export async function scrapeWatchInfo(uri) {
 
 export async function scrapeAllWatches() {
   console.log('Scraping all watches.');
-  const allWatches = await getAllWatches();
+  const allWatches = getAllWatches();
+  // Vilken typ av for loop är snabbast?
   for (let i = 0; i < allWatches.length; i += 1) {
     const storedWatch = allWatches[i];
 
@@ -61,7 +62,7 @@ export async function scrapeAllWatches() {
       storedWatch.stored_watch !==
       `${scrapedWatch.watchName} ${scrapedWatch.poster}`
     ) {
-      await updateStoredWatch(
+      updateStoredWatch(
         `${scrapedWatch.watchName} ${scrapedWatch.poster}`,
         scrapedWatch.watchLink,
         storedWatch.id

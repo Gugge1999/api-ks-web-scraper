@@ -9,7 +9,7 @@ const db = new Database('src/data/watch-scraper.db', {
   fileMustExist: true,
 });
 
-export async function getAllWatches() {
+export function getAllWatches() {
   try {
     const allWatches = db.prepare('SELECT * FROM Watches').all();
 
@@ -28,7 +28,7 @@ export async function getAllWatches() {
   }
 }
 
-export async function updateActiveStatus(isActive, id) {
+export function updateActiveStatus(isActive, id) {
   try {
     const stmt = db.prepare(
       'UPDATE Watches SET active = @active WHERE id = @id'
@@ -80,7 +80,7 @@ export async function addNewWatch(label, uri) {
   }
 }
 
-export async function updateStoredWatch(newStoredWatch, newLinkToWatch, id) {
+export function updateStoredWatch(newStoredWatch, newLinkToWatch, id) {
   try {
     const stmt = db.prepare(
       'UPDATE Watches SET ' +
@@ -104,7 +104,7 @@ export async function updateStoredWatch(newStoredWatch, newLinkToWatch, id) {
   }
 }
 
-export async function deleteWatch(id) {
+export function deleteWatch(id) {
   try {
     const stmt = db.prepare('DELETE FROM Watches WHERE id = ?');
 

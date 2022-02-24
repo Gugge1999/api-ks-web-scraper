@@ -13,18 +13,18 @@ router.post('/add-watch', async (req, res) => {
   res.status(201).json(`Added watch with label: ${req.body.label}`);
 });
 
-router.get('/all-watches', async (req, res) => {
-  const allWatches = await db.getAllWatches();
+router.get('/all-watches', (req, res) => {
+  const allWatches = db.getAllWatches();
   res.status(200).json(allWatches);
 });
 
-router.put('/update-active-status', async (req, res) => {
-  await db.updateActiveStatus(req.body.isActive, req.body.id);
+router.put('/update-active-status', (req, res) => {
+  db.updateActiveStatus(req.body.isActive, req.body.id);
   res.status(200).json(`Updated active status on: ${req.body.label}`);
 });
 
-router.delete('/delete-watch/:id', async (req, res) => {
-  await db.deleteWatch(req.params.id);
+router.delete('/delete-watch/:id', (req, res) => {
+  db.deleteWatch(req.params.id);
   res.status(200).json(`Deleted watch with id: ${req.params.id}`);
 });
 
