@@ -5,7 +5,7 @@ import * as timeService from './time-and-date.service.js';
 import logger from './logger.service.js';
 import { scrapeWatchInfo } from './scraper.service.js';
 
-const db = new Database('src/data/watch-scraper.db', {
+const db = new Database('src/database/watch-scraper.db', {
   fileMustExist: true,
 });
 

@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import cheerio from 'cheerio';
 
-import { interval } from '../../config/scraper.config.js';
+import { interval } from '../config/scraper.config.js';
 import {
   sendKernelNotification,
   sendErrorNotification,

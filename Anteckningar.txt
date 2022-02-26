@@ -1,6 +1,4 @@
 ---------------------------------- TODO ----------------------------------
-Vilken typ av for loop är snabbast?
-
 Skapa enhetstester 
 
 
