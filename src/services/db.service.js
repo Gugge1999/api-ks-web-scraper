@@ -66,7 +66,7 @@ export async function addNewWatch(label, uri) {
       id: uuidv4(),
       uri,
       label,
-      stored_watch: `${watchInfo.watchName} ${watchInfo.poster}`, // Unique enough? Kanske bättre att köra namn + datum när annonsen laddades upp. Det går att få tag på datum även om det står idag.
+      stored_watch: `${watchInfo.watchName} ${watchInfo.uploadDate}`,
       link_to_stored_watch: watchInfo.watchLink,
       active: 'true',
       last_email_sent: '',

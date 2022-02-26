@@ -13,7 +13,7 @@ import logger from './logger.service.js';
 export async function scrapeWatchInfo(uri) {
   const watchInfo = {
     watchName: '',
-    poster: '',
+    uploadDate: '',
     watchLink: '',
   };
 
@@ -23,10 +23,10 @@ export async function scrapeWatchInfo(uri) {
   const $ = cheerio.load(body);
 
   watchInfo.watchName = $('.contentRow-title')
-    .children() // kan chrildren tas bort?
-    .first() // Kan first tas bort?
+    .children()
+    .first()
     .text()
-    .replace(/Tillbakadragen|Avslutad|Säljes|OHPF|Bytes|\//gi, '') // Remove sale status of the watch
+    .replace(/Tillbakadragen|Avslutad|Säljes|OHPF|Bytes|\//gi, '')
     .trim();
 
   if (watchInfo.watchName === '') {
@@ -34,7 +34,9 @@ export async function scrapeWatchInfo(uri) {
     throw new Error();
   }
 
-  watchInfo.poster = $('.username').first().text();
+  // Format: 24 Februari 2022 kl 18:12
+  // attr "datetime" finns också. Format: 2022-02-24T18:12:49+0100
+  watchInfo.uploadDate = $('.u-dt').attr('title');
 
   watchInfo.watchLink = `https://klocksnack.se${$('.contentRow-title')
     .children()
@@ -47,7 +49,6 @@ export async function scrapeWatchInfo(uri) {
 export async function scrapeAllWatches() {
   console.log('Scraping all watches.');
   const allWatches = getAllWatches();
-  // Vilken typ av for loop är snabbast?
   for (let i = 0; i < allWatches.length; i += 1) {
     const storedWatch = allWatches[i];
 
@@ -60,10 +61,10 @@ export async function scrapeAllWatches() {
     const scrapedWatch = await scrapeWatchInfo(storedWatch.uri);
     if (
       storedWatch.stored_watch !==
-      `${scrapedWatch.watchName} ${scrapedWatch.poster}`
+      `${scrapedWatch.watchName} ${scrapedWatch.uploadDate}`
     ) {
       updateStoredWatch(
-        `${scrapedWatch.watchName} ${scrapedWatch.poster}`,
+        `${scrapedWatch.watchName} ${scrapedWatch.uploadDate}`,
         scrapedWatch.watchLink,
         storedWatch.id
       );
