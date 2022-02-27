@@ -1,5 +1,5 @@
 export function currentTime() {
-  return new Date().toLocaleString();
+  return new Date().toLocaleTimeString('sv-SE');
 }
 
 export function dateAndTime() {

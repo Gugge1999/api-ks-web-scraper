@@ -22,7 +22,7 @@ export function getAllWatches() {
     return newArr;
   } catch (err) {
     logger.error({
-      message: `getAllWatches() failed.`,
+      message: 'Function getAllWatches failed.',
       stacktrace: err,
     });
   }
@@ -40,7 +40,7 @@ export function updateActiveStatus(isActive, id) {
     });
   } catch (err) {
     logger.error({
-      message: `updateActiveStatus() failed.`,
+      message: 'Function updateActiveStatus failed.',
       stacktrace: err,
     });
   }
@@ -76,7 +76,7 @@ export async function addNewWatch(label, uri) {
     });
   } catch (err) {
     logger.error({
-      message: `addNewWatch() failed.`,
+      message: 'Function addNewWatch failed.',
       stacktrace: err,
     });
   }
@@ -102,7 +102,7 @@ export function updateStoredWatch(watchName, watchPosted, newLinkToWatch, id) {
     });
   } catch (err) {
     logger.error({
-      message: `updateStoredWatch() failed.`,
+      message: 'Function updateStoredWatch failed.',
       stacktrace: err,
     });
   }
@@ -115,7 +115,7 @@ export function deleteWatch(id) {
     stmt.run(id);
   } catch (err) {
     logger.error({
-      message: `deleteWatch() failed.`,
+      message: 'Function deleteWatch failed.',
       stacktrace: err,
     });
   }
@@ -128,7 +128,7 @@ export function backupDatebase() {
     })
     .catch((err) => {
       logger.error({
-        message: 'backupDatebase() failed',
+        message: 'Function backupDatebase failed',
         stacktrace: err,
       });
     });
