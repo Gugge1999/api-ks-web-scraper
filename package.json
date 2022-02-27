@@ -9,12 +9,6 @@
     "lint": "npx eslint src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "nodemonConfig": {
-    "ignore": [
-      "src/logs/email_logs.txt",
-      "src/watch-scraper.db"
-    ]
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
