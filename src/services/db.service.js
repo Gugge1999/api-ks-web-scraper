@@ -55,8 +55,9 @@ export async function addNewWatch(label, uri) {
         '@id,' +
         '@uri,' +
         '@label, ' +
-        '@stored_watch, ' +
-        '@link_to_stored_watch, ' +
+        '@watch_name, ' +
+        '@watch_posted, ' +
+        '@link_to_watch, ' +
         '@active, ' +
         '@last_email_sent, ' +
         '@added)'
@@ -66,8 +67,9 @@ export async function addNewWatch(label, uri) {
       id: uuidv4(),
       uri,
       label,
-      stored_watch: `${watchInfo.watchName} ${watchInfo.uploadDate}`,
-      link_to_stored_watch: watchInfo.watchLink,
+      watch_name: watchInfo.watchName,
+      watch_posted: watchInfo.postedDate,
+      link_to_watch: watchInfo.watchLink,
       active: 'true',
       last_email_sent: '',
       added: timeService.dateAndTime(),
@@ -80,19 +82,21 @@ export async function addNewWatch(label, uri) {
   }
 }
 
-export function updateStoredWatch(newStoredWatch, newLinkToWatch, id) {
+export function updateStoredWatch(watchName, watchPosted, newLinkToWatch, id) {
   try {
     const stmt = db.prepare(
       'UPDATE Watches SET ' +
-        'stored_watch = @stored_watch, ' +
-        'link_to_stored_watch = @link_to_stored_watch, ' +
+        'watch_name = @watch_name, ' +
+        'watch_posted = @watch_posted, ' +
+        'link_to_watch = @link_to_watch, ' +
         'last_email_sent = @last_email_sent ' +
         'WHERE id = @id '
     );
 
     stmt.run({
-      stored_watch: newStoredWatch,
-      link_to_stored_watch: newLinkToWatch,
+      watch_name: watchName,
+      watch_posted: watchPosted,
+      link_to_watch: newLinkToWatch,
       last_email_sent: timeService.dateAndTime(),
       id,
     });
@@ -118,11 +122,14 @@ export function deleteWatch(id) {
 }
 
 export function backupDatebase() {
-  db.backup(`src/data/backup-watch-scraper-${timeService.todaysDate()}.db`)
+  db.backup(`src/database/backup-watch-scraper-${timeService.todaysDate()}.db`)
     .then(() => {
-      console.log('backup complete!');
+      console.log('Backup complete!');
     })
     .catch((err) => {
-      console.log('backup failed:', err);
+      logger.error({
+        message: 'backupDatebase() failed',
+        stacktrace: err,
+      });
     });
 }

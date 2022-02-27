@@ -13,7 +13,7 @@ import logger from './logger.service.js';
 export async function scrapeWatchInfo(uri) {
   const watchInfo = {
     watchName: '',
-    uploadDate: '',
+    postedDate: '',
     watchLink: '',
   };
 
@@ -36,7 +36,7 @@ export async function scrapeWatchInfo(uri) {
 
   // Format: 24 Februari 2022 kl 18:12
   // attr "datetime" finns också. Format: 2022-02-24T18:12:49+0100
-  watchInfo.uploadDate = $('.u-dt').attr('title');
+  watchInfo.postedDate = $('.u-dt').attr('title');
 
   watchInfo.watchLink = `https://klocksnack.se${$('.contentRow-title')
     .children()
@@ -60,11 +60,12 @@ export async function scrapeAllWatches() {
 
     const scrapedWatch = await scrapeWatchInfo(storedWatch.uri);
     if (
-      storedWatch.stored_watch !==
-      `${scrapedWatch.watchName} ${scrapedWatch.uploadDate}`
+      `${storedWatch.watch_name} ${storedWatch.watch_posted}` !==
+      `${scrapedWatch.watchName} ${scrapedWatch.postedDate}`
     ) {
       updateStoredWatch(
-        `${scrapedWatch.watchName} ${scrapedWatch.uploadDate}`,
+        scrapedWatch.watchName,
+        scrapedWatch.postedDate,
         scrapedWatch.watchLink,
         storedWatch.id
       );
