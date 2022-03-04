@@ -11,6 +11,10 @@ app.use(routes);
 const port = process.env.PORT || 3000;
 
 // Bra länk: https://blog.devgenius.io/deploy-angular-nodejs-application-to-aws-elastic-beanstalk-9ab13076a736
+
+// Kolla också den videon vid timestamp: https://youtu.be/TNV0_7QRDwY?t=22896
+// Den förklarar skillnaden mellan app.get och app.use
+
 // Relativ sökväg till Angular dist mappen. Startar från "C:\Code\api\ks_web_scraper_api"
 // app.use(
 //   '/',
