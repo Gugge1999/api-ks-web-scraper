@@ -125,9 +125,7 @@ export function deleteWatch(id) {
 }
 
 export function backupDatebase() {
-  db.backup(
-    `src/database/backup-watch-scraper-${timeService.dateAndTimeDashed()}.db`
-  )
+  db.backup(`src/database/backup-watch-scraper-${timeService.todaysDate()}.db`)
     .then(() => {
       console.log('Backup complete!');
     })

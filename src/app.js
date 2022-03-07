@@ -3,6 +3,8 @@ import cors from 'cors';
 
 import routes from './routes/routes.js';
 import { scrapeAllWatches } from './services/scraper.service.js';
+import * as timeService from './services/time-and-date.service.js';
+import { backupDatebase } from './services/db.service.js';
 
 const app = express();
 app.use(json());
@@ -24,5 +26,9 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Express app listening at http://localhost:${port}`);
 });
+
+if (timeService.todaysDate() === timeService.lastDayOfTheMonth()) {
+  backupDatebase();
+}
 
 await scrapeAllWatches();

@@ -21,3 +21,11 @@ export function todaysDate() {
   return new Date().toISOString().slice(0, 10);
   // Format: yyyy-mm-dd
 }
+
+export function lastDayOfTheMonth() {
+  var today = new Date();
+  var lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1)
+    .toISOString()
+    .slice(0, 10);
+  return lastDayOfMonth;
+}
