@@ -14,7 +14,7 @@ router.post('/add-watch', async (req, res) => {
 });
 
 router.get('/all-watches', (req, res) => {
-  const allWatches = db.getAllWatches();
+  const allWatches = db.getAllWatches(req.ip);
   res.status(200).json(allWatches);
 });
 

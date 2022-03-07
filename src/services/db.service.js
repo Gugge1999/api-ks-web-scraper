@@ -2,24 +2,20 @@ import { v4 as uuidv4 } from 'uuid';
 import Database from 'better-sqlite3';
 
 import * as timeService from './time-and-date.service.js';
-import logger from './logger.service.js';
+import { logger, ipLogger } from './logger.service.js';
 import { scrapeWatchInfo } from './scraper.service.js';
 
 const db = new Database('src/database/watch-scraper.db', {
   fileMustExist: true,
 });
 
-export function getAllWatches() {
+export function getAllWatches(ip) {
   try {
+    ipLogger.info(ip ? ip : 'No IP address could be identified');
+
     const allWatches = db.prepare('SELECT * FROM Watches').all();
 
-    // Convert column active from string to boolean
-    const newArr = allWatches.map((obj) => ({
-      ...obj,
-      active: JSON.parse(obj.active),
-    }));
-
-    return newArr;
+    return convertStringToBoolean(allWatches);
   } catch (err) {
     logger.error({
       message: 'Function getAllWatches failed.',
@@ -82,6 +78,13 @@ export async function addNewWatch(label, uri) {
   }
 }
 
+export function getWatchById(id) {
+  const stmt = db.prepare('SELECT * FROM Watches WHERE ID = ?');
+  const watch = stmt.get(id);
+
+  return convertStringToBoolean(watch);
+}
+
 export function updateStoredWatch(watchName, watchPosted, newLinkToWatch, id) {
   try {
     const stmt = db.prepare(
@@ -134,4 +137,13 @@ export function backupDatebase() {
         stacktrace: err,
       });
     });
+}
+
+function convertStringToBoolean(array) {
+  // Convert column active from string to boolean
+  const newArr = array.map((obj) => ({
+    ...obj,
+    active: JSON.parse(obj.active),
+  }));
+  return newArr;
 }

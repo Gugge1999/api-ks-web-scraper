@@ -8,7 +8,7 @@ import {
 } from './notification.service.js';
 import * as timeService from './time-and-date.service.js';
 import { updateStoredWatch, getAllWatches } from './db.service.js';
-import logger from './logger.service.js';
+import { logger } from './logger.service.js';
 
 export async function scrapeWatchInfo(uri) {
   const watchInfo = {

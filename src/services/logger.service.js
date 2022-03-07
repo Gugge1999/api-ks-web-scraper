@@ -1,8 +1,8 @@
 import { createLogger, format, transports } from 'winston';
 
-const { combine, timestamp, prettyPrint, errors } = format;
+const { combine, timestamp, prettyPrint, simple, errors } = format;
 
-const logger = createLogger({
+export const logger = createLogger({
   format: combine(
     errors({ stack: true }), // <-- use errors format
     timestamp({
@@ -16,4 +16,12 @@ const logger = createLogger({
   ],
 });
 
-export default logger;
+export const ipLogger = createLogger({
+  format: combine(
+    timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss',
+    }),
+    simple()
+  ),
+  transports: [new transports.File({ filename: 'src/logs/incoming_ip.log' })],
+});
