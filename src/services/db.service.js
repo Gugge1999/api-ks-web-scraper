@@ -11,7 +11,7 @@ const db = new Database('src/database/watch-scraper.db', {
 
 export function getAllWatches(ip) {
   try {
-    ipLogger.info(ip ? ip : 'No IP address could be identified');
+    ipLogger.info(ip ?? 'No IP address could be identified');
 
     const allWatches = db.prepare('SELECT * FROM Watches').all();
 
