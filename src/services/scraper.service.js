@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 
 import { interval } from '../config/scraper.config.js';
 import {
@@ -47,8 +47,15 @@ export async function scrapeWatchInfo(uri) {
 }
 
 export async function scrapeAllWatches() {
-  console.log(`Scraping all watches @ ${timeService.currentTime()}`);
   const allWatches = getAllWatches();
+
+  const activeWatches = allWatches.filter((w) => w.active === true);
+
+  console.log(
+    `Scraping ${activeWatches.length} ${
+      activeWatches.length === 1 ? 'watch' : 'watches'
+    } @ ${timeService.currentTime()}`
+  );
   for (let i = 0; i < allWatches.length; i += 1) {
     const storedWatch = allWatches[i];
 
