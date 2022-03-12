@@ -3,8 +3,9 @@ import cors from 'cors';
 
 import routes from './routes/routes.js';
 import { scrapeAllWatches } from './services/scraper.service.js';
-import * as timeService from './services/time-and-date.service.js';
+import schedule from 'node-schedule';
 import { backupDatebase } from './services/db.service.js';
+import { logger } from './services/logger.service.js';
 
 const app = express();
 app.use(json());
@@ -27,8 +28,10 @@ app.listen(port, () => {
   console.log(`Express app listening at http://localhost:${port}`);
 });
 
-if (timeService.todaysDate() === timeService.lastDayOfTheMonth()) {
+// Gör en backup varje söndag klockan 12:00
+schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, function () {
+  logger.info({ message: 'Backing up database.' });
   backupDatebase();
-}
+});
 
 await scrapeAllWatches();
