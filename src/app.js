@@ -5,7 +5,7 @@ import routes from './routes/routes.js';
 import { scrapeAllWatches } from './services/scraper.service.js';
 import schedule from 'node-schedule';
 import { backupDatebase } from './services/db.service.js';
-import { logger } from './services/logger.service.js';
+import { errorLogger, infoLogger } from './services/logger.service.js';
 
 const app = express();
 app.use(json());
@@ -30,8 +30,15 @@ app.listen(port, () => {
 
 // Gör en backup varje söndag klockan 12:00
 schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, function () {
-  logger.info({ message: 'Backing up database.' });
-  backupDatebase();
+  try {
+    backupDatebase();
+    infoLogger.info({ message: 'Database backup completed successfully.' });
+  } catch (err) {
+    errorLogger.error({
+      message: 'Function backupDatebase failed.',
+      stacktrace: err,
+    });
+  }
 });
 
 await scrapeAllWatches();

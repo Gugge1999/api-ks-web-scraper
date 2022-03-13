@@ -2,7 +2,7 @@ import { createLogger, format, transports } from 'winston';
 
 const { combine, timestamp, prettyPrint, simple, errors } = format;
 
-export const logger = createLogger({
+export const errorLogger = createLogger({
   format: combine(
     errors({ stack: true }), // <-- use errors format
     timestamp({
@@ -16,7 +16,7 @@ export const logger = createLogger({
   ],
 });
 
-export const ipLogger = createLogger({
+export const infoLogger = createLogger({
   format: combine(
     timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',

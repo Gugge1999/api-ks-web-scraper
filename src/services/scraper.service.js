@@ -8,7 +8,7 @@ import {
 } from './notification.service.js';
 import * as timeService from './time-and-date.service.js';
 import { updateStoredWatch, getAllWatches } from './db.service.js';
-import { logger } from './logger.service.js';
+import { errorLogger } from './logger.service.js';
 
 export async function scrapeWatchInfo(uri) {
   const watchInfo = {
@@ -30,7 +30,7 @@ export async function scrapeWatchInfo(uri) {
     .trim();
 
   if (watchInfo.watchName === '') {
-    logger.error({ message: 'Watch name not found' });
+    errorLogger.error({ message: 'Watch name not found' });
     throw new Error();
   }
 
@@ -85,7 +85,7 @@ export async function scrapeAllWatches() {
         //console.log('Email sent.');
       } catch (err) {
         //await sendErrorNotification(err);
-        logger.error({
+        errorLogger.error({
           message: 'Function sendErrorNotification failed.',
           stacktrace: err,
         });

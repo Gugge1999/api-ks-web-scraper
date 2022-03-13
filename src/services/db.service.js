@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Database from 'better-sqlite3';
 
 import * as timeService from './time-and-date.service.js';
-import { logger, ipLogger } from './logger.service.js';
+import { errorLogger, infoLogger } from './logger.service.js';
 import { scrapeWatchInfo } from './scraper.service.js';
 
 const db = new Database('src/database/watch-scraper.db', {
@@ -11,13 +11,13 @@ const db = new Database('src/database/watch-scraper.db', {
 
 export function getAllWatches(ip) {
   try {
-    ipLogger.info(ip ?? 'No IP address could be identified');
+    infoLogger.info(ip ?? 'No IP address could be identified');
 
     const allWatches = db.prepare('SELECT * FROM Watches').all();
 
     return convertStringToBoolean(allWatches);
   } catch (err) {
-    logger.error({
+    errorLogger.error({
       message: 'Function getAllWatches failed.',
       stacktrace: err,
     });
@@ -35,7 +35,7 @@ export function updateActiveStatus(isActive, id) {
       id,
     });
   } catch (err) {
-    logger.error({
+    errorLogger.error({
       message: 'Function updateActiveStatus failed.',
       stacktrace: err,
     });
@@ -46,7 +46,9 @@ export async function addNewWatch(label, uri) {
   try {
     const watchInfo = await scrapeWatchInfo(uri);
 
-    const stmt = db.prepare(
+    const newWatchId = uuidv4();
+
+    const insertStmt = db.prepare(
       'INSERT INTO Watches VALUES (' +
         '@id,' +
         '@uri,' +
@@ -59,8 +61,8 @@ export async function addNewWatch(label, uri) {
         '@added)'
     );
 
-    stmt.run({
-      id: uuidv4(),
+    insertStmt.run({
+      id: newWatchId,
       uri,
       label,
       watch_name: watchInfo.watchName,
@@ -70,8 +72,13 @@ export async function addNewWatch(label, uri) {
       last_email_sent: '',
       added: timeService.dateAndTime(),
     });
+
+    const getStmt = db.prepare('SELECT * FROM Watches WHERE ID = ?');
+    const newWatch = getStmt.get(newWatchId);
+
+    return newWatch;
   } catch (err) {
-    logger.error({
+    errorLogger.error({
       message: 'Function addNewWatch failed.',
       stacktrace: err,
     });
@@ -104,7 +111,7 @@ export function updateStoredWatch(watchName, watchPosted, newLinkToWatch, id) {
       id,
     });
   } catch (err) {
-    logger.error({
+    errorLogger.error({
       message: 'Function updateStoredWatch failed.',
       stacktrace: err,
     });
@@ -117,7 +124,7 @@ export function deleteWatch(id) {
 
     stmt.run(id);
   } catch (err) {
-    logger.error({
+    errorLogger.error({
       message: 'Function deleteWatch failed.',
       stacktrace: err,
     });
@@ -130,7 +137,7 @@ export function backupDatebase() {
       console.log('Backup complete!');
     })
     .catch((err) => {
-      logger.error({
+      errorLogger.error({
         message: 'Function backupDatebase failed',
         stacktrace: err,
       });

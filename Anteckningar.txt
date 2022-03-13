@@ -6,7 +6,7 @@ Kanske använda ett datum och tids-bibliotek. Se: https://www.npmjs.com/package/
 
 
 Kanske byta från att skicka in en länk till klockan. Skicka istället bara med namnet. Då kan man kan skippa label också.
-Se: https://github.com/assaf/zombie
+Bra bibliotek: https://www.npmjs.com/package/puppeteer
 
 
 Skapa enhetstester 

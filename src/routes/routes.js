@@ -9,8 +9,8 @@ router.get('/is-api-active', (req, res) => {
 });
 
 router.post('/add-watch', async (req, res) => {
-  await db.addNewWatch(req.body.label, req.body.uri);
-  res.status(201).json(`Added watch with label: ${req.body.label}`);
+  const newWatch = await db.addNewWatch(req.body.label, req.body.uri);
+  res.status(201).json(newWatch);
 });
 
 router.get('/all-watches', (req, res) => {
@@ -25,7 +25,7 @@ router.put('/update-active-status', (req, res) => {
 
 router.delete('/delete-watch/:id', (req, res) => {
   db.deleteWatch(req.params.id);
-  res.status(200).json(`Deleted watch with id: ${req.params.id}`);
+  res.status(200).json({ id: req.params.id });
 });
 
 export default router;
