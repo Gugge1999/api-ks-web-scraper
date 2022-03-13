@@ -12,7 +12,7 @@ export const errorLogger = createLogger({
   ),
   transports: [
     new transports.Console(),
-    new transports.File({ filename: 'src/logs/ks_web_scraper.log' }),
+    new transports.File({ filename: 'src/logs/error.log' }),
   ],
 });
 
@@ -23,5 +23,5 @@ export const infoLogger = createLogger({
     }),
     simple()
   ),
-  transports: [new transports.File({ filename: 'src/logs/incoming_ip.log' })],
+  transports: [new transports.File({ filename: 'src/logs/info.log' })],
 });
