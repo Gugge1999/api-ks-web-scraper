@@ -6,12 +6,12 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/app.js",
-    "lint": "npx eslint src",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
   },
   "engines": {
-    "node": ">=8.10.0"
+    "node": ">=14"
   },
   "author": "",
   "license": "ISC",

@@ -1,8 +1,8 @@
 ---------------------------------- TODO ----------------------------------
+För att se när en databas-backup senast gjordes kanske man kan skriva och läsa från en textfil.
+
+
 För att testa deploy. Se: https://www.youtube.com/watch?v=QdHvS0D1zAI
-
-
-Kanske använda ett datum och tids-bibliotek. Se: https://www.npmjs.com/package/date-and-time
 
 
 Kanske byta från att skicka in en länk till klockan. Skicka istället bara med namnet. Då kan man kan skippa label också.

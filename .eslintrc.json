@@ -1,6 +1,6 @@
 {
   "env": {
-    "es2021": true,
+    "es2022": true,
     "node": true
   },
   "extends": ["eslint:recommended", "plugin:node/recommended"],
@@ -19,8 +19,8 @@
     "node/prefer-global/url": ["error", "always"],
     "node/prefer-promises/dns": "error",
     "node/prefer-promises/fs": "error",
-    // Start enhance readability.
     // Alla nedanför är från: https://medium.com/geekculture/eslint-with-node-js-in-simple-words-cee0a0cf9167
+    // Start enhance readability
     "no-mixed-spaces-and-tabs": "warn",
     "space-before-blocks": "error",
     "space-in-parens": "error",
