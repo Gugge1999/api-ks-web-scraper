@@ -18,6 +18,35 @@
     "node/prefer-global/url-search-params": ["error", "always"],
     "node/prefer-global/url": ["error", "always"],
     "node/prefer-promises/dns": "error",
-    "node/prefer-promises/fs": "error"
+    "node/prefer-promises/fs": "error",
+    // Start enhance readability.
+    // Alla nedanför är från: https://medium.com/geekculture/eslint-with-node-js-in-simple-words-cee0a0cf9167
+    "no-mixed-spaces-and-tabs": "warn",
+    "space-before-blocks": "error",
+    "space-in-parens": "error",
+    "space-infix-ops": "error",
+    "space-unary-ops": "error",
+    "quotes": ["error", "single"],
+    "keyword-spacing": "error",
+    "multiline-ternary": ["error", "never"],
+    "no-mixed-operators": "error",
+    "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
+    "no-whitespace-before-property": "error",
+    "nonblock-statement-body-position": "error",
+    "object-property-newline": [
+      "error",
+      { "allowAllPropertiesOnSameLine": true }
+    ],
+    // End enhance readability
+    // Start best Practices
+    "eqeqeq": "warn",
+    "no-useless-return": "error",
+    "no-constant-condition": "warn",
+    // End best Practices
+    // Start ES6
+    "no-var": "error",
+    "prefer-const": "error",
+    "prefer-template": "warn"
+    // End ES6
   }
 }
