@@ -2,17 +2,15 @@ import { v4 as uuidv4 } from 'uuid';
 import Database from 'better-sqlite3';
 
 import * as timeService from './time-and-date.service.js';
-import { errorLogger, infoLogger } from './logger.service.js';
+import { errorLogger } from './logger.service.js';
 import { scrapeWatchInfo } from './scraper.service.js';
 
 const db = new Database('src/database/watch-scraper.db', {
   fileMustExist: true,
 });
 
-export function getAllWatches(ip) {
+export function getAllWatches() {
   try {
-    infoLogger.info(ip ?? 'No IP address could be identified');
-
     const allWatches = db.prepare('SELECT * FROM Watches').all();
 
     return convertStringToBoolean(allWatches);

@@ -1,6 +1,7 @@
 import express from 'express';
 
 import * as db from '../services/db.service.js';
+import { infoLogger } from '../services/logger.service.js';
 
 const router = express.Router();
 
@@ -14,7 +15,8 @@ router.post('/add-watch', async (req, res) => {
 });
 
 router.get('/all-watches', (req, res) => {
-  const allWatches = db.getAllWatches(req.ip);
+  infoLogger.info(req.ip ?? 'No IP address could be identified');
+  const allWatches = db.getAllWatches();
   res.status(200).json(allWatches);
 });
 
