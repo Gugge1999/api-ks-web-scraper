@@ -2,11 +2,17 @@ import express from 'express';
 
 import * as db from '../services/db.service.js';
 import { infoLogger } from '../services/logger.service.js';
+import { intervalToDuration } from 'date-fns';
 
 const router = express.Router();
 
 router.get('/is-api-active', (req, res) => {
-  res.status(200).json('API is active');
+  // Installera paketet: https://www.npmjs.com/package/date-fns
+  // Se: https://stackoverflow.com/questions/48776140/format-a-duration-from-seconds-using-date-fns
+  res.status(200).json({
+    active: true,
+    uptime: intervalToDuration({ start: 0, end: process.uptime() * 1000 }),
+  });
 });
 
 router.post('/add-watch', async (req, res) => {
