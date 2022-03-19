@@ -1,16 +1,16 @@
+import { intervalToDuration } from 'date-fns';
+import fs from 'fs';
 import express from 'express';
 
 import * as db from '../services/db.service.js';
-import { infoLogger } from '../services/logger.service.js';
-import { intervalToDuration } from 'date-fns';
+import { errorLogger, infoLogger } from '../services/logger.service.js';
 
 const router = express.Router();
 
-router.get('/is-api-active', (req, res) => {
-  // Installera paketet: https://www.npmjs.com/package/date-fns
-  // Se: https://stackoverflow.com/questions/48776140/format-a-duration-from-seconds-using-date-fns
+router.get('/api-status', async (req, res) => {
   res.status(200).json({
     active: true,
+    lastDatabaseBackupDate: await lastBackupDate(),
     uptime: intervalToDuration({ start: 0, end: process.uptime() * 1000 }),
   });
 });
@@ -35,5 +35,16 @@ router.delete('/delete-watch/:id', (req, res) => {
   db.deleteWatch(req.params.id);
   res.status(200).json({ id: req.params.id });
 });
+
+const lastBackupDate = async () => {
+  try {
+    return await fs.promises.readFile('src/logs/last_backup_date.txt', 'utf8');
+  } catch (err) {
+    errorLogger.error({
+      message: 'function lastBackupDate failed.',
+      stacktrace: err,
+    });
+  }
+};
 
 export default router;

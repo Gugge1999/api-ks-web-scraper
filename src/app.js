@@ -1,9 +1,11 @@
-import express, { json } from 'express';
 import cors from 'cors';
+import { format } from 'date-fns';
+import express, { json } from 'express';
+import fs from 'fs';
+import schedule from 'node-schedule';
 
 import routes from './routes/routes.js';
 import { scrapeAllWatches } from './services/scraper.service.js';
-import schedule from 'node-schedule';
 import { backupDatebase } from './services/db.service.js';
 import { errorLogger, infoLogger } from './services/logger.service.js';
 
@@ -28,11 +30,26 @@ app.listen(port, () => {
   console.log(`Express app listening at http://localhost:${port}`);
 });
 
-// Gör en backup varje söndag klockan 12:00
+// Gör en backup av databsen varje söndag klockan 12:00
 schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, function () {
   try {
     backupDatebase();
-    infoLogger.info({ message: 'Database backup completed successfully.' });
+    fs.promises.writeFile(
+      'src/logs/last_backup_date.txt',
+      format(new Date(), 'dd-MM-yyyy k:mm:ss'),
+      (err) => {
+        if (err) {
+          errorLogger.error({
+            message: 'writeFile in app.js failed.',
+            stacktrace: err,
+          });
+        } else {
+          infoLogger.info({
+            message: 'Database backup completed successfully.',
+          });
+        }
+      }
+    );
   } catch (err) {
     errorLogger.error({
       message: 'Function backupDatebase failed.',
