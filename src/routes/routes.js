@@ -1,16 +1,16 @@
 import { intervalToDuration } from 'date-fns';
-import fs from 'fs';
 import express from 'express';
 
 import * as db from '../services/db.service.js';
-import { errorLogger, infoLogger } from '../services/logger.service.js';
+import { readLastBackupDateFromFile } from '../services/file.service.js';
+import { infoLogger } from '../services/logger.service.js';
 
 const router = express.Router();
 
 router.get('/api-status', async (req, res) => {
   res.status(200).json({
     active: true,
-    lastDatabaseBackupDate: await lastBackupDate(),
+    lastDatabaseBackupDate: await readLastBackupDateFromFile(),
     uptime: intervalToDuration({ start: 0, end: process.uptime() * 1000 }),
   });
 });
@@ -35,16 +35,5 @@ router.delete('/delete-watch/:id', (req, res) => {
   db.deleteWatch(req.params.id);
   res.status(200).json({ id: req.params.id });
 });
-
-const lastBackupDate = async () => {
-  try {
-    return await fs.promises.readFile('src/logs/last_backup_date.txt', 'utf8');
-  } catch (err) {
-    errorLogger.error({
-      message: 'function lastBackupDate failed.',
-      stacktrace: err,
-    });
-  }
-};
 
 export default router;
