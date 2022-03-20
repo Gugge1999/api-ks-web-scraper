@@ -1,7 +1,4 @@
 ---------------------------------- TODO ----------------------------------
-För att se när en databas-backup senast gjordes kanske man kan skriva och läsa från en textfil.
-
-
 För att testa deploy. Se: https://www.youtube.com/watch?v=QdHvS0D1zAI
 
 
@@ -11,9 +8,6 @@ Bra bibliotek: https://www.npmjs.com/package/puppeteer
 
 Skapa enhetstester 
 
-
-Fixa getStatus(). Den visar status och interval
-  
 
 Byt till sequelize. Finns inte stöd  idag men det finns planer för det i framtidenn Se: https://github.com/sequelize/sequelize/issues/11400
 
@@ -41,5 +35,3 @@ Fixa login. Kanske bra tutorial:
 
 Installera 64 bit på raspberry pi 3B, kräver ominstallation
   
-  
-När du kör angular appen på raspberry pi testa göra en ng build och kör dist mappen.

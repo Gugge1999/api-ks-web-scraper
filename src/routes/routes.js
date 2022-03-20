@@ -4,6 +4,7 @@ import express from 'express';
 import * as db from '../services/db.service.js';
 import { readLastBackupDateFromFile } from '../services/file.service.js';
 import { infoLogger } from '../services/logger.service.js';
+import { interval } from '../config/scraper.config.js';
 
 const router = express.Router();
 
@@ -11,6 +12,7 @@ router.get('/api-status', async (req, res) => {
   res.status(200).json({
     active: true,
     lastDatabaseBackupDate: await readLastBackupDateFromFile(),
+    scrapingIntervalInMinutes: interval / 60000,
     uptime: intervalToDuration({ start: 0, end: process.uptime() * 1000 }),
   });
 });

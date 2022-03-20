@@ -83,6 +83,7 @@ export async function scrapeAllWatches() {
       try {
         //await sendKernelNotification(emailText);
         //console.log('Email sent.');
+        // Skriv till databas om när ett mail skickades.
       } catch (err) {
         //await sendErrorNotification(err);
         errorLogger.error({
