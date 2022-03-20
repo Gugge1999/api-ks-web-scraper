@@ -1,7 +1,7 @@
-import { format } from 'date-fns';
 import fs from 'fs';
 
 import { errorLogger, infoLogger } from './logger.service.js';
+import { dateAndTime } from './time-and-date.service.js';
 
 export const readLastBackupDateFromFile = async () => {
   try {
@@ -17,7 +17,7 @@ export const readLastBackupDateFromFile = async () => {
 export function writeDatabaseBackupDateToFile() {
   fs.promises.writeFile(
     'src/logs/last_backup_date.txt',
-    format(new Date(), 'dd-MM-yyyy k:mm:ss'),
+    dateAndTime(),
     (err) => {
       if (err) {
         errorLogger.error({
