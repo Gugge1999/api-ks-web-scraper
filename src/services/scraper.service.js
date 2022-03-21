@@ -10,14 +10,14 @@ import * as timeService from './time-and-date.service.js';
 import { updateStoredWatch, getAllWatches } from './db.service.js';
 import { errorLogger } from './logger.service.js';
 
-export async function scrapeWatchInfo(uri) {
+export async function scrapeWatchInfo(link) {
   const watchInfo = {
     watchName: '',
     postedDate: '',
     watchLink: '',
   };
 
-  const response = await fetch(uri);
+  const response = await fetch(link);
   const body = await response.text();
 
   const $ = cheerio.load(body);
@@ -65,7 +65,7 @@ export async function scrapeAllWatches() {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const scrapedWatch = await scrapeWatchInfo(storedWatch.uri);
+    const scrapedWatch = await scrapeWatchInfo(storedWatch.link);
     if (
       `${storedWatch.watch_name} ${storedWatch.watch_posted}` !==
       `${scrapedWatch.watchName} ${scrapedWatch.postedDate}`

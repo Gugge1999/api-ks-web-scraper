@@ -40,16 +40,16 @@ export function updateActiveStatus(isActive, id) {
   }
 }
 
-export async function addNewWatch(label, uri) {
+export async function addNewWatch(label, link) {
   try {
-    const watchInfo = await scrapeWatchInfo(uri);
+    const watchInfo = await scrapeWatchInfo(link);
 
     const newWatchId = uuidv4();
 
     const insertStmt = db.prepare(
       'INSERT INTO Watches VALUES (' +
         '@id,' +
-        '@uri,' +
+        '@link,' +
         '@label, ' +
         '@watch_name, ' +
         '@watch_posted, ' +
@@ -61,8 +61,8 @@ export async function addNewWatch(label, uri) {
 
     insertStmt.run({
       id: newWatchId,
-      uri,
-      label,
+      link: link,
+      label: label,
       watch_name: watchInfo.watchName,
       watch_posted: watchInfo.postedDate,
       link_to_watch: watchInfo.watchLink,

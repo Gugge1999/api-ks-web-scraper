@@ -18,7 +18,7 @@ router.get('/api-status', async (req, res) => {
 });
 
 router.post('/add-watch', async (req, res) => {
-  const newWatch = await db.addNewWatch(req.body.label, req.body.uri);
+  const newWatch = await db.addNewWatch(req.body.label, req.body.link);
   res.status(201).json(newWatch);
 });
 
