@@ -21,7 +21,7 @@ export function writeDatabaseBackupDateToFile() {
     (err) => {
       if (err) {
         errorLogger.error({
-          message: 'writeFile in app.js failed.',
+          message: 'Function writeDatabaseBackupDateToFile failed.',
           stacktrace: err,
         });
       } else {

@@ -1,14 +1,29 @@
 import cors from 'cors';
 import express, { json } from 'express';
+import morgan from 'morgan';
 import schedule from 'node-schedule';
 
 import routes from './routes/routes.js';
 import { scrapeAllWatches } from './services/scraper.service.js';
 import { backupDatebase } from './services/db.service.js';
-import { errorLogger } from './services/logger.service.js';
+import { errorLogger, requestLogger } from './services/logger.service.js';
 import { writeDatabaseBackupDateToFile } from './services/file.service.js';
 
 const app = express();
+app.use(
+  morgan(
+    // Custom format
+    '::remote-addr :remote-user :method :url - Response time: :response-time ms [:date] - Agent: :user-agent',
+    {
+      stream: {
+        write: (message) =>
+          // Tar bort ny read efter att stream.write.
+          // Se: https://stackoverflow.com/questions/27906551/node-js-logging-use-morgan-and-winston/28824464#28824464
+          requestLogger.info(message.trim()),
+      },
+    }
+  )
+);
 app.use(json());
 app.use(cors()); // Lägg till cors FÖRE routes
 app.use(routes);
