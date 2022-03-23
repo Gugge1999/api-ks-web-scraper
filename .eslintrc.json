@@ -19,6 +19,7 @@
     "node/prefer-global/url": ["error", "always"],
     "node/prefer-promises/dns": "error",
     "node/prefer-promises/fs": "error",
+    "spaced-comment": ["error", "always"],
     // Alla nedanför är från: https://medium.com/geekculture/eslint-with-node-js-in-simple-words-cee0a0cf9167
     // Start enhance readability
     "no-mixed-spaces-and-tabs": "warn",
