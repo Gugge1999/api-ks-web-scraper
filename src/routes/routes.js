@@ -12,7 +12,7 @@ router.get('/api-status', async (req, res) => {
     active: true,
     lastDatabaseBackupDate: await readLastBackupDateFromFile(),
     scrapingIntervalInMinutes: interval / 60000,
-    uptime: intervalToDuration({ start: 0, end: process.uptime() * 1000 }),
+    uptime: intervalToDuration({ start: 0, end: process.uptime() * 1000 })
   });
 });
 

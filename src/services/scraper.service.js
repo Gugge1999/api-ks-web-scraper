@@ -4,17 +4,17 @@ import * as cheerio from 'cheerio';
 import { interval } from '../config/scraper.config.js';
 import {
   sendKernelNotification,
-  sendErrorNotification,
+  sendErrorNotification
 } from './notification.service.js';
 import * as timeService from './time-and-date.service.js';
 import { updateStoredWatch, getAllWatches } from './db.service.js';
-import { errorLogger } from './logger.service.js';
+import { errorLogger, infoLogger } from './logger.service.js';
 
 export async function scrapeWatchInfo(link) {
   const watchInfo = {
     watchName: '',
     postedDate: '',
-    watchLink: '',
+    watchLink: ''
   };
 
   const response = await fetch(link);
@@ -51,7 +51,7 @@ export async function scrapeAllWatches() {
 
   const activeWatches = allWatches.filter((w) => w.active === true);
 
-  console.log(
+  infoLogger.info(
     `Scraping ${activeWatches.length} ${
       activeWatches.length === 1 ? 'watch' : 'watches'
     } @ ${timeService.currentTime()}`
@@ -63,6 +63,7 @@ export async function scrapeAllWatches() {
       continue;
     }
 
+    // eslint-disable-next-line no-promise-executor-return
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const scrapedWatch = await scrapeWatchInfo(storedWatch.link);
@@ -88,7 +89,7 @@ export async function scrapeAllWatches() {
         // await sendErrorNotification(err);
         errorLogger.error({
           message: 'Function sendErrorNotification failed.',
-          stacktrace: err,
+          stacktrace: err
         });
       }
     }

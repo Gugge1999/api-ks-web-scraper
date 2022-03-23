@@ -8,8 +8,8 @@ const transporter = createTransport({
   secure: true,
   auth: {
     user: email.user,
-    pass: email.pass,
-  },
+    pass: email.pass
+  }
 });
 
 export async function sendKernelNotification(emailText) {
@@ -17,7 +17,7 @@ export async function sendKernelNotification(emailText) {
     from: process.env.EMAIL,
     to: process.env.EMAILTO,
     subject: 'Ny klocka tillgänglig! ⌚',
-    text: emailText,
+    text: emailText
   });
 }
 
@@ -26,6 +26,6 @@ export async function sendErrorNotification(err) {
     from: email.user,
     to: email.emailTo,
     subject: 'KS Web Scraper: An error occured!',
-    text: `Error message:\n\n${err}`,
+    text: `Error message:\n\n${err}`
   });
 }

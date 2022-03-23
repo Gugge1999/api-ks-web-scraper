@@ -7,9 +7,9 @@ export const readLastBackupDateFromFile = async () => {
   try {
     return await fs.promises.readFile('src/logs/last_backup_date.txt', 'utf8');
   } catch (err) {
-    errorLogger.error({
+    return errorLogger.error({
       message: 'function lastBackupDate failed.',
-      stacktrace: err,
+      stacktrace: err
     });
   }
 };
@@ -22,11 +22,11 @@ export function writeDatabaseBackupDateToFile() {
       if (err) {
         errorLogger.error({
           message: 'Function writeDatabaseBackupDateToFile failed.',
-          stacktrace: err,
+          stacktrace: err
         });
       } else {
         infoLogger.info({
-          message: 'Database backup completed successfully.',
+          message: 'Wrote to last_backup_date.txt successfully'
         });
       }
     }

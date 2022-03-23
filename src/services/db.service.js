@@ -2,12 +2,21 @@ import { v4 as uuidv4 } from 'uuid';
 import Database from 'better-sqlite3';
 
 import * as timeService from './time-and-date.service.js';
-import { errorLogger } from './logger.service.js';
+import { errorLogger, infoLogger } from './logger.service.js';
 import { scrapeWatchInfo } from './scraper.service.js';
 
 const db = new Database('src/database/watch-scraper.db', {
-  fileMustExist: true,
+  fileMustExist: true
 });
+
+function convertStringToBoolean(array) {
+  // Convert column active from string to boolean
+  const newArr = array.map((obj) => ({
+    ...obj,
+    active: JSON.parse(obj.active)
+  }));
+  return newArr;
+}
 
 export function getAllWatches() {
   try {
@@ -15,9 +24,9 @@ export function getAllWatches() {
 
     return convertStringToBoolean(allWatches);
   } catch (err) {
-    errorLogger.error({
+    return errorLogger.error({
       message: 'Function getAllWatches failed.',
-      stacktrace: err,
+      stacktrace: err
     });
   }
 }
@@ -30,12 +39,12 @@ export function updateActiveStatus(isActive, id) {
 
     stmt.run({
       active: isActive.toString(),
-      id,
+      id
     });
   } catch (err) {
     errorLogger.error({
       message: 'Function updateActiveStatus failed.',
-      stacktrace: err,
+      stacktrace: err
     });
   }
 }
@@ -61,14 +70,14 @@ export async function addNewWatch(label, link) {
 
     insertStmt.run({
       id: newWatchId,
-      link: link,
-      label: label,
+      link,
+      label,
       watch_name: watchInfo.watchName,
       watch_posted: watchInfo.postedDate,
       link_to_watch: watchInfo.watchLink,
       active: 'true',
       last_email_sent: '',
-      added: timeService.dateAndTime(),
+      added: timeService.dateAndTime()
     });
 
     const getStmt = db.prepare('SELECT * FROM Watches WHERE ID = ?');
@@ -76,9 +85,9 @@ export async function addNewWatch(label, link) {
 
     return newWatch;
   } catch (err) {
-    errorLogger.error({
+    return errorLogger.error({
       message: 'Function addNewWatch failed.',
-      stacktrace: err,
+      stacktrace: err
     });
   }
 }
@@ -106,12 +115,12 @@ export function updateStoredWatch(watchName, watchPosted, newLinkToWatch, id) {
       watch_posted: watchPosted,
       link_to_watch: newLinkToWatch,
       last_email_sent: timeService.dateAndTime(),
-      id,
+      id
     });
   } catch (err) {
     errorLogger.error({
       message: 'Function updateStoredWatch failed.',
-      stacktrace: err,
+      stacktrace: err
     });
   }
 }
@@ -124,7 +133,7 @@ export function deleteWatch(id) {
   } catch (err) {
     errorLogger.error({
       message: 'Function deleteWatch failed.',
-      stacktrace: err,
+      stacktrace: err
     });
   }
 }
@@ -134,21 +143,12 @@ export function backupDatebase() {
     `src/database/backups/backup-watch-scraper-${timeService.todaysDate()}.db`
   )
     .then(() => {
-      console.log('Backup complete!');
+      infoLogger.info({ message: 'Backup complete!' });
     })
     .catch((err) => {
       errorLogger.error({
         message: 'Function backupDatebase failed',
-        stacktrace: err,
+        stacktrace: err
       });
     });
-}
-
-function convertStringToBoolean(array) {
-  // Convert column active from string to boolean
-  const newArr = array.map((obj) => ({
-    ...obj,
-    active: JSON.parse(obj.active),
-  }));
-  return newArr;
 }

@@ -6,7 +6,11 @@ import schedule from 'node-schedule';
 import routes from './routes/routes.js';
 import { scrapeAllWatches } from './services/scraper.service.js';
 import { backupDatebase } from './services/db.service.js';
-import { errorLogger, requestLogger } from './services/logger.service.js';
+import {
+  errorLogger,
+  infoLogger,
+  requestLogger
+} from './services/logger.service.js';
 import { writeDatabaseBackupDateToFile } from './services/file.service.js';
 
 const app = express();
@@ -19,8 +23,8 @@ app.use(
         write: (message) =>
           // Tar bort ny read efter att stream.write.
           // Se: https://stackoverflow.com/questions/27906551/node-js-logging-use-morgan-and-winston/28824464#28824464
-          requestLogger.info(message.trim()),
-      },
+          requestLogger.info(message.trim())
+      }
     }
   )
 );
@@ -41,18 +45,20 @@ const port = process.env.PORT || 3000;
 // );
 
 app.listen(port, () => {
-  console.log(`Express app listening at http://localhost:${port}`);
+  infoLogger.info({
+    message: `Express app listening at http://localhost:${port}`
+  });
 });
 
 // Gör en backup av databsen varje söndag klockan 12:00
-schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, function () {
+schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, () => {
   try {
     backupDatebase();
     writeDatabaseBackupDateToFile();
   } catch (err) {
     errorLogger.error({
       message: 'Function backupDatebase failed.',
-      stacktrace: err,
+      stacktrace: err
     });
   }
 });
