@@ -16,8 +16,8 @@ import { writeDatabaseBackupDateToFile } from './services/file.service.js';
 const app = express();
 app.use(
   morgan(
-    // Custom format
-    '::remote-addr :remote-user :method :url - Response time: :response-time ms [:date] - Agent: :user-agent',
+    // För att vilken webbläsare använd: :user-agent
+    '::remote-addr :remote-user :method :url Response time: :response-time ms',
     {
       stream: {
         write: (message) =>

@@ -1,6 +1,13 @@
 import { createLogger, format, transports } from 'winston';
 
-const { combine, timestamp, prettyPrint, simple, errors } = format;
+const { combine, timestamp, prettyPrint, errors, printf } = format;
+
+const customFormat = format.combine(
+  timestamp({
+    format: 'HH:mm:ss YYYY-MM-DD'
+  }),
+  printf((info) => `${info.message} [${info.timestamp}]`)
+);
 
 export const errorLogger = createLogger({
   format: combine(
@@ -19,17 +26,12 @@ export const errorLogger = createLogger({
 
 // Lägga till https://www.npmjs.com/package/winston-daily-rotate-file ?
 export const requestLogger = createLogger({
-  format: simple(),
+  format: format.combine(customFormat),
   transports: [new transports.File({ filename: 'src/logs/requests.log' })]
 });
 
 export const infoLogger = createLogger({
-  format: combine(
-    timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss'
-    }),
-    simple()
-  ),
+  format: format.combine(customFormat),
   transports: [
     new transports.Console(),
     new transports.File({ filename: 'src/logs/info.log' })

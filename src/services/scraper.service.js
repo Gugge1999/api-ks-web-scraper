@@ -54,7 +54,7 @@ export async function scrapeAllWatches() {
   infoLogger.info(
     `Scraping ${activeWatches.length} ${
       activeWatches.length === 1 ? 'watch' : 'watches'
-    } @ ${timeService.currentTime()}`
+    }`
   );
   for (let i = 0; i < allWatches.length; i += 1) {
     const storedWatch = allWatches[i];
