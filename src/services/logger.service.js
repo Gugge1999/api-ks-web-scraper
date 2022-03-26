@@ -24,7 +24,6 @@ export const errorLogger = createLogger({
   ]
 });
 
-// Lägga till https://www.npmjs.com/package/winston-daily-rotate-file ?
 export const requestLogger = createLogger({
   format: format.combine(customFormat),
   transports: [new transports.File({ filename: 'src/logs/requests.log' })]

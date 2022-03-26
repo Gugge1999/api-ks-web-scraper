@@ -17,7 +17,7 @@ const app = express();
 app.use(
   morgan(
     // För att vilken webbläsare använd: :user-agent
-    '::remote-addr :remote-user :method :url Response time: :response-time ms',
+    '::remote-addr :remote-user :method :url - Response time: :response-time ms',
     {
       stream: {
         write: (message) =>
@@ -50,7 +50,7 @@ app.listen(port, () => {
   });
 });
 
-// Gör en backup av databsen varje söndag klockan 12:00
+// Backup av databsen varje söndag klockan 12:00
 schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, () => {
   try {
     backupDatebase();
