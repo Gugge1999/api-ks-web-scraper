@@ -4,6 +4,7 @@ import express from 'express';
 import * as db from '../services/db.service.js';
 import { readLastBackupDateFromFile } from '../services/file.service.js';
 import { interval } from '../config/scraper.config.js';
+import { scrapeWatchInfo } from '../services/scraper.service.js';
 
 const router = express.Router();
 
@@ -22,10 +23,11 @@ router.get('/api-status', async (req, res) => {
 
 router.post('/add-watch', async (req, res) => {
   try {
-    const newWatch = await db.addNewWatch(req.body.label, req.body.link);
+    const watchInfo = await scrapeWatchInfo(req.body.link);
+    const newWatch = db.addNewWatch(req.body.label, req.body.link, watchInfo);
     res.status(201).json(newWatch);
   } catch (err) {
-    res.status(500).json('Route: add-watch failed');
+    res.status(500).json('Invalid link');
   }
 });
 

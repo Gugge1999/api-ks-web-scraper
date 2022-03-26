@@ -31,7 +31,6 @@
     "import/extensions": ["error", "always"],
     "no-await-in-loop": "off",
     "no-continue": "off",
-    "import/no-cycle": "off",
     // End airbnb
     // Alla nedanför är från: https://medium.com/geekculture/eslint-with-node-js-in-simple-words-cee0a0cf9167
     // Start enhance readability

@@ -3,7 +3,6 @@ import Database from 'better-sqlite3';
 
 import * as timeService from './time-and-date.service.js';
 import { errorLogger, infoLogger } from './logger.service.js';
-import { scrapeWatchInfo } from './scraper.service.js';
 
 const db = new Database('src/database/watch-scraper.db', {
   fileMustExist: true
@@ -49,10 +48,8 @@ export function updateActiveStatus(isActive, id) {
   }
 }
 
-export async function addNewWatch(label, link) {
+export function addNewWatch(label, link, newWatchInfo) {
   try {
-    const watchInfo = await scrapeWatchInfo(link);
-
     const newWatchId = uuidv4();
 
     const insertStmt = db.prepare(
@@ -72,9 +69,9 @@ export async function addNewWatch(label, link) {
       id: newWatchId,
       link,
       label,
-      watch_name: watchInfo.watchName,
-      watch_posted: watchInfo.postedDate,
-      link_to_watch: watchInfo.watchLink,
+      watch_name: newWatchInfo.watchName,
+      watch_posted: newWatchInfo.postedDate,
+      link_to_watch: newWatchInfo.watchLink,
       active: 'true',
       last_email_sent: '',
       added: timeService.dateAndTime()
