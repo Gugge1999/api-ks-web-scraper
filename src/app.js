@@ -8,6 +8,7 @@ import { scrapeAllWatches } from './services/scraper.service.js';
 import { backupDatebase } from './services/db.service.js';
 import { errorLogger, requestLogger } from './services/logger.service.js';
 import { writeDatabaseBackupDateToFile } from './services/file.service.js';
+import errorHandler from './services/middleware.service.js';
 
 const app = express();
 app.use(
@@ -27,6 +28,7 @@ app.use(
 app.use(json());
 app.use(cors()); // Lägg till cors FÖRE routes
 app.use(routes);
+app.use(errorHandler);
 const port = process.env.PORT || 3000;
 
 // Bra länk: https://blog.devgenius.io/deploy-angular-nodejs-application-to-aws-elastic-beanstalk-9ab13076a736

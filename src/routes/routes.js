@@ -8,7 +8,7 @@ import { scrapeWatchInfo } from '../services/scraper.service.js';
 
 const router = express.Router();
 
-router.get('/api-status', async (req, res) => {
+router.get('/api-status', async (req, res, next) => {
   try {
     res.status(200).json({
       active: true,
@@ -17,11 +17,11 @@ router.get('/api-status', async (req, res) => {
       uptime: intervalToDuration({ start: 0, end: process.uptime() * 1000 })
     });
   } catch {
-    res.status(500).json({ message: 'Could not get API status.' });
+    next('Could not get API status.');
   }
 });
 
-router.post('/add-watch', async (req, res) => {
+router.post('/add-watch', async (req, res, next) => {
   let watchInfo;
   try {
     watchInfo = await scrapeWatchInfo(req.body.link);
@@ -29,37 +29,37 @@ router.post('/add-watch', async (req, res) => {
       const newWatch = db.addNewWatch(req.body.label, req.body.link, watchInfo);
       res.status(200).json(newWatch);
     } catch {
-      res.status(500).json({ message: 'Could not save watch.' });
+      next('Could not save watch');
     }
   } catch {
     res.status(400).json({ message: 'Invalid link.' });
   }
 });
 
-router.get('/all-watches', (req, res) => {
+router.get('/all-watches', (req, res, next) => {
   try {
     const allWatches = db.getAllWatches();
     res.status(200).json(allWatches);
   } catch {
-    res.status(500).json({ message: 'Could not get all watches.' });
+    next('Could not get all watches.');
   }
 });
 
-router.put('/update-active-status', (req, res) => {
+router.put('/update-active-status', (req, res, next) => {
   try {
     db.updateActiveStatus(req.body.isActive, req.body.id);
     res.status(200).json(`Updated active status on: ${req.body.label}`);
   } catch {
-    res.status(500).json({ message: 'Could not update status.' });
+    next('Could not update status.');
   }
 });
 
-router.delete('/delete-watch/:id', (req, res) => {
+router.delete('/delete-watch/:id', (req, res, next) => {
   try {
     db.deleteWatch(req.params.id);
     res.status(200).json({ id: req.params.id });
   } catch {
-    res.status(500).json({ message: 'Could not delete watch.' });
+    next('Could not delete watch.');
   }
 });
 
