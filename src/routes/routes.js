@@ -16,18 +16,23 @@ router.get('/api-status', async (req, res) => {
       scrapingIntervalInMinutes: interval / 60000,
       uptime: intervalToDuration({ start: 0, end: process.uptime() * 1000 })
     });
-  } catch (error) {
-    res.status(500).json('Route: api-status failed');
+  } catch {
+    res.status(500).json({ message: 'Could not get API status.' });
   }
 });
 
 router.post('/add-watch', async (req, res) => {
+  let watchInfo;
   try {
-    const watchInfo = await scrapeWatchInfo(req.body.link);
-    const newWatch = db.addNewWatch(req.body.label, req.body.link, watchInfo);
-    res.status(201).json(newWatch);
-  } catch (err) {
-    res.status(500).json('Invalid link');
+    watchInfo = await scrapeWatchInfo(req.body.link);
+    try {
+      const newWatch = db.addNewWatch(req.body.label, req.body.link, watchInfo);
+      res.status(200).json(newWatch);
+    } catch {
+      res.status(500).json({ message: 'Could not save watch.' });
+    }
+  } catch {
+    res.status(400).json({ message: 'Invalid link.' });
   }
 });
 
@@ -35,8 +40,8 @@ router.get('/all-watches', (req, res) => {
   try {
     const allWatches = db.getAllWatches();
     res.status(200).json(allWatches);
-  } catch (err) {
-    res.status(500).json('Route: all-watches failed');
+  } catch {
+    res.status(500).json({ message: 'Could not get all watches.' });
   }
 });
 
@@ -44,8 +49,8 @@ router.put('/update-active-status', (req, res) => {
   try {
     db.updateActiveStatus(req.body.isActive, req.body.id);
     res.status(200).json(`Updated active status on: ${req.body.label}`);
-  } catch (err) {
-    res.status(500).json('Route: update-active-status failed');
+  } catch {
+    res.status(500).json({ message: 'Could not update status.' });
   }
 });
 
@@ -53,8 +58,8 @@ router.delete('/delete-watch/:id', (req, res) => {
   try {
     db.deleteWatch(req.params.id);
     res.status(200).json({ id: req.params.id });
-  } catch (err) {
-    res.status(500).json('Route: delete-watch/:id failed');
+  } catch {
+    res.status(500).json({ message: 'Could not delete watch.' });
   }
 });
 

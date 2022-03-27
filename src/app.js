@@ -44,11 +44,7 @@ const port = process.env.PORT || 3000;
 //   express.static('../../angular_projects/ks-web-scraper/dist/ks-web-scraper')
 // );
 
-app.listen(port, () => {
-  infoLogger.info({
-    message: `Express app listening at http://localhost:${port}`
-  });
-});
+app.listen(port);
 
 // Backup av databsen varje söndag klockan 12:00
 schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, () => {
