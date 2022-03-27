@@ -29,7 +29,7 @@ app.use(json());
 app.use(cors()); // Lägg till cors FÖRE routes
 app.use(routes);
 app.use(errorHandler);
-const port = process.env.PORT || 3000;
+const port = 3000;
 
 // Bra länk: https://blog.devgenius.io/deploy-angular-nodejs-application-to-aws-elastic-beanstalk-9ab13076a736
 

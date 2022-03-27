@@ -45,6 +45,7 @@ router.get('/all-watches', (req, res, next) => {
   }
 });
 
+// Skicka tillbaka true eller false istället.
 router.put('/update-active-status', (req, res, next) => {
   try {
     db.updateActiveStatus(req.body.isActive, req.body.id);

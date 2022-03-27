@@ -5,7 +5,8 @@
   "description": "KS Web Scraper API",
   "main": "index.js",
   "scripts": {
-    "start": "eslint . & nodemon src/app.js",
+    "dev": "eslint . & nodemon src/app.js",
+    "prod": "cross-env NODE_ENV=production supervisor src/app.js",
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
@@ -26,10 +27,12 @@
     "node-fetch": "^3.2.3",
     "node-schedule": "^2.1.0",
     "nodemailer": "^6.7.2",
+    "supervisor": "^0.12.0",
     "uuid": "^8.3.2",
     "winston": "^3.6.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",

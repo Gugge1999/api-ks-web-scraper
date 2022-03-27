@@ -36,12 +36,12 @@ export function updateActiveStatus(isActive, id) {
       'UPDATE Watches SET active = @active WHERE id = @id'
     );
 
-    stmt.run({
+    return stmt.run({
       active: isActive.toString(),
       id
     });
   } catch (err) {
-    errorLogger.error({
+    return errorLogger.error({
       message: 'Function updateActiveStatus failed.',
       stacktrace: err
     });
