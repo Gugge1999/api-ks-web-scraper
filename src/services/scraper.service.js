@@ -64,8 +64,12 @@ export async function scrapeAllWatches() {
     }
 
     // eslint-disable-next-line no-promise-executor-return
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
 
+    // eslint-disable-next-line no-await-in-loop
     const scrapedWatch = await scrapeWatchInfo(storedWatch.link);
     if (
       `${storedWatch.watch_name} ${storedWatch.watch_posted}` !==

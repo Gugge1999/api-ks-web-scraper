@@ -6,11 +6,7 @@ import schedule from 'node-schedule';
 import routes from './routes/routes.js';
 import { scrapeAllWatches } from './services/scraper.service.js';
 import { backupDatebase } from './services/db.service.js';
-import {
-  errorLogger,
-  infoLogger,
-  requestLogger
-} from './services/logger.service.js';
+import { errorLogger, requestLogger } from './services/logger.service.js';
 import { writeDatabaseBackupDateToFile } from './services/file.service.js';
 
 const app = express();

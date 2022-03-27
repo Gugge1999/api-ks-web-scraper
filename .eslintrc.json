@@ -29,7 +29,6 @@
     "spaced-comment": ["error", "always"],
     // Start airbnb
     "import/extensions": ["error", "always"],
-    "no-await-in-loop": "off",
     "no-continue": "off",
     // End airbnb
     // Alla nedanför är från: https://medium.com/geekculture/eslint-with-node-js-in-simple-words-cee0a0cf9167

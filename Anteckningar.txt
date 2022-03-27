@@ -1,4 +1,8 @@
 ---------------------------------- TODO ----------------------------------
+Skapa en array av senaste klockor som är scrape:ade. 
+Detta skulle lösa problemet om flera klockor läggs upp inom 10 minuter
+
+
 För att testa deploy. Se: https://www.youtube.com/watch?v=QdHvS0D1zAI
 
 
