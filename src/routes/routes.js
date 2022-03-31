@@ -45,20 +45,20 @@ router.get('/all-watches', (req, res, next) => {
   }
 });
 
-// Skicka tillbaka true eller false istället.
-router.put('/update-active-status', (req, res, next) => {
+router.put('/toggle-active-status', (req, res, next) => {
   try {
-    db.updateActiveStatus(req.body.isActive, req.body.id);
-    res.status(200).json(`Updated active status on: ${req.body.label}`);
+    const newStatus = !req.body.isActive;
+    const status = db.toggleActiveStatus(newStatus, req.body.id);
+    res.status(200).json({ isActive: status, label: req.body.label });
   } catch {
-    next('Could not update status.');
+    next('Could not toggle status.');
   }
 });
 
 router.delete('/delete-watch/:id', (req, res, next) => {
   try {
-    db.deleteWatch(req.params.id);
-    res.status(200).json({ id: req.params.id });
+    const id = db.deleteWatch(req.params.id);
+    res.status(200).json({ deletedWatchId: id });
   } catch {
     next('Could not delete watch.');
   }

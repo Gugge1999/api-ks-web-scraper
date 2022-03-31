@@ -30,19 +30,21 @@ export function getAllWatches() {
   }
 }
 
-export function updateActiveStatus(isActive, id) {
+export function toggleActiveStatus(newStatus, id) {
   try {
     const stmt = db.prepare(
       'UPDATE Watches SET active = @active WHERE id = @id'
     );
 
-    return stmt.run({
-      active: isActive.toString(),
+    stmt.run({
+      active: newStatus.toString(),
       id
     });
+
+    return newStatus;
   } catch (err) {
     return errorLogger.error({
-      message: 'Function updateActiveStatus failed.',
+      message: 'Function toggleActiveStatus failed.',
       stacktrace: err
     });
   }
@@ -127,8 +129,10 @@ export function deleteWatch(id) {
     const stmt = db.prepare('DELETE FROM Watches WHERE id = ?');
 
     stmt.run(id);
+
+    return id;
   } catch (err) {
-    errorLogger.error({
+    return errorLogger.error({
       message: 'Function deleteWatch failed.',
       stacktrace: err
     });
