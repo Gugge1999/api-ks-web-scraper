@@ -6,6 +6,12 @@ Detta skulle lösa problemet om flera klockor läggs upp inom 10 minuter
 För att testa deploy. Se: https://www.youtube.com/watch?v=QdHvS0D1zAI
 
 
+Deploy:
+       https://pookidevs.com/how-to-deploy-a-mean-stack-application-on-aws-lightsail/
+
+Guide till deploy på azure:
+       https://stackify.com/azure-deployment-guide/
+
 Kanske byta från att skicka in en länk till klockan. Skicka istället bara med namnet. Då kan man kan skippa label också.
 Bra bibliotek: https://www.npmjs.com/package/puppeteer
 
