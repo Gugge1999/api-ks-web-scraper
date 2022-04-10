@@ -32,7 +32,7 @@ router.post('/add-watch', async (req, res, next) => {
       next('Could not save watch');
     }
   } catch {
-    res.status(400).json({ message: 'Invalid link.' });
+    res.status(400).json('Invalid link.');
   }
 });
 
@@ -41,7 +41,7 @@ router.get('/all-watches', (req, res, next) => {
     const allWatches = db.getAllWatches();
     res.status(200).json(allWatches);
   } catch {
-    next('Could not get all watches.');
+    next('Could not retrive all watches.');
   }
 });
 

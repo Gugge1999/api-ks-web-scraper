@@ -1,16 +1,31 @@
 ---------------------------------- TODO ----------------------------------
 Skapa en array av senaste klockor som är scrape:ade. 
 Detta skulle lösa problemet om flera klockor läggs upp inom 10 minuter
+       Hur det kan funka:
+       
+       Hämta alla klockor från  
+       watchInfo.watchLink = `https://klocksnack.se${$('.contentRow-title')
+       .children()
+
+       Lägg in de i en array. 
+
+       Vid nästa scrape, jämför de den gamla array med den nya?
+       Hur ska den gamla arrayen lagras? 
 
 
-För att testa deploy. Se: https://www.youtube.com/watch?v=QdHvS0D1zAI
+Byt till Sendgrid för email. De tillåter 100 mail per dag. Länk: https://sendgrid.com/pricing/
+
+
+För att testa deploy. Länk: https://www.youtube.com/watch?v=QdHvS0D1zAI
 
 
 Deploy:
        https://pookidevs.com/how-to-deploy-a-mean-stack-application-on-aws-lightsail/
 
+
 Guide till deploy på azure:
        https://stackify.com/azure-deployment-guide/
+
 
 Kanske byta från att skicka in en länk till klockan. Skicka istället bara med namnet. Då kan man kan skippa label också.
 Bra bibliotek: https://www.npmjs.com/package/puppeteer
@@ -19,7 +34,7 @@ Bra bibliotek: https://www.npmjs.com/package/puppeteer
 Skapa enhetstester 
 
 
-Byt till sequelize. Finns inte stöd idag men det finns planer för det i framtidenn Se: https://github.com/sequelize/sequelize/issues/11400
+Byt till sequelize. Finns inte stöd idag men det finns planer för det i framtidenn Länk: https://github.com/sequelize/sequelize/issues/11400
 
 
 Byt till Undici när du har Node 16.5+ 
@@ -28,7 +43,7 @@ Byt till Undici när du har Node 16.5+
 Det kanske går att hosta på Azure med min MSDN licens?
   
 
-Uppdatera till Express 5 när det kommer ut. Se migration guide: https://expressjs.com/en/guide/migrating-5.html
+Uppdatera till Express 5 när det kommer ut. Migration guide: https://expressjs.com/en/guide/migrating-5.html
   
 
 Fixa login. Kanske bra tutorial: 
