@@ -13,7 +13,7 @@ Detta skulle lösa problemet om flera klockor läggs upp inom 10 minuter
        Hur ska den gamla arrayen lagras? 
 
 
-Byt till Sendgrid för email. De tillåter 100 mail per dag. Länk: https://sendgrid.com/pricing/
+Byt till Mailchimp när du deployat.
 
 
 För att testa deploy. Länk: https://www.youtube.com/watch?v=QdHvS0D1zAI
