@@ -10,11 +10,7 @@ const db = new Database('src/database/watch-scraper.db', {
 
 function convertStringToBoolean(array) {
   // Convert column active from string to boolean
-  const newArr = array.map((obj) => ({
-    ...obj,
-    active: JSON.parse(obj.active)
-  }));
-  return newArr;
+  return array.map((obj) => ({ ...obj, active: JSON.parse(obj.active) }));
 }
 
 export function getAllWatches() {
