@@ -34,10 +34,10 @@ Bra bibliotek: https://www.npmjs.com/package/puppeteer
 Skapa enhetstester 
 
 
-Byt till sequelize. Finns inte stöd idag men det finns planer för det i framtidenn Länk: https://github.com/sequelize/sequelize/issues/11400
+Byt till sequelize. Finns inte stöd idag men det finns planer för det i framtiden Länk: https://github.com/sequelize/sequelize/issues/11400
 
 
-Byt till Undici när du har Node 16.5+ 
+Byt till Undici (även kallat fetch, tror jag...) när du har Node 18
   
   
 Det kanske går att hosta på Azure med min MSDN licens?

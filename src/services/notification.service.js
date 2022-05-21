@@ -25,7 +25,7 @@ export async function sendErrorNotification(err) {
   await transporter.sendMail({
     from: email.user,
     to: email.emailTo,
-    subject: 'KS Web Scraper: An error occured!',
+    subject: 'KS Web Scraper: An error has occurred!',
     text: `Error message:\n\n${err}`
   });
 }

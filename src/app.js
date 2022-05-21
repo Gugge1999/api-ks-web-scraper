@@ -5,7 +5,7 @@ import schedule from 'node-schedule';
 
 import routes from './routes/routes.js';
 import { scrapeAllWatches } from './services/scraper.service.js';
-import { backupDatebase } from './services/db.service.js';
+import { backupDatabase } from './services/db.service.js';
 import { errorLogger, requestLogger } from './services/logger.service.js';
 import { writeDatabaseBackupDateToFile } from './services/file.service.js';
 import errorHandler from './services/middleware.service.js';
@@ -44,14 +44,14 @@ const port = 3000;
 
 app.listen(port);
 
-// Backup av databsen varje söndag klockan 12:00
+// Backup av databasen varje söndag klockan 12:00
 schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, () => {
   try {
-    backupDatebase();
+    backupDatabase();
     writeDatabaseBackupDateToFile();
   } catch (err) {
     errorLogger.error({
-      message: 'Function backupDatebase failed.',
+      message: 'Function backupDatabase failed.',
       stacktrace: err
     });
   }

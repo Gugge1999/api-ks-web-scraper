@@ -135,7 +135,7 @@ export function deleteWatch(id) {
   }
 }
 
-export function backupDatebase() {
+export function backupDatabase() {
   db.backup(
     `src/database/backups/backup-watch-scraper-${timeService.todaysDate()}.db`
   )
@@ -144,7 +144,7 @@ export function backupDatebase() {
     })
     .catch((err) => {
       errorLogger.error({
-        message: 'Function backupDatebase failed',
+        message: 'Function backupDatabase failed',
         stacktrace: err
       });
     });

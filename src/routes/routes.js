@@ -41,7 +41,7 @@ router.get('/all-watches', (req, res, next) => {
     const allWatches = db.getAllWatches();
     res.status(200).json(allWatches);
   } catch {
-    next('Could not retrive all watches.');
+    next('Could not retrieve all watches.');
   }
 });
 
