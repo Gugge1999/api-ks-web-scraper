@@ -18,7 +18,7 @@ app.use(
     {
       stream: {
         write: (message) =>
-          // Tar bort ny read efter att stream.write.
+          // Tar bort ny rad efter att stream.write.
           // Se: https://stackoverflow.com/questions/27906551/node-js-logging-use-morgan-and-winston/28824464#28824464
           requestLogger.info(message.trim())
       }
