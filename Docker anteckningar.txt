@@ -1,0 +1,19 @@
+Kom ihåg att lägga till node_modules i .dockerignore
+
+För att starta docker i Windows:
+                                docker run -it -p 5000:3000 <IMAGE-ID>
+
+
+Viktigt att sätta port med -p. 
+3000 är porten i Dockerfile och 5000 är porten som den mappar till. 
+
+
+För att nå container i Windows använd:
+                                      http://localhost:5000/all-watches
+
+
+För att komma in i container:
+  Används Docker Desktop eller kör detta i powershell: 
+                                                      docker exec -it <CONTAINER-ID OBS!!!> /bin/sh
+
+
