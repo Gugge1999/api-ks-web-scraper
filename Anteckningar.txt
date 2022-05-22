@@ -1,16 +1,12 @@
 ---------------------------------- TODO ----------------------------------
 Skapa en array av senaste klockor som är scrape:ade. 
-Detta skulle lösa problemet om flera klockor läggs upp inom 10 minuter
-       Hur det kan funka:
-       
-       Hämta alla klockor från  
-       watchInfo.watchLink = `https://klocksnack.se${$('.contentRow-title')
-       .children()
 
-       Lägg in de i en array. 
 
-       Vid nästa scrape, jämför de den gamla array med den nya?
-       Hur ska den gamla arrayen lagras? 
+Inför rate limit? 
+       Länkar: 
+              https://blog.logrocket.com/rate-limiting-node-js/
+              https://www.section.io/engineering-education/nodejs-rate-limiting/
+
 
 
 Byt till Mailchimp när du deployat.

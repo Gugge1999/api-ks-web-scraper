@@ -59,6 +59,7 @@ export async function scrapeAllWatches() {
   for (let i = 0; i < allWatches.length; i += 1) {
     const storedWatch = allWatches[i];
 
+    // Kan den tas bort? activeWatches hämtas ovanför for loopen
     if (storedWatch.active === false) {
       continue;
     }
