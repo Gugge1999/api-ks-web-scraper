@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import schedule from 'node-schedule';
 
 import routes from './routes/routes.js';
-import { scrapeAllWatches } from './services/scraper.service.js';
+import { compareStoredWithScraped } from './services/scraper.service.js';
 import { backupDatabase } from './services/db.service.js';
 import { errorLogger, requestLogger } from './services/logger.service.js';
 import { writeDatabaseBackupDateToFile } from './services/file.service.js';
@@ -57,4 +57,4 @@ schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, () => {
   }
 });
 
-await scrapeAllWatches();
+await compareStoredWithScraped();

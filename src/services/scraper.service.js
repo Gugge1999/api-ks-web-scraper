@@ -7,7 +7,7 @@ import {
   sendErrorNotification
 } from './notification.service.js';
 import * as timeService from './time-and-date.service.js';
-import { updateStoredWatch, getAllWatches } from './db.service.js';
+import { getAllActiveWatches, updateStoredWatches } from './db.service.js';
 import { errorLogger, infoLogger } from './logger.service.js';
 
 export async function scrapeWatchInfo(link) {
@@ -53,8 +53,8 @@ export async function scrapeWatchInfo(link) {
       throw new Error();
     }
 
-    // attr "datetime" finns också. Format: 2022-02-24T18:12:49+0100
-    const watchDate = $('.u-dt')[i].attribs.title; // Format: 22 Maj 2022 kl 14:16
+    // Format: 2022-05-14T09:06:18+0200
+    const watchDate = $('.u-dt')[i].attribs.datetime;
 
     const watchLink = `https://klocksnack.se${allContentRowTitle[i].attribs.href}`;
 
@@ -67,58 +67,61 @@ export async function scrapeWatchInfo(link) {
   return scrapedWatchArr;
 }
 
-export async function scrapeAllWatches() {
-  const allWatches = getAllWatches();
-
-  const activeWatches = allWatches.filter((w) => w.active === true);
+export async function compareStoredWithScraped() {
+  const allWatches = getAllActiveWatches();
 
   infoLogger.info(
-    `Scraping ${activeWatches.length} ${
-      activeWatches.length === 1 ? 'watch' : 'watches'
+    `Scraping ${allWatches.length} ${
+      allWatches.length === 1 ? 'watch' : 'watches'
     }`
   );
   for (let i = 0; i < allWatches.length; i += 1) {
-    const storedWatch = allWatches[i];
+    const storedWatchRow = allWatches[i];
 
-    // Kan den tas bort? activeWatches hämtas ovanför for loopen
-    if (storedWatch.active === false) {
-      continue;
-    }
+    const storedWatchesArr = JSON.parse(storedWatchRow.watches);
 
-    // eslint-disable-next-line no-promise-executor-return
-    // eslint-disable-next-line no-await-in-loop
+    // Vänta 1 sekund mellan varje anrop till KS
     await new Promise((resolve) => {
       setTimeout(resolve, 1000);
     });
 
-    // eslint-disable-next-line no-await-in-loop
-    const scrapedWatch = await scrapeWatchInfo(storedWatch.link);
-    if (
-      `${storedWatch.watch_name} ${storedWatch.watch_posted}` !==
-      `${scrapedWatch.watchName} ${scrapedWatch.postedDate}`
-    ) {
-      updateStoredWatch(
-        scrapedWatch.watchName,
-        scrapedWatch.postedDate,
-        scrapedWatch.watchLink,
-        storedWatch.id
-      );
+    const scrapedWatchArr = await scrapeWatchInfo(storedWatchRow.link);
 
-      const emailText = `${
-        scrapedWatch.watchName
-      }\n\nDetta mail skickades: ${timeService.dateAndTime()}`;
-      try {
-        // await sendKernelNotification(emailText);
-        // infoLogger.info({ message: 'Email sent.' });
-        // Skriv till databas om när ett mail skickades.
-      } catch (err) {
-        // await sendErrorNotification(err);
-        errorLogger.error({
-          message: 'Function sendErrorNotification failed.',
-          stacktrace: err
-        });
+    // Just nu jämförs de lagrade klockorna och de scrape:ade endast på postedDate.
+    // Är det unikt nog ?
+    const newScrapedWatches = scrapedWatchArr.filter(
+      ({ postedDate: id1 }) =>
+        !storedWatchesArr.some(({ postedDate: id2 }) => id2 === id1)
+    );
+
+    if (newScrapedWatches.length > 0) {
+      updateStoredWatches(JSON.stringify(scrapedWatchArr), storedWatchRow.id);
+
+      // Loopa över varje ny klocka och skicka mail
+      for (let j = 0; j < newScrapedWatches.length; j += 1) {
+        const emailText = `${newScrapedWatches[j].watchName}\n\nLänk: ${
+          newScrapedWatches[j].watchLink
+        }\n\nDetta mail skickades: ${timeService.dateAndTime()}`;
+
+        try {
+          // await sendKernelNotification(emailText);
+
+          infoLogger.info({ message: 'Email sent.' });
+          // Skriv till databas (skapa tabell) om när ett mail skickades.
+
+          // Vänta 5 sekunder mellan varje mail.
+          await new Promise((resolve) => {
+            setTimeout(resolve, 5000);
+          });
+        } catch (err) {
+          // await sendErrorNotification(err);
+          errorLogger.error({
+            message: 'Function sendKernelNotification failed.',
+            stacktrace: err
+          });
+        }
       }
     }
   }
-  setTimeout(scrapeAllWatches, interval);
+  setTimeout(compareStoredWithScraped, interval);
 }

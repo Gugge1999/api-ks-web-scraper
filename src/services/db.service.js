@@ -26,6 +26,20 @@ export function getAllWatches() {
   }
 }
 
+export function getAllActiveWatches() {
+  try {
+    const stmt = db.prepare('SELECT * FROM Watches WHERE active = @active');
+    const allWatches = stmt.all({ active: 'true' });
+
+    return convertStringToBoolean(allWatches);
+  } catch (err) {
+    return errorLogger.error({
+      message: 'Function getAllWatches failed.',
+      stacktrace: err
+    });
+  }
+}
+
 export function toggleActiveStatus(newStatus, id) {
   try {
     const stmt = db.prepare(
@@ -94,21 +108,17 @@ export function getWatchById(id) {
   return convertStringToBoolean(watch);
 }
 
-export function updateStoredWatch(watchName, watchPosted, newLinkToWatch, id) {
+export function updateStoredWatches(newWatchArr, id) {
   try {
     const stmt = db.prepare(
       'UPDATE Watches SET ' +
-        'watch_name = @watch_name, ' +
-        'watch_posted = @watch_posted, ' +
-        'link_to_watch = @link_to_watch, ' +
+        'watches = @watches, ' +
         'last_email_sent = @last_email_sent ' +
         'WHERE id = @id '
     );
 
     stmt.run({
-      watch_name: watchName,
-      watch_posted: watchPosted,
-      link_to_watch: newLinkToWatch,
+      watches: newWatchArr,
       last_email_sent: timeService.dateAndTime(),
       id
     });
@@ -144,7 +154,7 @@ export function backupDatabase() {
     })
     .catch((err) => {
       errorLogger.error({
-        message: 'Function backupDatabase failed',
+        message: 'Function backupDatabase failed.',
         stacktrace: err
       });
     });
