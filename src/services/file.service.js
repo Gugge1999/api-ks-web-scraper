@@ -15,20 +15,17 @@ export const readLastBackupDateFromFile = async () => {
 };
 
 export function writeDatabaseBackupDateToFile() {
-  fs.promises.writeFile(
-    'src/logs/last_backup_date.txt',
-    dateAndTime(),
-    (err) => {
-      if (err) {
-        errorLogger.error({
-          message: 'Function writeDatabaseBackupDateToFile failed.',
-          stacktrace: err
-        });
-      } else {
-        infoLogger.info({
-          message: 'Wrote to last_backup_date.txt successfully'
-        });
-      }
-    }
-  );
+  fs.promises
+    .writeFile('src/logs/last_backup_date123.txt', dateAndTime())
+    .then(() => {
+      infoLogger.info({
+        message: 'Wrote to last_backup_date.txt successfully.'
+      });
+    })
+    .catch((err) => {
+      errorLogger.error({
+        message: 'Function writeDatabaseBackupDateToFile failed.',
+        stacktrace: err
+      });
+    });
 }
