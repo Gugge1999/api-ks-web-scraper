@@ -7,7 +7,11 @@ import {
   sendErrorNotification
 } from './notification.service.js';
 import * as timeService from './time-and-date.service.js';
-import { getAllActiveWatches, updateStoredWatches } from './db.service.js';
+import {
+  getAllActiveWatches,
+  updateStoredWatches,
+  getAllWatchesOnlyLatest
+} from './db.service.js';
 import { errorLogger, infoLogger } from './logger.service.js';
 
 export async function scrapeWatchInfo(link) {
@@ -63,6 +67,8 @@ export async function scrapeWatchInfo(link) {
     currentWatchInfo.watchLink = watchLink;
     scrapedWatchArr.push(currentWatchInfo);
   }
+
+  getAllWatchesOnlyLatest();
 
   return scrapedWatchArr;
 }

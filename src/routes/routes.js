@@ -22,11 +22,14 @@ router.get('/api-status', async (req, res, next) => {
 });
 
 router.post('/add-watch', async (req, res, next) => {
-  let watchInfo;
   try {
-    watchInfo = await scrapeWatchInfo(req.body.link);
+    const scrapedWatches = await scrapeWatchInfo(req.body.link);
     try {
-      const newWatch = db.addNewWatch(req.body.label, req.body.link, watchInfo);
+      const newWatch = db.addNewWatch(
+        req.body.label,
+        req.body.link,
+        scrapedWatches
+      );
       res.status(200).json(newWatch);
     } catch {
       next('Could not save watch');
@@ -38,7 +41,7 @@ router.post('/add-watch', async (req, res, next) => {
 
 router.get('/all-watches', (req, res, next) => {
   try {
-    const allWatches = db.getAllWatches();
+    const allWatches = db.getAllWatchesOnlyLatest();
     res.status(200).json(allWatches);
   } catch {
     next('Could not retrieve all watches.');

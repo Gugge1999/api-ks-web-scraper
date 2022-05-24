@@ -34,7 +34,25 @@ export function getAllActiveWatches() {
     return convertStringToBoolean(allWatches);
   } catch (err) {
     return errorLogger.error({
-      message: 'Function getAllWatches failed.',
+      message: 'Function getAllActiveWatches failed.',
+      stacktrace: err
+    });
+  }
+}
+
+export function getAllWatchesOnlyLatest() {
+  try {
+    const allWatches = db.prepare('SELECT * FROM Watches').all();
+
+    for (let i = 0; i < allWatches.length; i += 1) {
+      const firstWatchInArr = JSON.parse(allWatches[i].watches)[0];
+      allWatches[i].watches = firstWatchInArr;
+    }
+
+    return convertStringToBoolean(allWatches);
+  } catch (err) {
+    return errorLogger.error({
+      message: 'Function getAllWatchesOnlyLatest failed.',
       stacktrace: err
     });
   }
@@ -60,7 +78,7 @@ export function toggleActiveStatus(newStatus, id) {
   }
 }
 
-export function addNewWatch(label, link, newWatchInfo) {
+export function addNewWatch(label, link, newScrapedWatches) {
   try {
     const newWatchId = uuidv4();
 
@@ -69,30 +87,27 @@ export function addNewWatch(label, link, newWatchInfo) {
         '@id,' +
         '@link,' +
         '@label, ' +
-        '@watch_name, ' +
-        '@watch_posted, ' +
-        '@link_to_watch, ' +
+        '@watches, ' +
         '@active, ' +
         '@last_email_sent, ' +
         '@added)'
     );
 
-    insertStmt.run({
+    const newWatchObj = {
       id: newWatchId,
       link,
       label,
-      watch_name: newWatchInfo.watchName,
-      watch_posted: newWatchInfo.postedDate,
-      link_to_watch: newWatchInfo.watchLink,
+      watches: JSON.stringify(newScrapedWatches),
       active: 'true',
       last_email_sent: '',
       added: timeService.dateAndTime()
-    });
+    };
 
-    const getStmt = db.prepare('SELECT * FROM Watches WHERE ID = ?');
-    const newWatch = getStmt.get(newWatchId);
+    insertStmt.run(newWatchObj);
 
-    return newWatch;
+    newWatchObj.watches = newScrapedWatches[0];
+
+    return newWatchObj;
   } catch (err) {
     return errorLogger.error({
       message: 'Function addNewWatch failed.',
