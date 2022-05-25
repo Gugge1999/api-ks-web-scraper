@@ -33,6 +33,7 @@
     "no-promise-executor-return": "off",
     "no-await-in-loop": "off",
     "prefer-destructuring": "off",
+    "no-console": "off",
     // End airbnb
     // Alla nedanför är från: https://medium.com/geekculture/eslint-with-node-js-in-simple-words-cee0a0cf9167
     // Start enhance readability

@@ -22,20 +22,22 @@ router.get('/api-status', async (req, res, next) => {
 });
 
 router.post('/add-watch', async (req, res, next) => {
-  try {
-    const scrapedWatches = await scrapeWatchInfo(req.body.link);
-    try {
-      const newWatch = db.addNewWatch(
-        req.body.label,
-        req.body.link,
-        scrapedWatches
-      );
-      res.status(200).json(newWatch);
-    } catch {
-      next('Could not save watch');
-    }
-  } catch {
+  const scrapedWatches = await scrapeWatchInfo(req.body.link);
+
+  if (scrapedWatches.length === 0) {
     res.status(400).json('Invalid link.');
+    return;
+  }
+
+  try {
+    const newWatch = db.addNewWatch(
+      req.body.label,
+      req.body.link,
+      scrapedWatches
+    );
+    res.status(200).json(newWatch);
+  } catch {
+    next('Could not save watch');
   }
 });
 
