@@ -16,6 +16,11 @@ export async function scrapeWatchInfo(link) {
 
   const $ = cheerio.load(body);
 
+  // Länken gav inga resultat.
+  if ($('.contentRow-title').length === 0) {
+    return 'Watch name yielded no results';
+  }
+
   const scrapedWatchArr = [];
 
   const allContentRowTitle = $('.contentRow-title').children();

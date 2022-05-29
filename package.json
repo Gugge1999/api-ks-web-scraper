@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "eslint . & nodemon src/app.js",
-    "prod": "cross-env NODE_ENV=production supervisor src/app.js",
+    "prod": "NODE_ENV=production supervisor src/app.js",
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"

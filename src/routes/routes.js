@@ -24,8 +24,8 @@ router.get('/api-status', async (req, res, next) => {
 router.post('/add-watch', async (req, res, next) => {
   const scrapedWatches = await scrapeWatchInfo(req.body.link);
 
-  if (scrapedWatches.length === 0) {
-    res.status(400).json('Invalid link.');
+  if (scrapedWatches === 'Watch name yielded no results') {
+    res.status(400).json('Watch name yielded no results.');
     return;
   }
 
