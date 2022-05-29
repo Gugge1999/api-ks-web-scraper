@@ -1,4 +1,4 @@
 node_modules
 .env
 .eslintcache
-src/logs/*.log
+logs/*.log

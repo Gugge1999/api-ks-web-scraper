@@ -20,19 +20,19 @@ export const errorLogger = createLogger({
   exitOnError: false,
   transports: [
     new transports.Console(),
-    new transports.File({ filename: 'src/logs/error.log' })
+    new transports.File({ filename: 'logs/error.log' })
   ]
 });
 
 export const requestLogger = createLogger({
   format: format.combine(customFormat),
-  transports: [new transports.File({ filename: 'src/logs/requests.log' })]
+  transports: [new transports.File({ filename: 'logs/requests.log' })]
 });
 
 export const infoLogger = createLogger({
   format: format.combine(customFormat),
   transports: [
     new transports.Console(),
-    new transports.File({ filename: 'src/logs/info.log' })
+    new transports.File({ filename: 'logs/info.log' })
   ]
 });
