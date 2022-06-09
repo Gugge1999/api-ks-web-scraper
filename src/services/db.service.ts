@@ -1,16 +1,21 @@
-import { v4 as uuidv4 } from 'uuid';
 import Database from 'better-sqlite3';
+import { v4 as uuidv4 } from 'uuid';
 
-import * as timeService from './time-and-date.service.js';
-import { errorLogger, infoLogger } from './logger.service.js';
+import { scrapedWatch } from '../models/scraped-watch.js';
+import { watch } from '../models/watch.js';
+import { errorLogger, infoLogger } from '../services/logger.service.js';
+import * as timeService from '../services/time-and-date.service.js';
 
 const db = new Database('src/database/watch-scraper.db', {
   fileMustExist: true
 });
 
-function convertStringToBoolean(array) {
+function convertStringToBoolean(array: watch[]): watch[] {
   // Convert column active from string to boolean
-  return array.map((obj) => ({ ...obj, active: JSON.parse(obj.active) }));
+  return array.map((obj) => ({
+    ...obj,
+    active: JSON.parse(obj.active.toString())
+  }));
 }
 
 export function getAllWatches() {
@@ -26,17 +31,18 @@ export function getAllWatches() {
   }
 }
 
-export function getAllActiveWatches() {
+export function getAllActiveWatches(): watch[] {
   try {
     const stmt = db.prepare('SELECT * FROM Watches WHERE active = @active');
     const allWatches = stmt.all({ active: 'true' });
 
     return convertStringToBoolean(allWatches);
   } catch (err) {
-    return errorLogger.error({
+    errorLogger.error({
       message: 'Function getAllActiveWatches failed.',
       stacktrace: err
     });
+    return [];
   }
 }
 
@@ -58,7 +64,7 @@ export function getAllWatchesOnlyLatest() {
   }
 }
 
-export function toggleActiveStatus(newStatus, id) {
+export function toggleActiveStatus(newStatus: string, id: string) {
   try {
     const stmt = db.prepare(
       'UPDATE Watches SET active = @active WHERE id = @id'
@@ -78,7 +84,11 @@ export function toggleActiveStatus(newStatus, id) {
   }
 }
 
-export function addNewWatch(label, link, newScrapedWatches) {
+export function addNewWatch(
+  label: string,
+  link: string,
+  newScrapedWatches: scrapedWatch[]
+) {
   try {
     const newWatchId = uuidv4();
 
@@ -93,12 +103,12 @@ export function addNewWatch(label, link, newScrapedWatches) {
         '@added)'
     );
 
-    const newWatchObj = {
+    const newWatchObj: watch = {
       id: newWatchId,
       link,
       label,
       watches: JSON.stringify(newScrapedWatches),
-      active: 'true',
+      active: true,
       last_email_sent: '',
       added: timeService.dateAndTime()
     };
@@ -116,14 +126,14 @@ export function addNewWatch(label, link, newScrapedWatches) {
   }
 }
 
-export function getWatchById(id) {
+export function getWatchById(id: string) {
   const stmt = db.prepare('SELECT * FROM Watches WHERE ID = ?');
   const watch = stmt.get(id);
 
   return convertStringToBoolean(watch);
 }
 
-export function updateStoredWatches(newWatchArr, id) {
+export function updateStoredWatches(newWatchArr: scrapedWatch[], id: string) {
   try {
     const stmt = db.prepare(
       'UPDATE Watches SET ' +
@@ -145,7 +155,7 @@ export function updateStoredWatches(newWatchArr, id) {
   }
 }
 
-export function deleteWatch(id) {
+export function deleteWatch(id: string) {
   try {
     const stmt = db.prepare('DELETE FROM Watches WHERE id = ?');
 

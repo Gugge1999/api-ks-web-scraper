@@ -12,7 +12,7 @@ const transporter = createTransport({
   }
 });
 
-export async function sendKernelNotification(emailText) {
+export async function sendKernelNotification(emailText: string) {
   await transporter.sendMail({
     from: process.env.EMAIL,
     to: process.env.EMAILTO,
@@ -21,7 +21,7 @@ export async function sendKernelNotification(emailText) {
   });
 }
 
-export async function sendErrorNotification(err) {
+export async function sendErrorNotification(err: string) {
   await transporter.sendMail({
     from: email.user,
     to: email.emailTo,

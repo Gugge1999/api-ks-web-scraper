@@ -1,10 +1,11 @@
 import { intervalToDuration } from 'date-fns';
 import express from 'express';
 
+import { interval } from '../config/scraper.config.js';
 import * as db from '../services/db.service.js';
 import { readLastBackupDateFromFile } from '../services/file.service.js';
-import { interval } from '../config/scraper.config.js';
-import { scrapeWatchInfo } from '../services/scraper.service.js';
+
+// import { scrapeWatchInfo } from '../services/scraper.service.js';
 
 const router = express.Router();
 
@@ -22,7 +23,8 @@ router.get('/api-status', async (req, res, next) => {
 });
 
 router.post('/add-watch', async (req, res, next) => {
-  const scrapedWatches = await scrapeWatchInfo(req.body.link);
+  // const scrapedWatches = await scrapeWatchInfo(req.body.link);
+  const scrapedWatches: any = '';
 
   if (scrapedWatches === 'Watch name yielded no results') {
     res.status(400).json('Watch name yielded no results.');
@@ -53,7 +55,7 @@ router.get('/all-watches', (req, res, next) => {
 router.put('/toggle-active-status', (req, res, next) => {
   try {
     const newStatus = !req.body.isActive;
-    const status = db.toggleActiveStatus(newStatus, req.body.id);
+    const status = db.toggleActiveStatus(newStatus.toString(), req.body.id);
     res.status(200).json({ isActive: status, label: req.body.label });
   } catch {
     next('Could not toggle status.');

@@ -4,11 +4,13 @@ import morgan from 'morgan';
 import schedule from 'node-schedule';
 
 import routes from './routes/routes.js';
-import { compareStoredWithScraped } from './services/scraper.service.js';
 import { backupDatabase } from './services/db.service.js';
-import { errorLogger, requestLogger } from './services/logger.service.js';
 import { writeDatabaseBackupDateToFile } from './services/file.service.js';
+import { errorLogger, requestLogger } from './services/logger.service.js';
 import errorHandler from './services/middleware.service.js';
+import { scrapeWatchInfo } from './services/scraper.service.js';
+
+// import { compareStoredWithScraped } from './services/scraper.service';
 
 const app = express();
 app.use(
@@ -44,11 +46,16 @@ const port = 3000;
 
 app.listen(port);
 
+scrapeWatchInfo(
+  'https://klocksnack.se/search/1/?q=rolex&t=post&c[child_nodes]=1&c[nodes][0]=11&c[title_only]=1&o=date'
+);
+
 // Backup av databasen varje söndag klockan 12:00
 schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, () => {
   try {
     backupDatabase();
     writeDatabaseBackupDateToFile();
+    console.log('test');
   } catch (err) {
     errorLogger.error({
       message: 'Function backupDatabase failed.',
@@ -57,4 +64,4 @@ schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, () => {
   }
 });
 
-await compareStoredWithScraped();
+// await compareStoredWithScraped();

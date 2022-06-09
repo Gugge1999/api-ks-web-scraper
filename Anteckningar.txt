@@ -1,5 +1,5 @@
 ---------------------------------- TODO ----------------------------------
-Skapa en array av senaste klockor som är scrape:ade. 
+Ta bort service från namnet i service mappen.
 
 
 Inför rate limit? 

@@ -1,16 +1,20 @@
+import cheerio from 'cheerio';
 import fetch from 'node-fetch';
-import * as cheerio from 'cheerio';
 
 import { interval } from '../config/scraper.config.js';
+import { scrapedWatch } from '../models/scraped-watch.js';
 import {
-  sendKernelNotification,
-  sendErrorNotification
-} from './notification.service.js';
-import * as timeService from './time-and-date.service.js';
-import { getAllActiveWatches, updateStoredWatches } from './db.service.js';
-import { errorLogger, infoLogger } from './logger.service.js';
+  getAllActiveWatches,
+  updateStoredWatches
+} from '../services/db.service.js';
+import { errorLogger, infoLogger } from '../services/logger.service.js';
+import {
+  sendErrorNotification,
+  sendKernelNotification
+} from '../services/notification.service.js';
+import * as timeService from '../services/time-and-date.service.js';
 
-export async function scrapeWatchInfo(link) {
+export async function scrapeWatchInfo(link: string): Promise<any> {
   const response = await fetch(link);
   const body = await response.text();
 
@@ -21,28 +25,43 @@ export async function scrapeWatchInfo(link) {
     return 'Watch name yielded no results';
   }
 
-  const scrapedWatchArr = [];
+  const scrapedWatchArr: scrapedWatch[] = [];
 
-  const allContentRowTitle = $('.contentRow-title').children();
+  const allContentRowTitle: any[] = [];
+
+  // SPARA
+  // $('.contentRow-title').each(function (this: cheerio.Element, i, elem) {
+  //   allContentRowTitle.push(i, elem, $(this).text().trim());
+  // });
+
+  $('.contentRow-title').each(function (this: cheerio.Element) {
+    allContentRowTitle.push(
+      $(this)
+        .text()
+        .replace(/Tillbakadragen|Avslutad|Säljes|OHPF|Bytes|\//gi, '') // Remove sale status of the watch
+        .trim()
+    );
+  });
 
   for (let i = 0; i < allContentRowTitle.length; i += 1) {
-    const currentWatchInfo = {
-      watchName: '',
-      postedDate: '',
-      watchLink: ''
+    const currentWatchInfo: scrapedWatch = {
+      name: '',
+      date: '',
+      link: ''
     };
 
     let watchName = '';
 
-    const titleArr = allContentRowTitle[i].children;
-    const lastIndex = Object.keys(titleArr).length - 1;
+    const lastIndex = allContentRowTitle.length - 1;
 
     const titleAttributes = [];
 
-    for (let j = 0; j < allContentRowTitle[i].children.length; j += 1) {
-      titleAttributes.push(
-        allContentRowTitle[i].children[j].attribs ?? { class: 'Text' }
-      );
+    for (let j = 0; j < allContentRowTitle.length; j += 1) {
+      for (let x = 0; x < allContentRowTitle[i][0].children.length; x++) {
+        titleAttributes.push(
+          allContentRowTitle[i][0].children[x].attribs ?? { class: 'Text' }
+        );
+      }
     }
 
     // Kolla först om textHighlight finns
@@ -78,7 +97,7 @@ export async function scrapeWatchInfo(link) {
       }
     } else {
       // textHighlight finns inte. Vi kan bara gå på index för att hämta titel.
-      watchName = $('.contentRow-title').children()[i].children[lastIndex].data;
+      // watchName = $('.contentRow-title').children()[i].children[lastIndex].data;
     }
 
     if (watchName === '') {
@@ -87,19 +106,19 @@ export async function scrapeWatchInfo(link) {
     }
 
     // Format: 2022-05-14T09:06:18+0200
-    const watchDate = $('.u-dt')[i].attribs.datetime;
+    // const watchDate = $('.u-dt')[i].attribs.datetime;
 
     const watchLink = `https://klocksnack.se${allContentRowTitle[i].attribs.href}`;
 
-    currentWatchInfo.watchName = watchName;
-    currentWatchInfo.postedDate = watchDate;
-    currentWatchInfo.watchLink = watchLink;
+    currentWatchInfo.name = watchName;
+    // currentWatchInfo.date = watchDate;
+    currentWatchInfo.link = watchLink;
     scrapedWatchArr.push(currentWatchInfo);
   }
-
   return scrapedWatchArr;
 }
 
+/*
 export async function compareStoredWithScraped() {
   const allWatches = getAllActiveWatches();
 
@@ -158,3 +177,4 @@ export async function compareStoredWithScraped() {
   }
   setTimeout(compareStoredWithScraped, interval);
 }
+*/

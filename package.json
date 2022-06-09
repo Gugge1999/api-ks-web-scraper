@@ -3,13 +3,14 @@
   "version": "0.0.1",
   "type": "module",
   "description": "KS Web Scraper API",
-  "main": "index.js",
   "scripts": {
-    "dev": "eslint . & nodemon src/app.js",
-    "prod": "NODE_ENV=production supervisor src/app.js",
-    "lint": "eslint .",
+    "dev": "nodemon ts-node src/app.ts",
+    "prod": "NODE_ENV=production npm run tsc && supervisor dist/app.js",
+    "lint": "eslint src/**/*.*",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "start": "node ./dist/app.js",
+    "build": "tsc"
   },
   "engines": {
     "node": ">=16"
@@ -17,6 +18,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/better-sqlite3": "^7.5.0",
+    "@types/cheerio": "^0.22.31",
+    "@types/cors": "^2.8.12",
+    "@types/morgan": "^1.9.3",
+    "@types/node-schedule": "^2.1.0",
+    "@types/uuid": "^8.3.4",
     "better-sqlite3": "^7.5.3",
     "cheerio": "^1.0.0-rc.11",
     "cors": "^2.8.5",
@@ -32,6 +39,10 @@
     "winston": "^3.7.2"
   },
   "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.36",
+    "@types/nodemailer": "^6.4.4",
+    "@typescript-eslint/parser": "^5.26.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.16.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -41,7 +52,10 @@
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^8.0.1",
     "lint-staged": "^12.4.1",
-    "prettier": "2.6.2"
+    "prettier": "2.6.2",
+    "ts-node": "^10.8.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.2"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",
