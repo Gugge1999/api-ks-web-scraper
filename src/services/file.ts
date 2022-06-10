@@ -1,7 +1,7 @@
 import fs from 'fs';
 
-import { errorLogger, infoLogger } from '../services/logger.service.js';
-import { dateAndTime } from '../services/time-and-date.service.js';
+import { errorLogger, infoLogger } from './logger.js';
+import { dateAndTime } from './time-and-date.js';
 
 export const readLastBackupDateFromFile = async () => {
   try {

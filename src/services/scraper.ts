@@ -3,16 +3,13 @@ import fetch from 'node-fetch';
 
 import { interval } from '../config/scraper.config.js';
 import { scrapedWatch } from '../models/scraped-watch.js';
-import {
-  getAllActiveWatches,
-  updateStoredWatches
-} from '../services/db.service.js';
-import { errorLogger, infoLogger } from '../services/logger.service.js';
+import { getAllActiveWatches, updateStoredWatches } from './db.js';
+import { errorLogger, infoLogger } from './logger.js';
 import {
   sendErrorNotification,
   sendKernelNotification
-} from '../services/notification.service.js';
-import * as timeService from '../services/time-and-date.service.js';
+} from './notification.js';
+import * as timeService from './time-and-date.js';
 
 export async function scrapeWatchInfo(link: string): Promise<any> {
   const response = await fetch(link);
@@ -37,9 +34,10 @@ export async function scrapeWatchInfo(link: string): Promise<any> {
       $(this)
         .text()
         .replace(
-          /Tillbakadragen|Avslutad|Säljes\/Bytes|Säljes|OHPF|Bytes|\//i,
+          // Radera säljstatus
+          /Tillbakadragen|Avslutad|Säljes\/Bytes|Säljes|Bytes|OHPF|\//i,
           ''
-        ) // Radera säljstatus
+        )
         .trim()
     );
   });
@@ -62,7 +60,7 @@ export async function scrapeWatchInfo(link: string): Promise<any> {
   for (let i = 0; i < allTitles.length; i++) {
     const currentWatchInfo: scrapedWatch = {
       name: allTitles[i],
-      date: allPostedDates[i],
+      postedDate: allPostedDates[i],
       link: allLinks[i]
     };
     scrapedWatchArr.push(currentWatchInfo);
@@ -71,7 +69,6 @@ export async function scrapeWatchInfo(link: string): Promise<any> {
   return scrapedWatchArr;
 }
 
-/*
 export async function compareStoredWithScraped() {
   const allWatches = getAllActiveWatches();
 
@@ -83,7 +80,7 @@ export async function compareStoredWithScraped() {
   for (let i = 0; i < allWatches.length; i += 1) {
     const storedWatchRow = allWatches[i];
 
-    const storedWatchesArr = JSON.parse(storedWatchRow.watches);
+    const storedWatchesArr = JSON.parse(storedWatchRow.watches.toString());
 
     const scrapedWatchArr = await scrapeWatchInfo(storedWatchRow.link);
 
@@ -95,8 +92,10 @@ export async function compareStoredWithScraped() {
     // Just nu jämförs de lagrade klockorna och de scrape:ade endast på postedDate.
     // Är det unikt nog ?
     const newScrapedWatches = scrapedWatchArr.filter(
-      ({ postedDate: id1 }) =>
-        !storedWatchesArr.some(({ postedDate: id2 }) => id2 === id1)
+      ({ postedDate: id1 }: { postedDate: string }) =>
+        !storedWatchesArr.some(
+          ({ postedDate: id2 }: { postedDate: string }) => id2 === id1
+        )
     );
 
     if (newScrapedWatches.length > 0) {
@@ -130,4 +129,3 @@ export async function compareStoredWithScraped() {
   }
   setTimeout(compareStoredWithScraped, interval);
 }
-*/

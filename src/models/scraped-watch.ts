@@ -1,5 +1,5 @@
 export interface scrapedWatch {
   name: string;
-  date: string;
+  postedDate: string;
   link: string;
 }

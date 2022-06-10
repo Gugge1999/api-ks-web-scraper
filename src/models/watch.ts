@@ -1,4 +1,4 @@
-import { scrapedWatch } from '../models/scraped-watch';
+import { scrapedWatch } from './scraped-watch.js';
 
 export interface watch {
   id: string;

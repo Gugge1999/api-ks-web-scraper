@@ -4,11 +4,11 @@ import morgan from 'morgan';
 import schedule from 'node-schedule';
 
 import routes from './routes/routes.js';
-import { backupDatabase } from './services/db.service.js';
-import { writeDatabaseBackupDateToFile } from './services/file.service.js';
-import { errorLogger, requestLogger } from './services/logger.service.js';
-import errorHandler from './services/middleware.service.js';
-import { scrapeWatchInfo } from './services/scraper.service.js';
+import { backupDatabase } from './services/db.js';
+import { writeDatabaseBackupDateToFile } from './services/file.js';
+import { errorLogger, requestLogger } from './services/logger.js';
+import errorHandler from './services/middleware.js';
+import { compareStoredWithScraped } from './services/scraper.js';
 
 // import { compareStoredWithScraped } from './services/scraper.service';
 
@@ -31,6 +31,7 @@ app.use(json());
 app.use(cors()); // Lägg till cors FÖRE routes
 app.use(routes);
 app.use(errorHandler);
+
 const port = 3000;
 
 // Bra länk: https://blog.devgenius.io/deploy-angular-nodejs-application-to-aws-elastic-beanstalk-9ab13076a736
@@ -46,12 +47,8 @@ const port = 3000;
 
 app.listen(port);
 
-scrapeWatchInfo(
-  'https://klocksnack.se/search/1/?q=rolex&t=post&c[child_nodes]=1&c[nodes][0]=11&c[title_only]=1&o=date'
-);
-
-// Backup av databasen varje söndag klockan 12:00
-schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, () => {
+// Backup av databasen varje dag klockan 12:00
+schedule.scheduleJob({ hour: 12, minute: 0 }, () => {
   try {
     backupDatabase();
     writeDatabaseBackupDateToFile();
@@ -64,4 +61,4 @@ schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: 0 }, () => {
   }
 });
 
-// await compareStoredWithScraped();
+await compareStoredWithScraped();

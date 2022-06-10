@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { scrapedWatch } from '../models/scraped-watch.js';
 import { watch } from '../models/watch.js';
-import { errorLogger, infoLogger } from '../services/logger.service.js';
-import * as timeService from '../services/time-and-date.service.js';
+import { errorLogger, infoLogger } from './logger.js';
+import * as timeService from './time-and-date.js';
 
 const db = new Database('src/database/watch-scraper.db', {
   fileMustExist: true
@@ -64,7 +64,7 @@ export function getAllWatchesOnlyLatest() {
   }
 }
 
-export function toggleActiveStatus(newStatus: string, id: string) {
+export function toggleActiveStatus(newStatus: boolean, id: string) {
   try {
     const stmt = db.prepare(
       'UPDATE Watches SET active = @active WHERE id = @id'
@@ -108,7 +108,7 @@ export function addNewWatch(
       link,
       label,
       watches: JSON.stringify(newScrapedWatches),
-      active: true,
+      active: 'true',
       last_email_sent: '',
       added: timeService.dateAndTime()
     };
@@ -133,7 +133,7 @@ export function getWatchById(id: string) {
   return convertStringToBoolean(watch);
 }
 
-export function updateStoredWatches(newWatchArr: scrapedWatch[], id: string) {
+export function updateStoredWatches(newWatchArr: string, id: string) {
   try {
     const stmt = db.prepare(
       'UPDATE Watches SET ' +
