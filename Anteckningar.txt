@@ -1,7 +1,4 @@
 ---------------------------------- TODO ----------------------------------
-Ta bort service från namnet i service mappen.
-
-
 Inför rate limit? 
        Länkar: 
               https://blog.logrocket.com/rate-limiting-node-js/
@@ -23,9 +20,6 @@ Guide till deploy på azure:
        https://stackify.com/azure-deployment-guide/
 
 
-Kanske byta från att skicka in en länk till klockan. Skicka istället bara med namnet. Då kan man kan skippa label också.
-Bra bibliotek: https://www.npmjs.com/package/puppeteer
-
 
 Skapa enhetstester 
 
@@ -36,9 +30,6 @@ Byt till sequelize. Finns inte stöd idag men det finns planer för det i framti
 Byt till Undici (även kallat fetch, tror jag...) när du har Node 18
   
   
-Det kanske går att hosta på Azure med min MSDN licens?
-  
-
 Uppdatera till Express 5 när det kommer ut. Migration guide: https://expressjs.com/en/guide/migrating-5.html
   
 
