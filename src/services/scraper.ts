@@ -11,6 +11,7 @@ import {
 } from './notification.js';
 import * as timeService from './time-and-date.js';
 
+// Byt från any
 export async function scrapeWatchInfo(link: string): Promise<any> {
   const response = await fetch(link);
   const body = await response.text();
@@ -103,8 +104,8 @@ export async function compareStoredWithScraped() {
 
       // Loopa över varje ny klocka och skicka mail
       for (let j = 0; j < newScrapedWatches.length; j += 1) {
-        const emailText = `${newScrapedWatches[j].watchName}\n\nLänk: ${
-          newScrapedWatches[j].watchLink
+        const emailText = `${newScrapedWatches[j].name}\n\nLänk: ${
+          newScrapedWatches[j].link
         }\n\nDetta mail skickades: ${timeService.dateAndTime()}`;
 
         try {
