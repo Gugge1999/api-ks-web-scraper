@@ -5,11 +5,11 @@
   "description": "KS Web Scraper API",
   "scripts": {
     "dev": "nodemon ts-node ./src/app.ts",
-    "prod": "NODE_ENV=production npm run build && supervisor ./dist/app.js",
+    "prod": "NODE_ENV=production npm run build && supervisor ./node-dist/app.js",
     "lint": "eslint ./src/**/*.*",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
-    "start": "node ./dist/app.js",
+    "start": "node ./node-dist/app.js",
     "build": "tsc"
   },
   "engines": {
