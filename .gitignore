@@ -1,4 +1,4 @@
-dist
+ng-dist
 node-dist
 node_modules
 .env
