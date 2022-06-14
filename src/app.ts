@@ -34,7 +34,7 @@ app.use(cors()); // Lägg till cors FÖRE routes
 app.use(routes);
 app.use(errorHandler);
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 const relativePath = (a: any) =>
   join(dirname(fileURLToPath(import.meta.url)), a);
