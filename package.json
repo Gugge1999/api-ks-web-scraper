@@ -12,9 +12,6 @@
     "start": "node ./node-dist/app.js",
     "build": "tsc"
   },
-  "engines": {
-    "node": ">=16"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
