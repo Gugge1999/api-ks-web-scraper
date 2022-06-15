@@ -34,7 +34,7 @@ app.use(cors()); // Lägg till cors FÖRE routes
 app.use(routes);
 app.use(errorHandler);
 
-const port = process.env.PORT || 3010;
+const port = process.env.PORT || process.env.NODE_ENV || 3010;
 
 const relativePath = (a: any) =>
   join(dirname(fileURLToPath(import.meta.url)), a);
@@ -46,6 +46,9 @@ const relativePath = (a: any) =>
     1: kör npm run build i api och döp om den till node-dist
     2: Kopiera över angular dist-mappen
 */
+
+console.log('process.env.PORT: ' + process.env.PORT);
+console.log('process.env.NODE_EN: ' + process.env.NODE_ENV);
 
 const pathToAngularDist = relativePath('../ng-dist/ks-web-scraper');
 
