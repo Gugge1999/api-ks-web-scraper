@@ -5,7 +5,7 @@
   "description": "KS Web Scraper API",
   "scripts": {
     "dev": "nodemon ts-node ./src/app.ts",
-    "prod": "NODE_ENV=production && supervisor node-dist/app.js",
+    "prod": "env NODE_ENV=production node node-dist/app.js",
     "lint": "eslint ./src/**/*.*",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
