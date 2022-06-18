@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url';
 import routes from './routes/routes.js';
 import { backupDatabase } from './services/db.js';
 import { writeDatabaseBackupDateToFile } from './services/file.js';
-import { errorLogger, requestLogger } from './services/logger.js';
+import { errorLogger, infoLogger, requestLogger } from './services/logger.js';
 import errorHandler from './services/middleware.js';
 
 import { compareStoredWithScraped } from './services/scraper.js';
@@ -35,6 +35,9 @@ app.use(errorHandler);
 
 const port = process.env.PORT || 3000;
 
+infoLogger.info({ message: `process.env.PORT: ${process.env.PORT}` });
+infoLogger.info({ message: `process.env.NODE_ENV: ${process.env.NODE_ENV}` });
+
 const relativePath = (a: any) =>
   join(dirname(fileURLToPath(import.meta.url)), a);
 
@@ -45,9 +48,6 @@ const relativePath = (a: any) =>
     1: kör npm run build i api och döp om den till node-dist
     2: Kopiera över angular dist-mappen
 */
-
-console.log('process.env.PORT: ' + process.env.PORT);
-console.log('process.env.NODE_EN: ' + process.env.NODE_ENV);
 
 const pathToAngularDist = relativePath('../ng-dist/ks-web-scraper');
 

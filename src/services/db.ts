@@ -9,7 +9,7 @@ import { errorLogger, infoLogger } from './logger.js';
 import * as timeService from './time-and-date.js';
 
 const devEnv = 'src/database/watch-scraper.db';
-const prodEnv = '/temp/watch-scraper.db';
+const prodEnv = '/tmp/watch-scraper.db';
 let db: any;
 
 // Skapa en async await funktion som sätter rätt databas.
