@@ -10,9 +10,15 @@ import * as timeService from './time-and-date.js';
 const devEnv = '../../watch-scraper.db';
 const prodEnv = 'D:/home/watch-scraper.db';
 
-fs.rename(devEnv, prodEnv, function (err) {
-  if (err) throw err;
-  console.log('Successfully renamed db file.');
+var source = fs.createReadStream(devEnv);
+var dest = fs.createWriteStream(prodEnv);
+
+source.pipe(dest);
+source.on('end', function () {
+  console.log('Successfully copied file.');
+});
+source.on('error', function (err) {
+  console.log('error', err);
 });
 
 const db = new Database(prodEnv, {
