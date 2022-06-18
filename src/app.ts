@@ -33,7 +33,7 @@ app.use(cors()); // Lägg till cors FÖRE routes
 app.use(routes);
 app.use(errorHandler);
 
-const port = process.env.PORT || process.env.NODE_ENV || 3010;
+const port = process.env.PORT || 3000;
 
 const relativePath = (a: any) =>
   join(dirname(fileURLToPath(import.meta.url)), a);
@@ -69,4 +69,14 @@ schedule.scheduleJob({ hour: 12, minute: 0 }, () => {
   }
 });
 
-await compareStoredWithScraped();
+const wait = async () => {
+  await new Promise<void>((resolve) =>
+    setTimeout(() => {
+      console.log('timeout');
+      resolve();
+    }, 5500)
+  );
+  await compareStoredWithScraped();
+};
+
+wait();

@@ -4,12 +4,12 @@
   "type": "module",
   "description": "KS Web Scraper API",
   "scripts": {
-    "dev": "nodemon ts-node ./src/app.ts",
-    "prod": "env NODE_ENV=production supervisor node-dist/app.js",
+    "dev": "cross-env NODE_ENV=develop nodemon ts-node ./src/app.ts",
+    "prod": "env NODE_ENV=production npx supervisor node-dist/app.js",
     "lint": "eslint ./src/**/*.*",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
-    "start": "node ./node-dist/app.js",
+    "start": "cross-env NODE_ENV=develop node ./node-dist/app.js",
     "build": "tsc"
   },
   "author": "",

@@ -9,22 +9,26 @@ import { errorLogger, infoLogger } from './logger.js';
 import * as timeService from './time-and-date.js';
 
 const devEnv = 'src/database/watch-scraper.db';
-const prodEnv = '/tmp/watch-scraper.db';
-
-try {
-  fs.copySync(devEnv, prodEnv);
-  console.log('success!');
-} catch (err) {
-  console.error('fs error', err);
-}
-
+const prodEnv = '/usr/watch-scraper.db';
 let db: any;
 
-setTimeout(() => {
+// Skapa en async await funktion som sätter rätt databas.
+// Det löser problem med att klockor hämtas innan det fil till databas är satt.
+if (process.env.NODE_ENV === 'production') {
+  try {
+    fs.copySync(devEnv, prodEnv);
+    console.log('success!');
+  } catch (err) {
+    console.error('fs error', err);
+  }
   db = new Database(prodEnv, {
     verbose: console.log
   });
-}, 5000);
+} else {
+  db = new Database(devEnv, {
+    verbose: console.log
+  });
+}
 
 function convertStringToBoolean(array: watch[]): watch[] {
   // Convert column active from string to boolean
@@ -193,7 +197,7 @@ export function backupDatabase() {
     .then(() => {
       infoLogger.info({ message: 'Backup complete!' });
     })
-    .catch((err: any) => {
+    .catch((err: Error) => {
       errorLogger.error({
         message: 'Function backupDatabase failed.',
         stacktrace: err
