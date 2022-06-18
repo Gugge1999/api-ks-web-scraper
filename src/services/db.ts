@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3';
+import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
 import { scrapedWatch } from '../models/scraped-watch.js';
@@ -6,7 +7,15 @@ import { watch } from '../models/watch.js';
 import { errorLogger, infoLogger } from './logger.js';
 import * as timeService from './time-and-date.js';
 
-const db = new Database('src/database/watch-scraper.db', {
+const devEnv = '../../watch-scraper.db';
+const prodEnv = 'D:/home/watch-scraper.db';
+
+fs.rename(devEnv, prodEnv, function (err) {
+  if (err) throw err;
+  console.log('Successfully renamed db file.');
+});
+
+const db = new Database(prodEnv, {
   fileMustExist: true
 });
 
