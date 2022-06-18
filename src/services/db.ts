@@ -9,17 +9,21 @@ import { errorLogger, infoLogger } from './logger.js';
 import * as timeService from './time-and-date.js';
 
 const devEnv = 'src/database/watch-scraper.db';
-const prodEnv = '/usr/watch-scraper.db';
+const prodEnv = '/sqlite-db/watch-scraper.db';
 let db: any;
 
 // Skapa en async await funktion som sätter rätt databas.
 // Det löser problem med att klockor hämtas innan det fil till databas är satt.
 if (process.env.NODE_ENV === 'production') {
   try {
+    if (!fs.existsSync(prodEnv)) {
+      fs.mkdirSync(prodEnv);
+    }
     fs.copySync(devEnv, prodEnv);
     console.log('success!');
+    infoLogger.info({ message: 'Successfully copied database' });
   } catch (err) {
-    console.error('fs error', err);
+    errorLogger.error({ message: 'Could not copy database.', stacktrace: err });
   }
   db = new Database(prodEnv, {
     verbose: console.log
