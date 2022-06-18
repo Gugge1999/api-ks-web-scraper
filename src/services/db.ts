@@ -8,7 +8,7 @@ import { errorLogger, infoLogger } from './logger.js';
 import * as timeService from './time-and-date.js';
 
 const devEnv = '../../watch-scraper.db';
-const prodEnv = 'D:/home/watch-scraper.db';
+const prodEnv = '/home/watch-scraper.db';
 
 var source = fs.createReadStream(devEnv);
 var dest = fs.createWriteStream(prodEnv);
