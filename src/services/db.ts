@@ -12,21 +12,20 @@ const devEnv = 'src/database/watch-scraper.db';
 const prodEnv = '/tmp/watch-scraper.db';
 let db: any;
 
-// Skapa en async await funktion som sätter rätt databas.
-// Det löser problem med att klockor hämtas innan det fil till databas är satt.
-if (process.env.NODE_ENV === 'production') {
-  try {
-    fs.copySync(devEnv, prodEnv);
-    console.log('success!');
-    infoLogger.info({ message: 'Successfully copied database' });
-  } catch (err) {
-    errorLogger.error({ message: 'Could not copy database.', stacktrace: err });
+export async function setDatabase() {
+  if (process.env.NODE_ENV === 'production') {
+    try {
+      fs.copySync(devEnv, prodEnv);
+      console.log('success!');
+      infoLogger.info({ message: 'Successfully copied database' });
+    } catch (err) {
+      errorLogger.error({
+        message: 'Could not copy database to folder tmp.',
+        stacktrace: err
+      });
+    }
   }
-  db = new Database(prodEnv, {
-    verbose: console.log
-  });
-} else {
-  db = new Database(devEnv, {
+  db = new Database(process.env.NODE_ENV === 'production' ? prodEnv : devEnv, {
     verbose: console.log
   });
 }

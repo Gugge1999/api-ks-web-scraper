@@ -6,11 +6,10 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 import routes from './routes/routes.js';
-import { backupDatabase } from './services/db.js';
+import { backupDatabase, setDatabase } from './services/db.js';
 import { writeDatabaseBackupDateToFile } from './services/file.js';
 import { errorLogger, infoLogger, requestLogger } from './services/logger.js';
 import errorHandler from './services/middleware.js';
-
 import { compareStoredWithScraped } from './services/scraper.js';
 
 const app = express();
@@ -69,14 +68,6 @@ schedule.scheduleJob({ hour: 12, minute: 0 }, () => {
   }
 });
 
-const wait = async () => {
-  await new Promise<void>((resolve) =>
-    setTimeout(() => {
-      console.log('timeout');
-      resolve();
-    }, 5500)
-  );
-  await compareStoredWithScraped();
-};
+await setDatabase();
 
-wait();
+await compareStoredWithScraped();
