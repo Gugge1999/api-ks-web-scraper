@@ -10,9 +10,8 @@ import { backupDatabase } from './services/db.js';
 import { writeDatabaseBackupDateToFile } from './services/file.js';
 import { errorLogger, requestLogger } from './services/logger.js';
 import errorHandler from './services/middleware.js';
-import { compareStoredWithScraped } from './services/scraper.js';
 
-// import { compareStoredWithScraped } from './services/scraper.service';
+import { compareStoredWithScraped } from './services/scraper.js';
 
 const app = express();
 app.use(
