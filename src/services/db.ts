@@ -9,7 +9,7 @@ import { errorLogger, infoLogger } from './logger.js';
 import * as timeService from './time-and-date.js';
 
 const devEnv = 'src/database/watch-scraper.db';
-const prodEnv = '/tmp/watch-scraper.db';
+const prodEnv = '/home/watch-scraper.db';
 let db: any;
 
 export async function setDatabase() {
