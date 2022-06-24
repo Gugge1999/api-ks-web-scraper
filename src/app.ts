@@ -16,7 +16,7 @@ const app = express();
 app.use(
   morgan(
     // För att vilken webbläsare använd: :user-agent
-    '::remote-addr :remote-user :method :url - Response time: :response-time ms',
+    '::remote-addr :remote-user :method :url - Response time: :response-time ms - :user-agent',
     {
       stream: {
         write: (message) =>
