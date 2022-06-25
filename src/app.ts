@@ -2,21 +2,21 @@ import cors from 'cors';
 import express, { json } from 'express';
 import morgan from 'morgan';
 import schedule from 'node-schedule';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 import routes from './routes/routes.js';
-import { backupDatabase } from './services/db.js';
+import { backupDatabase, setDatabase } from './services/db.js';
 import { writeDatabaseBackupDateToFile } from './services/file.js';
-import { errorLogger, requestLogger } from './services/logger.js';
+import { errorLogger, infoLogger, requestLogger } from './services/logger.js';
 import errorHandler from './services/middleware.js';
 import { compareStoredWithScraped } from './services/scraper.js';
-
-// import { compareStoredWithScraped } from './services/scraper.service';
 
 const app = express();
 app.use(
   morgan(
     // För att vilken webbläsare använd: :user-agent
-    '::remote-addr :remote-user :method :url - Response time: :response-time ms',
+    '::remote-addr :remote-user :method :url - Response time: :response-time ms - :user-agent',
     {
       stream: {
         write: (message) =>
@@ -32,18 +32,25 @@ app.use(cors()); // Lägg till cors FÖRE routes
 app.use(routes);
 app.use(errorHandler);
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-// Bra länk: https://blog.devgenius.io/deploy-angular-nodejs-application-to-aws-elastic-beanstalk-9ab13076a736
+infoLogger.info({ message: `process.env.PORT: ${process.env.PORT}` });
+infoLogger.info({ message: `process.env.NODE_ENV: ${process.env.NODE_ENV}` });
 
-// Kolla också den videon vid timestamp: https://youtu.be/TNV0_7QRDwY?t=22896
-// Den förklarar skillnaden mellan app.get och app.use
+const relativePath = (a: any) =>
+  join(dirname(fileURLToPath(import.meta.url)), a);
 
-// Relativ sökväg till Angular dist mappen. Startar från "C:\Code\api\ks_web_scraper_api"
-// app.use(
-//   '/',
-//   express.static('../../angular_projects/ks-web-scraper/dist/ks-web-scraper')
-// );
+/*
+  När den finns en dist mapp från Angular om man sen bygger express skapas
+  det flera mappar 
+  Temporär fix: 
+    1: kör npm run build i api och döp om den till node-dist
+    2: Kopiera över angular dist-mappen
+*/
+
+const pathToAngularDist = relativePath('../ng-dist/ks-web-scraper');
+
+app.use('/', express.static(pathToAngularDist));
 
 app.listen(port);
 
@@ -60,5 +67,7 @@ schedule.scheduleJob({ hour: 12, minute: 0 }, () => {
     });
   }
 });
+
+await setDatabase();
 
 await compareStoredWithScraped();

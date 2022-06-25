@@ -4,16 +4,13 @@
   "type": "module",
   "description": "KS Web Scraper API",
   "scripts": {
-    "dev": "nodemon ts-node ./src/app.ts",
-    "prod": "NODE_ENV=production npm run build && supervisor ./dist/app.js",
+    "dev": "cross-env NODE_ENV=develop nodemon ts-node ./src/app.ts",
+    "prod": "env NODE_ENV=production node node-dist/app.js",
     "lint": "eslint ./src/**/*.*",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
-    "start": "node ./dist/app.js",
+    "start": "cross-env NODE_ENV=develop node ./node-dist/app.js",
     "build": "tsc"
-  },
-  "engines": {
-    "node": ">=16"
   },
   "author": "",
   "license": "ISC",
@@ -30,11 +27,12 @@
     "date-fns": "^2.28.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "fs-extra": "^10.1.0",
     "morgan": "^1.10.0",
     "node-fetch": "^3.2.4",
     "node-schedule": "^2.1.0",
     "nodemailer": "^6.7.5",
-    "supervisor": "^0.12.0",
+    "pm2": "^5.2.0",
     "uuid": "^8.3.2",
     "winston": "^3.7.2"
   },

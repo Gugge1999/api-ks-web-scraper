@@ -1,4 +1,6 @@
 import Database from 'better-sqlite3';
+// @ts-ignore
+import fs from 'fs-extra';
 import { v4 as uuidv4 } from 'uuid';
 
 import { scrapedWatch } from '../models/scraped-watch.js';
@@ -6,9 +8,27 @@ import { watch } from '../models/watch.js';
 import { errorLogger, infoLogger } from './logger.js';
 import * as timeService from './time-and-date.js';
 
-const db = new Database('src/database/watch-scraper.db', {
-  fileMustExist: true
-});
+const devEnv = 'src/database/watch-scraper.db';
+const prodEnv = '/tmp/watch-scraper.db';
+let db: any;
+
+export async function setDatabase() {
+  if (process.env.NODE_ENV === 'production') {
+    try {
+      fs.copySync(devEnv, prodEnv);
+      console.log('success!');
+      infoLogger.info({ message: 'Successfully copied database' });
+    } catch (err) {
+      errorLogger.error({
+        message: 'Could not copy database to folder tmp.',
+        stacktrace: err
+      });
+    }
+  }
+  db = new Database(process.env.NODE_ENV === 'production' ? prodEnv : devEnv, {
+    verbose: console.log
+  });
+}
 
 function convertStringToBoolean(array: watch[]): watch[] {
   // Convert column active from string to boolean
@@ -177,7 +197,7 @@ export function backupDatabase() {
     .then(() => {
       infoLogger.info({ message: 'Backup complete!' });
     })
-    .catch((err) => {
+    .catch((err: Error) => {
       errorLogger.error({
         message: 'Function backupDatabase failed.',
         stacktrace: err
