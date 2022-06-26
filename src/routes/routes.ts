@@ -10,62 +10,61 @@ const router = express.Router();
 
 router.get('/api-status', async (req, res, next) => {
   try {
-    res.status(200).json({
+    return res.status(200).json({
       active: true,
       lastDatabaseBackupDate: await readLastBackupDateFromFile(),
       scrapingIntervalInMinutes: interval / 60000,
       uptime: intervalToDuration({ start: 0, end: process.uptime() * 1000 })
     });
   } catch {
-    next('Could not get API status.');
+    return next('Could not get API status.');
   }
 });
 
 router.post('/add-watch', async (req, res, next) => {
   const scrapedWatches = await scrapeWatchInfo(req.body.link);
 
-  if (scrapedWatches === 'Watch name yielded no results') {
-    res.status(400).json('Watch name yielded no results.');
-    return;
+  if (scrapedWatches[0].name === 'Watch name yielded no results') {
+    return res.status(400).json('Watch name yielded no results.');
   }
 
   try {
-    const newWatch = db.addNewWatch(
+    const newWatch = await db.addNewWatch(
       req.body.label,
       req.body.link,
       scrapedWatches
     );
-    res.status(200).json(newWatch);
+    return res.status(200).json(newWatch);
   } catch {
-    next('Could not save watch');
+    return next('Could not save watch');
   }
 });
 
-router.get('/all-watches', (req, res, next) => {
+router.get('/all-watches', async (req, res, next) => {
   try {
-    const allWatches = db.getAllWatchesOnlyLatest();
-    res.status(200).json(allWatches);
+    const allWatches = await db.getAllWatchesOnlyLatest();
+    return res.status(200).json(allWatches);
   } catch {
-    next('Could not retrieve all watches.');
+    return next('Could not retrieve all watches.');
   }
 });
 
-router.put('/toggle-active-status', (req, res, next) => {
+router.put('/toggle-active-status', async (req, res, next) => {
   try {
     const newStatus = !req.body.isActive;
-    const status = db.toggleActiveStatus(newStatus, req.body.id);
-    res.status(200).json({ isActive: status, label: req.body.label });
+    const status = await db.toggleActiveStatus(newStatus, req.body.id);
+    return res.status(200).json({ isActive: status, label: req.body.label });
   } catch {
-    next('Could not toggle status.');
+    return next('Could not toggle status.');
   }
 });
 
-router.delete('/delete-watch/:id', (req, res, next) => {
+router.delete('/delete-watch/:id', async (req, res, next) => {
   try {
-    const id = db.deleteWatch(req.params.id);
-    res.status(200).json({ deletedWatchId: id });
+    const id = await db.deleteWatch(req.params.id);
+    return res.status(200).json({ deletedWatchId: id });
   } catch {
-    next('Could not delete watch.');
+    return next('Could not delete watch.');
   }
 });
 

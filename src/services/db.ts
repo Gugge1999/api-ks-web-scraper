@@ -1,48 +1,19 @@
-import Database from 'better-sqlite3';
-// @ts-ignore
-import fs from 'fs-extra';
-import { v4 as uuidv4 } from 'uuid';
+import 'reflect-metadata';
 
+import { Repository } from 'typeorm/index.js';
+
+import { AppDataSource } from '../data-source.js';
+import { Watch } from '../entity/Watch.js';
 import { scrapedWatch } from '../models/scraped-watch.js';
-import { watch } from '../models/watch.js';
-import { errorLogger, infoLogger } from './logger.js';
-import * as timeService from './time-and-date.js';
+import { errorLogger } from './logger.js';
+import { dateAndTime } from './time-and-date.js';
 
-const devEnv = 'src/database/watch-scraper.db';
-const prodEnv = '/tmp/watch-scraper.db';
-let db: any;
-
-export async function setDatabase() {
-  if (process.env.NODE_ENV === 'production') {
-    try {
-      fs.copySync(devEnv, prodEnv);
-      console.log('success!');
-      infoLogger.info({ message: 'Successfully copied database' });
-    } catch (err) {
-      errorLogger.error({
-        message: 'Could not copy database to folder tmp.',
-        stacktrace: err
-      });
-    }
-  }
-  db = new Database(process.env.NODE_ENV === 'production' ? prodEnv : devEnv, {
-    verbose: console.log
-  });
-}
-
-function convertStringToBoolean(array: watch[]): watch[] {
-  // Convert column active from string to boolean
-  return array.map((obj) => ({
-    ...obj,
-    active: JSON.parse(obj.active.toString())
-  }));
-}
-
-export function getAllWatches() {
+export async function getAllWatches() {
   try {
-    const allWatches = db.prepare('SELECT * FROM Watches').all();
-
-    return convertStringToBoolean(allWatches);
+    const allWatches: Repository<Watch> = await AppDataSource.manager.find(
+      Watch
+    );
+    return allWatches;
   } catch (err) {
     return errorLogger.error({
       message: 'Function getAllWatches failed.',
@@ -51,31 +22,36 @@ export function getAllWatches() {
   }
 }
 
-export function getAllActiveWatches(): watch[] {
+export async function getAllActiveWatches() {
   try {
-    const stmt = db.prepare('SELECT * FROM Watches WHERE active = @active');
-    const allWatches = stmt.all({ active: 'true' });
+    const watchRepository: Repository<Watch> =
+      AppDataSource.manager.getRepository(Watch);
 
-    return convertStringToBoolean(allWatches);
+    const allActiveWatches = await watchRepository.find({
+      where: { active: true }
+    });
+
+    return allActiveWatches;
   } catch (err) {
-    errorLogger.error({
+    return errorLogger.error({
       message: 'Function getAllActiveWatches failed.',
       stacktrace: err
     });
-    return [];
   }
 }
 
-export function getAllWatchesOnlyLatest() {
+export async function getAllWatchesOnlyLatest() {
   try {
-    const allWatches = db.prepare('SELECT * FROM Watches').all();
+    // Det går inte att använda : Repository<Watch> eftersom den inte har .length som property...
+    // Hitta annan lösning
+    const allWatches = await AppDataSource.manager.find(Watch);
 
     for (let i = 0; i < allWatches.length; i += 1) {
-      const firstWatchInArr = JSON.parse(allWatches[i].watches)[0];
+      const firstWatchInArr = allWatches[i].watches[0];
       allWatches[i].watches = firstWatchInArr;
     }
 
-    return convertStringToBoolean(allWatches);
+    return allWatches;
   } catch (err) {
     return errorLogger.error({
       message: 'Function getAllWatchesOnlyLatest failed.',
@@ -84,16 +60,14 @@ export function getAllWatchesOnlyLatest() {
   }
 }
 
-export function toggleActiveStatus(newStatus: boolean, id: string) {
+export async function toggleActiveStatus(newStatus: boolean, id: string) {
   try {
-    const stmt = db.prepare(
-      'UPDATE Watches SET active = @active WHERE id = @id'
-    );
+    const watchRepository: Repository<Watch> =
+      AppDataSource.getRepository(Watch);
 
-    stmt.run({
-      active: newStatus.toString(),
-      id
-    });
+    const watchToUpdate = await watchRepository.findOneBy({ id });
+    watchToUpdate.active = newStatus;
+    await watchRepository.save(watchToUpdate);
 
     return newStatus;
   } catch (err) {
@@ -104,40 +78,35 @@ export function toggleActiveStatus(newStatus: boolean, id: string) {
   }
 }
 
-export function addNewWatch(
+export async function addNewWatch(
   label: string,
   link: string,
   newScrapedWatches: scrapedWatch[]
 ) {
   try {
-    const newWatchId = uuidv4();
+    const watchRepository: Repository<Watch> =
+      AppDataSource.manager.getRepository(Watch);
 
-    const insertStmt = db.prepare(
-      'INSERT INTO Watches VALUES (' +
-        '@id,' +
-        '@link,' +
-        '@label, ' +
-        '@watches, ' +
-        '@active, ' +
-        '@last_email_sent, ' +
-        '@added)'
-    );
+    const watch = new Watch();
+    watch.link = link;
+    watch.label = label;
+    watch.watches = newScrapedWatches;
+    watch.active = true;
+    watch.last_email_sent = '';
+    watch.added = dateAndTime();
 
-    const newWatchObj: watch = {
-      id: newWatchId,
-      link,
-      label,
-      watches: JSON.stringify(newScrapedWatches),
-      active: 'true',
-      last_email_sent: '',
-      added: timeService.dateAndTime()
-    };
+    let newWatch = await watchRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Watch)
+      .values(watch)
+      .returning('*')
+      .execute();
 
-    insertStmt.run(newWatchObj);
+    watch.id = newWatch.generatedMaps[0].id;
+    watch.watches = newWatch.generatedMaps[0].watches[0];
 
-    newWatchObj.watches = newScrapedWatches[0];
-
-    return newWatchObj;
+    return watch;
   } catch (err) {
     return errorLogger.error({
       message: 'Function addNewWatch failed.',
@@ -146,27 +115,18 @@ export function addNewWatch(
   }
 }
 
-export function getWatchById(id: string) {
-  const stmt = db.prepare('SELECT * FROM Watches WHERE ID = ?');
-  const watch = stmt.get(id);
-
-  return convertStringToBoolean(watch);
-}
-
-export function updateStoredWatches(newWatchArr: string, id: string) {
+export async function updateStoredWatches(
+  newWatchArr: scrapedWatch[],
+  id: string
+) {
   try {
-    const stmt = db.prepare(
-      'UPDATE Watches SET ' +
-        'watches = @watches, ' +
-        'last_email_sent = @last_email_sent ' +
-        'WHERE id = @id '
-    );
+    const watchRepository: Repository<Watch> =
+      AppDataSource.getRepository(Watch);
 
-    stmt.run({
-      watches: newWatchArr,
-      last_email_sent: timeService.dateAndTime(),
-      id
-    });
+    const watchToUpdate = await watchRepository.findOneBy({ id });
+    watchToUpdate.watches = newWatchArr;
+    watchToUpdate.last_email_sent = dateAndTime();
+    await watchRepository.save(watchToUpdate);
   } catch (err) {
     errorLogger.error({
       message: 'Function updateStoredWatch failed.',
@@ -175,11 +135,13 @@ export function updateStoredWatches(newWatchArr: string, id: string) {
   }
 }
 
-export function deleteWatch(id: string) {
+export async function deleteWatch(id: string) {
   try {
-    const stmt = db.prepare('DELETE FROM Watches WHERE id = ?');
+    const watchRepository: Repository<Watch> =
+      AppDataSource.getRepository(Watch);
 
-    stmt.run(id);
+    const watchToRemove = await watchRepository.findOneBy({ id });
+    await watchRepository.remove(watchToRemove);
 
     return id;
   } catch (err) {
@@ -190,6 +152,7 @@ export function deleteWatch(id: string) {
   }
 }
 
+/*
 export function backupDatabase() {
   db.backup(
     `src/database/backups/backup-watch-scraper-${timeService.todaysDate()}.db`
@@ -204,3 +167,4 @@ export function backupDatabase() {
       });
     });
 }
+*/

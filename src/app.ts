@@ -5,69 +5,79 @@ import schedule from 'node-schedule';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
+import { AppDataSource } from './data-source.js';
 import routes from './routes/routes.js';
-import { backupDatabase, setDatabase } from './services/db.js';
+// import { backupDatabase } from './services/db.js';
 import { writeDatabaseBackupDateToFile } from './services/file.js';
 import { errorLogger, infoLogger, requestLogger } from './services/logger.js';
 import errorHandler from './services/middleware.js';
 import { compareStoredWithScraped } from './services/scraper.js';
 
 const app = express();
-app.use(
-  morgan(
-    // För att vilken webbläsare använd: :user-agent
-    '::remote-addr :remote-user :method :url - Response time: :response-time ms - :user-agent',
-    {
-      stream: {
-        write: (message) =>
-          // Tar bort ny rad efter att stream.write.
-          // Se: https://stackoverflow.com/questions/27906551/node-js-logging-use-morgan-and-winston/28824464#28824464
-          requestLogger.info(message.trim())
-      }
-    }
-  )
-);
-app.use(json());
-app.use(cors()); // Lägg till cors FÖRE routes
-app.use(routes);
-app.use(errorHandler);
 
-const port = process.env.PORT || 3000;
+AppDataSource.initialize()
+  .then(async () => {
+    app.use(
+      morgan(
+        // För att vilken webbläsare använd: :user-agent
+        '::remote-addr :remote-user :method :url - Response time: :response-time ms - :user-agent',
+        {
+          stream: {
+            write: (message) =>
+              // Tar bort ny rad efter att stream.write.
+              // Se: https://stackoverflow.com/questions/27906551/node-js-logging-use-morgan-and-winston/28824464#28824464
+              requestLogger.info(message.trim())
+          }
+        }
+      )
+    );
+    app.use(json());
+    app.use(cors()); // Lägg till cors FÖRE routes
+    app.use(routes);
+    app.use(errorHandler);
 
-infoLogger.info({ message: `process.env.PORT: ${process.env.PORT}` });
-infoLogger.info({ message: `process.env.NODE_ENV: ${process.env.NODE_ENV}` });
+    const port = process.env.PORT || 3000;
 
-const relativePath = (a: any) =>
-  join(dirname(fileURLToPath(import.meta.url)), a);
+    infoLogger.info({ message: `process.env.PORT: ${process.env.PORT}` });
+    infoLogger.info({
+      message: `process.env.NODE_ENV: ${process.env.NODE_ENV}`
+    });
 
-/*
-  När den finns en dist mapp från Angular om man sen bygger express skapas
-  det flera mappar 
-  Temporär fix: 
-    1: kör npm run build i api och döp om den till node-dist
-    2: Kopiera över angular dist-mappen
-*/
+    const relativePath = (a: any) =>
+      join(dirname(fileURLToPath(import.meta.url)), a);
 
-const pathToAngularDist = relativePath('../ng-dist/ks-web-scraper');
+    /*
+      När den finns en dist mapp från Angular om man sen bygger express skapas
+      det flera mappar
+      Temporär fix:
+        1: kör npm run build i api och döp om den till node-dist
+        2: Kopiera över angular dist-mappen
+    */
 
-app.use('/', express.static(pathToAngularDist));
+    const pathToAngularDist = relativePath('../ng-dist/ks-web-scraper');
 
-app.listen(port);
+    app.use('/', express.static(pathToAngularDist));
+
+    app.listen(port);
+
+    await compareStoredWithScraped();
+  })
+  .catch((error: Error) => {
+    errorLogger.error({
+      message: 'Function AppDataSource.initialize failed.',
+      stacktrace: error
+    });
+  });
 
 // Backup av databasen varje dag klockan 12:00
-schedule.scheduleJob({ hour: 12, minute: 0 }, () => {
-  try {
-    backupDatabase();
-    writeDatabaseBackupDateToFile();
-    console.log('test');
-  } catch (err) {
-    errorLogger.error({
-      message: 'Function backupDatabase failed.',
-      stacktrace: err
-    });
-  }
-});
-
-await setDatabase();
-
-await compareStoredWithScraped();
+// schedule.scheduleJob({ hour: 12, minute: 0 }, () => {
+//   try {
+//     backupDatabase();
+//     writeDatabaseBackupDateToFile();
+//   } catch (err) {
+//     errorLogger.error({
+//       message: 'Function backupDatabase failed.',
+//       stacktrace: err
+//     });
+//   }
+// });

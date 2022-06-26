@@ -11,8 +11,9 @@ import {
 } from './notification.js';
 import * as timeService from './time-and-date.js';
 
-// Byt från any
-export async function scrapeWatchInfo(link: string): Promise<any> {
+export async function scrapeWatchInfo(link: string): Promise<scrapedWatch[]> {
+  const scrapedWatchArr: scrapedWatch[] = [];
+
   const response = await fetch(link);
   const body = await response.text();
 
@@ -20,10 +21,12 @@ export async function scrapeWatchInfo(link: string): Promise<any> {
 
   // Länken gav inga resultat.
   if ($('.contentRow-title').length === 0) {
-    return 'Watch name yielded no results';
+    return scrapedWatchArr.concat({
+      name: 'Watch name yielded no results',
+      postedDate: '',
+      link: ''
+    });
   }
-
-  const scrapedWatchArr: scrapedWatch[] = [];
 
   const allTitles: string[] = [];
   const allPostedDates: string[] = [];
@@ -71,7 +74,7 @@ export async function scrapeWatchInfo(link: string): Promise<any> {
 }
 
 export async function compareStoredWithScraped() {
-  const allWatches = getAllActiveWatches();
+  const allWatches = await getAllActiveWatches();
 
   console.log(
     `Scraping ${allWatches.length} ${
@@ -81,7 +84,7 @@ export async function compareStoredWithScraped() {
   for (let i = 0; i < allWatches.length; i += 1) {
     const storedWatchRow = allWatches[i];
 
-    const storedWatchesArr = JSON.parse(storedWatchRow.watches.toString());
+    const storedWatchesArr = storedWatchRow.watches;
 
     const scrapedWatchArr = await scrapeWatchInfo(storedWatchRow.link);
 
@@ -100,7 +103,7 @@ export async function compareStoredWithScraped() {
     );
 
     if (newScrapedWatches.length > 0) {
-      updateStoredWatches(JSON.stringify(scrapedWatchArr), storedWatchRow.id);
+      updateStoredWatches(scrapedWatchArr, storedWatchRow.id);
 
       // Loopa över varje ny klocka och skicka mail
       for (let j = 0; j < newScrapedWatches.length; j += 1) {
