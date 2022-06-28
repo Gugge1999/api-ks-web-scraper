@@ -8,7 +8,6 @@
     "prod": "cross-env NODE_ENV=production node node-dist/app.js",
     "lint": "eslint ./src/**/*.*",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install",
     "start": "cross-env NODE_ENV=production node ./node-dist/app.js",
     "build": "tsc"
   },
@@ -45,7 +44,6 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "2.7.1",
     "ts-node": "^10.8.1",
