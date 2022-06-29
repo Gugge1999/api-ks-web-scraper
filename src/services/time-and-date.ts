@@ -1,13 +1,15 @@
-import { format } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz/esm';
+
+const timeZone = 'Europe/Stockholm';
 
 export function currentTime() {
-  return format(new Date(), 'k:mm:ss');
+  return formatInTimeZone(new Date(), timeZone, 'k:mm:ss');
 }
 
 export function dateAndTime() {
-  return format(new Date(), 'yyyy-MM-dd k:mm:ss');
+  return formatInTimeZone(new Date(), timeZone, 'yyyy-MM-dd k:mm:ss');
 }
 
 export function todaysDate() {
-  return format(new Date(), 'yyyy-MM-dd');
+  return formatInTimeZone(new Date(), timeZone, '', 'yyyy-MM-dd');
 }
