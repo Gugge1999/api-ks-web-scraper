@@ -13,7 +13,7 @@ export const errorLogger = createLogger({
   format: combine(
     errors({ stack: true }), // <-- use errors format
     timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss'
+      format: 'HH:mm:ss YYYY-MM-DD'
     }),
     prettyPrint()
   ),

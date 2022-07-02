@@ -1,14 +1,9 @@
 import cors from 'cors';
 import express, { json } from 'express';
 import morgan from 'morgan';
-import schedule from 'node-schedule';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
 
 import { AppDataSource } from './data-source.js';
 import routes from './routes/routes.js';
-// import { backupDatabase } from './services/db.js';
-import { writeDatabaseBackupDateToFile } from './services/file.js';
 import { errorLogger, infoLogger, requestLogger } from './services/logger.js';
 import errorHandler from './services/middleware.js';
 import { compareStoredWithScraped } from './services/scraper.js';
@@ -43,22 +38,9 @@ AppDataSource.initialize()
       message: `process.env.NODE_ENV: ${process.env.NODE_ENV}`
     });
 
-    const relativePath = (a: any) =>
-      join(dirname(fileURLToPath(import.meta.url)), a);
-
-    /*
-      När den finns en dist mapp från Angular om man sen bygger express skapas
-      det flera mappar
-      Temporär fix:
-        1: kör npm run build i api och döp om den till node-dist
-        2: Kopiera över angular dist-mappen
-    */
-
-    const pathToAngularDist = relativePath('../ng-dist/ks-web-scraper');
-
-    app.use('/', express.static(pathToAngularDist));
-
-    app.listen(port);
+    app.listen(port, () => {
+      console.log(`Started API.`);
+    });
 
     await compareStoredWithScraped();
   })
@@ -68,16 +50,3 @@ AppDataSource.initialize()
       stacktrace: error
     });
   });
-
-// Backup av databasen varje dag klockan 12:00
-// schedule.scheduleJob({ hour: 12, minute: 0 }, () => {
-//   try {
-//     backupDatabase();
-//     writeDatabaseBackupDateToFile();
-//   } catch (err) {
-//     errorLogger.error({
-//       message: 'Function backupDatabase failed.',
-//       stacktrace: err
-//     });
-//   }
-// });

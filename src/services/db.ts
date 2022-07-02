@@ -151,20 +151,3 @@ export async function deleteWatch(id: string) {
     });
   }
 }
-
-/*
-export function backupDatabase() {
-  db.backup(
-    `src/database/backups/backup-watch-scraper-${timeService.todaysDate()}.db`
-  )
-    .then(() => {
-      infoLogger.info({ message: 'Backup complete!' });
-    })
-    .catch((err: Error) => {
-      errorLogger.error({
-        message: 'Function backupDatabase failed.',
-        stacktrace: err
-      });
-    });
-}
-*/
