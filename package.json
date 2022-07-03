@@ -1,14 +1,14 @@
 {
-  "name": "ks_web_scraper_api",
+  "name": "api-ks-web-scraper",
   "version": "0.0.1",
   "type": "module",
-  "description": "KS Web Scraper API",
+  "description": "API for KS Web Scraper",
   "scripts": {
     "dev": "cross-env NODE_ENV=develop nodemon ts-node ./src/app.ts",
-    "prod": "cross-env NODE_ENV=production node node-dist/app.js",
+    "prod": "cross-env NODE_ENV=production node ./dist/app.js",
     "lint": "eslint ./src/**/*.*",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=production node ./node-dist/app.js",
+    "start": "cross-env NODE_ENV=production node ./dist/app.js",
     "build": "tsc"
   },
   "author": "",

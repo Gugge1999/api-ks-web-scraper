@@ -1,5 +1,4 @@
-ng-dist
-node-dist
+dist
 node_modules
 .env
 .eslintcache
