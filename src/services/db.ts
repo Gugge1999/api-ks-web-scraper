@@ -4,7 +4,7 @@ import { Repository } from 'typeorm/index.js';
 
 import { AppDataSource } from '../data-source.js';
 import { Watch } from '../entity/Watch.js';
-import { scrapedWatch } from '../models/scraped-watch.js';
+import { ScrapedWatches } from '../models/scraped-watches.js';
 import { errorLogger } from './logger.js';
 import { dateAndTime } from './time-and-date.js';
 
@@ -13,6 +13,7 @@ export async function getAllWatches() {
     const allWatches: Repository<Watch> = await AppDataSource.manager.find(
       Watch
     );
+
     return allWatches;
   } catch (err) {
     return errorLogger.error({
@@ -42,12 +43,12 @@ export async function getAllActiveWatches() {
 
 export async function getAllWatchesOnlyLatest() {
   try {
-    // Det går inte att använda : Repository<Watch> eftersom den inte har .length som property...
-    // Hitta annan lösning
-    const allWatches = await AppDataSource.manager.find(Watch);
+    const watchRepository: Repository<Watch> =
+      AppDataSource.manager.getRepository(Watch);
+    const allWatches = await watchRepository.find();
 
     for (let i = 0; i < allWatches.length; i += 1) {
-      const firstWatchInArr = allWatches[i].watches[0];
+      const firstWatchInArr = allWatches[i].watches.slice(0, 1);
       allWatches[i].watches = firstWatchInArr;
     }
 
@@ -81,7 +82,7 @@ export async function toggleActiveStatus(newStatus: boolean, id: string) {
 export async function addNewWatch(
   label: string,
   link: string,
-  newScrapedWatches: scrapedWatch[]
+  newScrapedWatches: ScrapedWatches[]
 ) {
   try {
     const watchRepository: Repository<Watch> =
@@ -104,7 +105,7 @@ export async function addNewWatch(
       .execute();
 
     watch.id = newWatch.generatedMaps[0].id;
-    watch.watches = newWatch.generatedMaps[0].watches[0];
+    watch.watches = [newWatch.generatedMaps[0].watches[0]];
 
     return watch;
   } catch (err) {
@@ -116,7 +117,7 @@ export async function addNewWatch(
 }
 
 export async function updateStoredWatches(
-  newWatchArr: scrapedWatch[],
+  newWatchArr: ScrapedWatches[],
   id: string
 ) {
   try {

@@ -2,7 +2,7 @@ import cheerio from 'cheerio';
 import fetch from 'node-fetch';
 
 import { interval } from '../config/scraper.config.js';
-import { scrapedWatch } from '../models/scraped-watch.js';
+import { ScrapedWatches } from '../models/scraped-watches.js';
 import { getAllActiveWatches, updateStoredWatches } from './db.js';
 import { errorLogger, infoLogger } from './logger.js';
 import {
@@ -11,8 +11,8 @@ import {
 } from './notification.js';
 import * as timeService from './time-and-date.js';
 
-export async function scrapeWatchInfo(link: string): Promise<scrapedWatch[]> {
-  const scrapedWatchArr: scrapedWatch[] = [];
+export async function scrapeWatchInfo(link: string): Promise<ScrapedWatches[]> {
+  const scrapedWatchArr: ScrapedWatches[] = [];
 
   const response = await fetch(link);
   const body = await response.text();
@@ -62,7 +62,7 @@ export async function scrapeWatchInfo(link: string): Promise<scrapedWatch[]> {
 
   // Lägg titel, datum och länk i ett objekt och pusha till array:en
   for (let i = 0; i < allTitles.length; i++) {
-    const currentWatchInfo: scrapedWatch = {
+    const currentWatchInfo: ScrapedWatches = {
       name: allTitles[i],
       postedDate: allPostedDates[i],
       link: allLinks[i]
