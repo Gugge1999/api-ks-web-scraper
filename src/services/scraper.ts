@@ -56,6 +56,7 @@ export async function scrapeWatchInfo(link: string): Promise<ScrapedWatches[]> {
   // Länk
   $('.contentRow-title')
     .map((i, card) => {
+      // Behövs i?
       allLinks.push(`https://klocksnack.se${$(card).find('a').attr('href')}`);
     })
     .get();
@@ -81,6 +82,7 @@ export async function compareStoredWithScraped() {
       allWatches.length === 1 ? 'watch' : 'watches'
     } @ ${timeService.dateAndTime()}`
   );
+
   for (let i = 0; i < allWatches.length; i += 1) {
     const storedWatchRow = allWatches[i];
 

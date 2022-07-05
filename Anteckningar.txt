@@ -1,48 +1,18 @@
 ---------------------------------- TODO ----------------------------------
-Inför rate limit? 
-       Länkar: 
-              https://blog.logrocket.com/rate-limiting-node-js/
-              https://www.section.io/engineering-education/nodejs-rate-limiting/
+För att testa deploy.
+       Länk: https://www.youtube.com/watch?v=QdHvS0D1zAI
 
 
-
-Byt till Mailchimp när du deployat.
-
-
-För att testa deploy. Länk: https://www.youtube.com/watch?v=QdHvS0D1zAI
+Skapa enhetstester. Kanske använda Jest? Se om det finns andra bättre.
 
 
-Deploy:
-       https://pookidevs.com/how-to-deploy-a-mean-stack-application-on-aws-lightsail/
-
-
-Guide till deploy på azure:
-       https://stackify.com/azure-deployment-guide/
-
-
-
-Skapa enhetstester 
-
-
-Byt till sequelize. Finns inte stöd idag men det finns planer för det i framtiden Länk: https://github.com/sequelize/sequelize/issues/11400
-
-
-Byt till Undici (även kallat fetch, tror jag...) när du har Node 18
+Byt till Undici (även kallat fetch, tror jag...) när Node 18 är ute.
   
   
-Uppdatera till Express 5 när det kommer ut. Migration guide: https://expressjs.com/en/guide/migrating-5.html
+Uppdatera till Express 5 när det kommer ut. 
+       Migration guide: https://expressjs.com/en/guide/migrating-5.html
   
 
 Fixa login. Kanske bra tutorial: 
-       https://codeshack.io/basic-login-system-nodejs-express-mysql/
-       https://morioh.com/p/6f823839457a
-  
-  
-
-  
-
-
----------------------------------- Misc ----------------------------------
-
-Installera 64 bit på raspberry pi 3B, kräver ominstallation
+       https://www.djamware.com/post/5bf94d9a80aca747f4b9ce9f/secure-nodejs-expressjs-and-postgresql-api-using-passportjs
   

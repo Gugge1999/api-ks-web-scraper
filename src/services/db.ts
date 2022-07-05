@@ -45,6 +45,7 @@ export async function getAllWatchesOnlyLatest() {
   try {
     const watchRepository: Repository<Watch> =
       AppDataSource.manager.getRepository(Watch);
+
     const allWatches = await watchRepository.find();
 
     for (let i = 0; i < allWatches.length; i += 1) {
@@ -68,6 +69,7 @@ export async function toggleActiveStatus(newStatus: boolean, id: string) {
 
     const watchToUpdate = await watchRepository.findOneBy({ id });
     watchToUpdate.active = newStatus;
+
     await watchRepository.save(watchToUpdate);
 
     return newStatus;
