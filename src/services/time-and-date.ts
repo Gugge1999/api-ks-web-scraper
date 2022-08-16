@@ -10,6 +10,9 @@ export function dateAndTime() {
   return formatInTimeZone(new Date(), timeZone, 'yyyy-MM-dd k:mm:ss');
 }
 
+export function dateAndTimeWithTimeFirst() {
+  return formatInTimeZone(new Date(), timeZone, 'k:mm:ss yyyy-MM-dd');
+}
 export function todaysDate() {
   return formatInTimeZone(new Date(), timeZone, '', 'yyyy-MM-dd');
 }

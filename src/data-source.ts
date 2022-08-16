@@ -2,15 +2,16 @@ import 'reflect-metadata';
 
 import dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 
 import { Watch } from './entity/Watch.js';
 
 dotenv.config();
 
-const devConfig = {
+const devConfig: PostgresConnectionOptions = {
   type: 'postgres',
   host: process.env.PGHOST,
-  port: process.env.PGPORT,
+  port: parseInt(process.env.PGPORT),
   username: process.env.PGUSERNAME,
   password: process.env.PGPASSWORD,
   database: process.env.PGDATABASE,
@@ -21,7 +22,7 @@ const devConfig = {
   subscribers: []
 };
 
-const prodConfig = {
+const prodConfig: PostgresConnectionOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
   synchronize: true,

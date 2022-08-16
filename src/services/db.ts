@@ -10,9 +10,7 @@ import { dateAndTime } from './time-and-date.js';
 
 export async function getAllWatches() {
   try {
-    const allWatches: Repository<Watch> = await AppDataSource.manager.find(
-      Watch
-    );
+    const allWatches: Watch[] = await AppDataSource.manager.find(Watch);
 
     return allWatches;
   } catch (err) {
@@ -26,7 +24,7 @@ export async function getAllWatches() {
 export async function getAllActiveWatches() {
   try {
     const watchRepository: Repository<Watch> =
-      AppDataSource.manager.getRepository(Watch);
+      AppDataSource.getRepository(Watch);
 
     const allActiveWatches = await watchRepository.find({
       where: { active: true }
@@ -34,17 +32,18 @@ export async function getAllActiveWatches() {
 
     return allActiveWatches;
   } catch (err) {
-    return errorLogger.error({
+    errorLogger.error({
       message: 'Function getAllActiveWatches failed.',
       stacktrace: err
     });
+    return [];
   }
 }
 
 export async function getAllWatchesOnlyLatest() {
   try {
     const watchRepository: Repository<Watch> =
-      AppDataSource.manager.getRepository(Watch);
+      AppDataSource.getRepository(Watch);
 
     const allWatches = await watchRepository.find();
 
@@ -88,7 +87,7 @@ export async function addNewWatch(
 ) {
   try {
     const watchRepository: Repository<Watch> =
-      AppDataSource.manager.getRepository(Watch);
+      AppDataSource.getRepository(Watch);
 
     const watch = new Watch();
     watch.link = link;

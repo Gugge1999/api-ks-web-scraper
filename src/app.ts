@@ -38,9 +38,7 @@ AppDataSource.initialize()
       message: `process.env.NODE_ENV: ${process.env.NODE_ENV}`
     });
 
-    app.listen(port, () => {
-      console.log(`Started API.`);
-    });
+    app.listen(port);
 
     await compareStoredWithScraped();
   })
