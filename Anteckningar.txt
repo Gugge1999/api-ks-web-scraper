@@ -3,9 +3,6 @@ För att testa deploy.
        Länk: https://www.youtube.com/watch?v=QdHvS0D1zAI
 
 
-Skapa function param comments för alla metoder som returnerar datum. Se: https://jsdoc.app/tags-param.html
-
-
 Skapa enhetstester. Kanske använda Jest? Se om det finns andra bättre.
 
 
