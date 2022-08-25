@@ -1,4 +1,6 @@
 ---------------------------------- TODO ----------------------------------
+Lägg till en kolumn för thread. Det kanske går att ta bort kolumnen link då, undersök...
+
 För att testa deploy.
        Länk: https://www.youtube.com/watch?v=QdHvS0D1zAI
 

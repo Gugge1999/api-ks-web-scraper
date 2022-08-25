@@ -56,7 +56,7 @@ export async function scrapeWatchInfo(link: string): Promise<ScrapedWatches[]> {
   // Länk
   $('.contentRow-title')
     .map((i, card) => {
-      // Behövs i?
+      // TODO: Behövs i?
       allLinks.push(`https://klocksnack.se${$(card).find('a').attr('href')}`);
     })
     .get();
@@ -96,7 +96,7 @@ export async function compareStoredWithScraped() {
     });
 
     // Just nu jämförs de lagrade klockorna och de scrape:ade endast på postedDate.
-    // Är det unikt nog ?
+    // TODO: Är det unikt nog ?
     const newScrapedWatches = scrapedWatchArr.filter(
       ({ postedDate: id1 }: { postedDate: string }) =>
         !storedWatchesArr.some(
