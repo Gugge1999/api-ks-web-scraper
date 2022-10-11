@@ -1,4 +1,8 @@
 ---------------------------------- TODO ----------------------------------
+Tips för Typescript prestanda
+https://github.com/microsoft/TypeScript/wiki/Performance
+
+
 Lägg till en kolumn för thread. Det kanske går att ta bort kolumnen link då, undersök...
 
 För att testa deploy.
