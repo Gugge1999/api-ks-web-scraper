@@ -33,6 +33,7 @@ export async function scrapeWatchInfo(link: string): Promise<ScrapedWatches[]> {
   const allLinks: string[] = [];
 
   // Titel
+  // TODO: Byt till map?
   $('.contentRow-title').each(function (this: cheerio.Element) {
     allTitles.push(
       $(this)
@@ -55,8 +56,8 @@ export async function scrapeWatchInfo(link: string): Promise<ScrapedWatches[]> {
 
   // Länk
   $('.contentRow-title')
-    .map((i, card) => {
-      // TODO: Behövs i?
+    .map((i, card,) => {
+      // TODO: Behövs i? och vad är card för variabel?
       allLinks.push(`https://klocksnack.se${$(card).find('a').attr('href')}`);
     })
     .get();
