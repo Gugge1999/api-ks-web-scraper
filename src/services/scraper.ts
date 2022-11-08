@@ -1,5 +1,4 @@
 import cheerio from 'cheerio';
-import fetch from 'node-fetch';
 
 import { interval } from '../config/scraper.config.js';
 import { ScrapedWatches } from '../models/scraped-watches.js';
