@@ -23,8 +23,7 @@ export async function getAllWatches() {
 
 export async function getAllActiveWatches() {
   try {
-    const watchRepository: Repository<Watch> =
-      AppDataSource.getRepository(Watch);
+    const watchRepository = AppDataSource.getRepository(Watch);
 
     const allActiveWatches = await watchRepository.find({
       where: { active: true }
@@ -32,26 +31,23 @@ export async function getAllActiveWatches() {
 
     return allActiveWatches;
   } catch (err) {
-    errorLogger.error({
+    return errorLogger.error({
       message: 'Function getAllActiveWatches failed.',
       stacktrace: err
     });
-    return [];
   }
 }
 
 export async function getAllWatchesOnlyLatest() {
   try {
-    const watchRepository: Repository<Watch> =
-      AppDataSource.getRepository(Watch);
+    const watchRepository = AppDataSource.getRepository(Watch);
 
-    const allWatches = await watchRepository.find();
+    let allWatches = await watchRepository.find();
 
-    // TODO: Byt till foreach och map
-    for (let i = 0; i < allWatches.length; i += 1) {
-      const firstWatchInArr = allWatches[i].watches.slice(0, 1);
-      allWatches[i].watches = firstWatchInArr;
-    }
+    allWatches = allWatches.map((element, index) => {
+      allWatches[index].watches.splice(1, allWatches[index].watches.length);
+      return element;
+    });
 
     return allWatches;
   } catch (err) {
@@ -64,8 +60,7 @@ export async function getAllWatchesOnlyLatest() {
 
 export async function toggleActiveStatus(newStatus: boolean, id: string) {
   try {
-    const watchRepository: Repository<Watch> =
-      AppDataSource.getRepository(Watch);
+    const watchRepository = AppDataSource.getRepository(Watch);
 
     const watchToUpdate = await watchRepository.findOneBy({ id });
     watchToUpdate.active = newStatus;
@@ -87,8 +82,7 @@ export async function addNewWatch(
   newScrapedWatches: ScrapedWatches[]
 ) {
   try {
-    const watchRepository: Repository<Watch> =
-      AppDataSource.getRepository(Watch);
+    const watchRepository = AppDataSource.getRepository(Watch);
 
     const watch = new Watch();
     watch.link = link;
@@ -123,8 +117,7 @@ export async function updateStoredWatches(
   id: string
 ) {
   try {
-    const watchRepository: Repository<Watch> =
-      AppDataSource.getRepository(Watch);
+    const watchRepository = AppDataSource.getRepository(Watch);
 
     const watchToUpdate = await watchRepository.findOneBy({ id });
     watchToUpdate.watches = newWatchArr;
@@ -140,8 +133,7 @@ export async function updateStoredWatches(
 
 export async function deleteWatch(id: string) {
   try {
-    const watchRepository: Repository<Watch> =
-      AppDataSource.getRepository(Watch);
+    const watchRepository = AppDataSource.getRepository(Watch);
 
     const watchToRemove = await watchRepository.findOneBy({ id });
     await watchRepository.remove(watchToRemove);

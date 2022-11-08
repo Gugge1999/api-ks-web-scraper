@@ -1,6 +1,7 @@
 import cheerio from 'cheerio';
 
 import { interval } from '../config/scraper.config.js';
+import { Watch } from '../entity/Watch.js';
 import { ScrapedWatches } from '../models/scraped-watches.js';
 import { getAllActiveWatches, updateStoredWatches } from './db.js';
 import { errorLogger, infoLogger } from './logger.js';
@@ -77,7 +78,7 @@ export async function scrapeWatchInfo(
 }
 
 export async function compareStoredWithScraped() {
-  const allWatches = await getAllActiveWatches();
+  const allWatches = (await getAllActiveWatches()) as Watch[];
 
   console.log(
     `Scraping ${allWatches.length} ${
