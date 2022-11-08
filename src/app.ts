@@ -33,11 +33,6 @@ AppDataSource.initialize()
 
     const port = process.env.PORT || 3000;
 
-    infoLogger.info({ message: `process.env.PORT: ${process.env.PORT}` });
-    infoLogger.info({
-      message: `process.env.NODE_ENV: ${process.env.NODE_ENV}`
-    });
-
     app.listen(port);
 
     await compareStoredWithScraped();

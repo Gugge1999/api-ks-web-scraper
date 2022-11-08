@@ -47,6 +47,7 @@ export async function getAllWatchesOnlyLatest() {
 
     const allWatches = await watchRepository.find();
 
+    // TODO: Byt till foreach och map
     for (let i = 0; i < allWatches.length; i += 1) {
       const firstWatchInArr = allWatches[i].watches.slice(0, 1);
       allWatches[i].watches = firstWatchInArr;

@@ -10,7 +10,9 @@ import {
 } from './notification.js';
 import * as timeService from './time-and-date.js';
 
-export async function scrapeWatchInfo(link: string): Promise<ScrapedWatches[]> {
+export async function scrapeWatchInfo(
+  link: string
+): Promise<ScrapedWatches[] | { error: string }> {
   const scrapedWatchArr: ScrapedWatches[] = [];
 
   const response = await fetch(link);
@@ -20,56 +22,56 @@ export async function scrapeWatchInfo(link: string): Promise<ScrapedWatches[]> {
 
   // Länken gav inga resultat.
   if ($('.contentRow-title').length === 0) {
-    return scrapedWatchArr.concat({
-      name: 'Watch name yielded no results',
-      postedDate: '',
-      link: ''
-    });
+    return {
+      error: 'Watch name yielded no results'
+    };
   }
 
-  const allTitles: string[] = [];
-  const allPostedDates: string[] = [];
-  const allLinks: string[] = [];
+  const titlesArr: string[] = [];
+  const datesArr: string[] = [];
+  const linksArr: string[] = [];
 
   // Titel
-  // TODO: Byt till map?
-  $('.contentRow-title').each(function (this: cheerio.Element) {
-    allTitles.push(
-      $(this)
-        .text()
-        .replace(
-          // Radera säljstatus
-          /Tillbakadragen|Avslutad|Säljes\/Bytes|Säljes|Bytes|OHPF|\//i,
-          ''
-        )
-        .trim()
-    );
-  });
+  $('.contentRow-title')
+    .get()
+    .map((element: cheerio.Element) => {
+      titlesArr.push(
+        $(element)
+          .text()
+          .replace(
+            // Radera säljstatus
+            /Tillbakadragen|Avslutad|Säljes\/Bytes|Säljes|Bytes|OHPF|\//i,
+            ''
+          )
+          .trim()
+      );
+    });
 
   // Datum
   $('.u-dt')
     .get()
-    .map((x) => {
-      allPostedDates.push($(x).attr('datetime') ?? '0000-00-00T00:00:00+0000'); //Format: 2022-05-14T09:06:18+0200
+    .map((element: cheerio.Element) => {
+      datesArr.push($(element).attr('datetime'));
     });
 
   // Länk
   $('.contentRow-title')
-    .map((i, card,) => {
-      // TODO: Behövs i? och vad är card för variabel?
-      allLinks.push(`https://klocksnack.se${$(card).find('a').attr('href')}`);
-    })
-    .get();
+    .get()
+    .map((element: cheerio.Element) => {
+      linksArr.push(
+        'https://klocksnack.se' + $(element).find('a').attr('href')
+      );
+    });
 
   // Lägg titel, datum och länk i ett objekt och pusha till array:en
-  for (let i = 0; i < allTitles.length; i++) {
+  titlesArr.forEach((element, index) => {
     const currentWatchInfo: ScrapedWatches = {
-      name: allTitles[i],
-      postedDate: allPostedDates[i],
-      link: allLinks[i]
+      name: titlesArr[index],
+      postedDate: datesArr[index],
+      link: linksArr[index]
     };
     scrapedWatchArr.push(currentWatchInfo);
-  }
+  });
 
   return scrapedWatchArr;
 }
@@ -88,7 +90,9 @@ export async function compareStoredWithScraped() {
 
     const storedWatchesArr = storedWatchRow.watches;
 
-    const scrapedWatchArr = await scrapeWatchInfo(storedWatchRow.link);
+    const scrapedWatchArr = (await scrapeWatchInfo(
+      storedWatchRow.link
+    )) as ScrapedWatches[];
 
     // Vänta 1 sekund mellan varje anrop till KS
     await new Promise((resolve) => {
