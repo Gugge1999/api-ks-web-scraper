@@ -3,22 +3,26 @@ Tips för Typescript prestanda
 https://github.com/microsoft/TypeScript/wiki/Performance
 
 
-Lägg till en kolumn för thread. Det kanske går att ta bort kolumnen link då, undersök...
+
+Lägg till en kolumn för tråden som scrape:ades, idag finns det bara en länk till den senaste klockan. 
+       Det kanske går att ta bort kolumnen link då, undersök...
+
+
 
 För att testa deploy.
        Länk: https://www.youtube.com/watch?v=QdHvS0D1zAI
 
 
+
 Skapa enhetstester. Kanske använda Jest? Se om det finns andra bättre.
 
 
-Byt till Undici (även kallat fetch, tror jag...) när Node 18 är ute.
-  
   
 Uppdatera till Express 5 när det kommer ut. 
        Migration guide: https://expressjs.com/en/guide/migrating-5.html
-  
+
+
 
 Fixa login. Kanske bra tutorial: 
        https://www.djamware.com/post/5bf94d9a80aca747f4b9ce9f/secure-nodejs-expressjs-and-postgresql-api-using-passportjs
-  
+

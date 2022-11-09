@@ -1,4 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn
+} from 'typeorm';
 
 import { ScrapedWatches } from '../models/scraped-watches.js';
 
@@ -19,9 +24,9 @@ export class Watch {
   @Column()
   active: boolean;
 
-  @Column({ default: '' })
-  last_email_sent: string; // TODO: Ändra till Date
+  @Column({ type: 'timestamptz', precision: 3 })
+  last_email_sent: Date;
 
-  @Column()
-  added: string; // TODO: Ändra till Date
+  @CreateDateColumn({ type: 'timestamptz', precision: 3 })
+  added: Date;
 }

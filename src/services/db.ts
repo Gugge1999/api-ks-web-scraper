@@ -1,12 +1,9 @@
 import 'reflect-metadata';
 
-import { Repository } from 'typeorm/index.js';
-
 import { AppDataSource } from '../data-source.js';
 import { Watch } from '../entity/Watch.js';
 import { ScrapedWatches } from '../models/scraped-watches.js';
 import { errorLogger } from './logger.js';
-import { dateAndTime } from './time-and-date.js';
 
 export async function getAllWatches() {
   try {
@@ -42,7 +39,7 @@ export async function getAllWatchesOnlyLatest() {
   try {
     const watchRepository = AppDataSource.getRepository(Watch);
 
-    let allWatches = await watchRepository.find();
+    let allWatches = await watchRepository.find({ order: { added: 'ASC' } });
 
     allWatches = allWatches.map((element, index) => {
       allWatches[index].watches.splice(1, allWatches[index].watches.length);
@@ -89,8 +86,7 @@ export async function addNewWatch(
     watch.label = label;
     watch.watches = newScrapedWatches;
     watch.active = true;
-    watch.last_email_sent = '';
-    watch.added = dateAndTime();
+    watch.last_email_sent = new Date();
 
     let newWatch = await watchRepository
       .createQueryBuilder()
@@ -121,7 +117,7 @@ export async function updateStoredWatches(
 
     const watchToUpdate = await watchRepository.findOneBy({ id });
     watchToUpdate.watches = newWatchArr;
-    watchToUpdate.last_email_sent = dateAndTime();
+    watchToUpdate.last_email_sent = new Date();
     await watchRepository.save(watchToUpdate);
   } catch (err) {
     errorLogger.error({
