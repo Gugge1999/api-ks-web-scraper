@@ -11,7 +11,8 @@ import { compareStoredWithScraped } from './services/scraper.js';
 const app = express();
 
 AppDataSource.initialize()
-  .then(async () => {
+  .then(async (con) => {
+    con.runMigrations();
     app.use(
       morgan(
         // För att vilken webbläsare använd: :user-agent

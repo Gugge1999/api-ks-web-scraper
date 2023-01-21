@@ -60,7 +60,7 @@ router.put('/toggle-active-status', async (req, res, next) => {
 
 router.delete('/delete-watch/:id', async (req, res, next) => {
   try {
-    const id = await db.deleteWatch(req.params.id);
+    const id = (await db.deleteWatchById(req.params.id)) as string;
     return res.status(200).json({ deletedWatchId: id });
   } catch {
     return next('Could not delete watch.');

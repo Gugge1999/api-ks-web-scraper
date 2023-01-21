@@ -15,20 +15,20 @@ const devConfig: PostgresConnectionOptions = {
   username: process.env.PGUSERNAME,
   password: process.env.PGPASSWORD,
   database: process.env.PGDATABASE,
-  synchronize: true,
+  synchronize: false,
   logging: false,
   entities: [Watch],
-  migrations: [],
+  migrations: ['src/migrations/*.ts'],
   subscribers: []
 };
 
 const prodConfig: PostgresConnectionOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
-  synchronize: true,
+  synchronize: false,
   logging: false,
   entities: [Watch],
-  migrations: [],
+  migrations: ['src/migrations/*.js'],
   subscribers: [],
   ssl: true,
   extra: {
@@ -38,6 +38,8 @@ const prodConfig: PostgresConnectionOptions = {
   }
 };
 
-export const AppDataSource = new DataSource(
-  process.env.NODE_ENV === 'develop' ? devConfig : prodConfig
-);
+export const AppDataSource = new DataSource(devConfig);
+
+// export const AppDataSource = new DataSource(
+//   process.env.NODE_ENV === 'develop' ? devConfig : prodConfig
+// );

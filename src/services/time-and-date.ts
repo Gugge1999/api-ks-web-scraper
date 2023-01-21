@@ -1,4 +1,4 @@
-import { formatInTimeZone } from 'date-fns-tz/esm';
+import formatInTimeZone from 'date-fns-tz/formatInTimeZone';
 
 const timeZone = 'Europe/Stockholm';
 

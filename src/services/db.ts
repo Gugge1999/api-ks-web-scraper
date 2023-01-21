@@ -7,7 +7,7 @@ import { errorLogger } from './logger.js';
 
 export async function getAllWatches() {
   try {
-    const allWatches: Watch[] = await AppDataSource.manager.find(Watch);
+    const allWatches = await AppDataSource.manager.find(Watch);
 
     return allWatches;
   } catch (err) {
@@ -127,7 +127,7 @@ export async function updateStoredWatches(
   }
 }
 
-export async function deleteWatch(id: string) {
+export async function deleteWatchById(id: string) {
   try {
     const watchRepository = AppDataSource.getRepository(Watch);
 
