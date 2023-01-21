@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express, { json } from 'express';
+import { Settings } from 'luxon';
 import morgan from 'morgan';
 
 import { AppDataSource } from './data-source.js';
@@ -33,6 +34,9 @@ AppDataSource.initialize()
     app.use(errorHandler);
 
     const port = process.env.PORT || 3000;
+
+    Settings.defaultZone = 'Europe/Stockholm';
+    Settings.defaultLocale = 'sv';
 
     app.listen(port);
 

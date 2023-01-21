@@ -1,17 +1,21 @@
-import formatInTimeZone from 'date-fns-tz/formatInTimeZone';
+import { DateTime } from 'luxon';
 
 const timeZone = 'Europe/Stockholm';
 
+// Tabell över format: https://moment.github.io/luxon/#/formatting
+
 /**
- * Format: yyyy-MM-dd k:mm:ss.
+ * Format: yyyy-MM-dd hh:mm:ss.
  */
 export function dateAndTime() {
-  return formatInTimeZone(new Date(), timeZone, 'yyyy-MM-dd k:mm:ss');
+  const dt = DateTime.now();
+
+  return dt.toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS);
 }
 
 /**
- * Format: k:mm:ss yyyy-MM-dd.
+ * Format: hh:mm:ss.
  */
-export function dateAndTimeWithTimeFirst() {
-  return formatInTimeZone(new Date(), timeZone, 'k:mm:ss yyyy-MM-dd');
+export function time() {
+  return DateTime.now().toLocaleString(DateTime.TIME_24_WITH_SECONDS);
 }

@@ -83,7 +83,7 @@ export async function compareStoredWithScraped() {
   console.log(
     `Scraping ${allWatches.length} ${
       allWatches.length === 1 ? 'watch' : 'watches'
-    } @ [${timeService.dateAndTimeWithTimeFirst()}]`
+    } @ ${timeService.time()}`
   );
 
   for (let i = 0; i < allWatches.length; i += 1) {

@@ -3,13 +3,6 @@ Tips för Typescript prestanda
 https://github.com/microsoft/TypeScript/wiki/Performance
 
 
-Alla paket i package.json som är @types ska inte vara i dependencies utan istället i devDependencies.
-Kolla även igenom de andra paketen om de är på rätt plats
-
-
-Byt till Luxon för datumhantering
-
-
 För att migrera till Supabase läs: https://github.com/supabase-community/heroku-to-supabase
 
 

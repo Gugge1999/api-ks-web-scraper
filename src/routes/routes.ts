@@ -1,5 +1,5 @@
-import { intervalToDuration } from 'date-fns';
 import express from 'express';
+import { DateTime } from 'luxon';
 
 import { interval } from '../config/scraper.config.js';
 import { ScrapedWatches } from '../models/scraped-watches.js';
@@ -10,10 +10,25 @@ const router = express.Router();
 
 router.get('/api-status', async (req, res, next) => {
   try {
+    const currentTimePlusUptime = DateTime.now().plus({
+      seconds: process.uptime()
+    });
+
+    const currentTime = DateTime.now();
+
+    const diff = currentTimePlusUptime.diff(currentTime, [
+      'years',
+      'months',
+      'days',
+      'hours',
+      'minutes',
+      'seconds'
+    ]);
+
     return res.status(200).json({
       active: true,
       scrapingIntervalInMinutes: interval / 60000,
-      uptime: intervalToDuration({ start: 0, end: process.uptime() * 1000 })
+      uptime: diff.toObject()
     });
   } catch {
     return next('Could not get API status.');
