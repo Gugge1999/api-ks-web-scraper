@@ -11,9 +11,7 @@ import {
 } from './notification.js';
 import * as timeService from './time-and-date.js';
 
-export async function scrapeWatchInfo(
-  link: string
-): Promise<ScrapedWatches[] | { error: string }> {
+export async function scrapeWatchInfo(link: string) {
   const scrapedWatchArr: ScrapedWatches[] = [];
 
   const response = await fetch(link);
@@ -35,7 +33,7 @@ export async function scrapeWatchInfo(
   // Titel
   $('.contentRow-title')
     .get()
-    .map((element: cheerio.Element) => {
+    .map((element: cheerio.Element) =>
       titlesArr.push(
         $(element)
           .text()
@@ -45,24 +43,22 @@ export async function scrapeWatchInfo(
             ''
           )
           .trim()
-      );
-    });
+      )
+    );
 
   // Datum
   $('.u-dt')
     .get()
-    .map((element: cheerio.Element) => {
-      datesArr.push($(element).attr('datetime'));
-    });
+    .map((element: cheerio.Element) =>
+      datesArr.push($(element).attr('datetime'))
+    );
 
   // Länk
   $('.contentRow-title')
     .get()
-    .map((element: cheerio.Element) => {
-      linksArr.push(
-        'https://klocksnack.se' + $(element).find('a').attr('href')
-      );
-    });
+    .map((element: cheerio.Element) =>
+      linksArr.push('https://klocksnack.se' + $(element).find('a').attr('href'))
+    );
 
   // Lägg titel, datum och länk i ett objekt och pusha till array:en
   titlesArr.forEach((element, index) => {
