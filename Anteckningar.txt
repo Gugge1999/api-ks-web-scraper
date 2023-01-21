@@ -6,10 +6,6 @@ https://github.com/microsoft/TypeScript/wiki/Performance
 För att migrera till Supabase läs: https://github.com/supabase-community/heroku-to-supabase
 
 
-Lägg till en kolumn för tråden som scrape:ades, idag finns det bara en länk till den senaste klockan. 
-       Det kanske går att ta bort kolumnen link då, undersök...
-
-
 
 För att testa deploy.
        Länk: https://www.youtube.com/watch?v=QdHvS0D1zAI

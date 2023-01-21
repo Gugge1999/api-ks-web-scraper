@@ -11,10 +11,10 @@ import {
 } from './notification.js';
 import * as timeService from './time-and-date.js';
 
-export async function scrapeWatchInfo(link: string) {
+export async function scrapeWatchInfo(linkToThread: string) {
   const scrapedWatchArr: ScrapedWatches[] = [];
 
-  const response = await fetch(link);
+  const response = await fetch(linkToThread);
   const body = await response.text();
 
   const $ = cheerio.load(body);
@@ -88,7 +88,7 @@ export async function compareStoredWithScraped() {
     const storedWatchesArr = storedWatchRow.watches;
 
     const scrapedWatchArr = (await scrapeWatchInfo(
-      storedWatchRow.link
+      storedWatchRow.linkToThread
     )) as ScrapedWatches[];
 
     // Vänta 1 sekund mellan varje anrop till KS

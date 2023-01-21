@@ -13,7 +13,7 @@ export class Watch {
   id: string;
 
   @Column()
-  link: string;
+  linkToThread: string;
 
   @Column()
   label: string;

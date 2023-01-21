@@ -2,6 +2,7 @@ import express from 'express';
 import { DateTime } from 'luxon';
 
 import { interval } from '../config/scraper.config.js';
+import { Watch } from '../entity/Watch.js';
 import { ScrapedWatches } from '../models/scraped-watches.js';
 import * as db from '../services/db.js';
 import { scrapeWatchInfo } from '../services/scraper.js';
@@ -36,7 +37,7 @@ router.get('/api-status', async (req, res, next) => {
 });
 
 router.post('/add-watch', async (req, res, next) => {
-  const scrapedWatchesResult = await scrapeWatchInfo(req.body.link);
+  const scrapedWatchesResult = await scrapeWatchInfo(req.body.linkToThread);
 
   if ('error' in scrapedWatchesResult) {
     return res.status(400).json('Watch name yielded no results.');
@@ -45,7 +46,7 @@ router.post('/add-watch', async (req, res, next) => {
   try {
     const newWatch = await db.addNewWatch(
       req.body.label,
-      req.body.link,
+      req.body.linkToThread,
       scrapedWatchesResult as ScrapedWatches[]
     );
     return res.status(200).json(newWatch);
@@ -56,7 +57,7 @@ router.post('/add-watch', async (req, res, next) => {
 
 router.get('/all-watches', async (req, res, next) => {
   try {
-    const allWatches = await db.getAllWatchesOnlyLatest();
+    const allWatches = (await db.getAllWatchesOnlyLatest()) as Watch[];
     return res.status(200).json(allWatches);
   } catch {
     return next('Could not retrieve all watches.');

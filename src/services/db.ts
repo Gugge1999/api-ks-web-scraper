@@ -75,20 +75,20 @@ export async function toggleActiveStatus(newStatus: boolean, id: string) {
 
 export async function addNewWatch(
   label: string,
-  link: string,
+  linkToThread: string,
   newScrapedWatches: ScrapedWatches[]
 ) {
   try {
     const watchRepository = AppDataSource.getRepository(Watch);
 
     const watch = new Watch();
-    watch.link = link;
     watch.label = label;
     watch.watches = newScrapedWatches;
     watch.active = true;
     watch.last_email_sent = new Date();
+    watch.linkToThread = linkToThread;
 
-    let newWatch = await watchRepository
+    const newWatch = await watchRepository
       .createQueryBuilder()
       .insert()
       .into(Watch)
