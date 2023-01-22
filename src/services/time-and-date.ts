@@ -1,7 +1,5 @@
 import { DateTime } from 'luxon';
 
-const timeZone = 'Europe/Stockholm';
-
 // Tabell över format: https://moment.github.io/luxon/#/formatting
 
 /**
