@@ -25,7 +25,7 @@ export class Watch {
   active: boolean;
 
   @Column({ type: 'timestamptz', precision: 3 })
-  last_email_sent: Date;
+  lastEmailSent: Date;
 
   @CreateDateColumn({ type: 'timestamptz', precision: 3 })
   added: Date;

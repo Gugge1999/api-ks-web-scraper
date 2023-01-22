@@ -38,6 +38,8 @@ const prodConfig: PostgresConnectionOptions = {
   }
 };
 
+// export const AppDataSource = new DataSource(devConfig);
+
 export const AppDataSource = new DataSource(
   process.env.NODE_ENV === 'develop' ? devConfig : prodConfig
 );

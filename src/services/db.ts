@@ -85,7 +85,7 @@ export async function addNewWatch(
     watch.label = label;
     watch.watches = newScrapedWatches;
     watch.active = true;
-    watch.last_email_sent = new Date();
+    watch.lastEmailSent = new Date();
     watch.linkToThread = linkToThread;
 
     const newWatch = await watchRepository
@@ -117,7 +117,7 @@ export async function updateStoredWatches(
 
     const watchToUpdate = await watchRepository.findOneBy({ id });
     watchToUpdate.watches = newWatchArr;
-    watchToUpdate.last_email_sent = new Date();
+    watchToUpdate.lastEmailSent = new Date();
     await watchRepository.save(watchToUpdate);
   } catch (err) {
     errorLogger.error({
