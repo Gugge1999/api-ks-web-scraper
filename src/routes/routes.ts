@@ -6,30 +6,16 @@ import { Watch } from '../entity/Watch.js';
 import { ScrapedWatches } from '../models/scraped-watches.js';
 import * as db from '../services/db.js';
 import { scrapeWatchInfo } from '../services/scraper.js';
+import { getUptime } from '../services/uptime.js';
 
 const router = express.Router();
 
 router.get('/api-status', async (req, res, next) => {
   try {
-    const currentTimePlusUptime = DateTime.now().plus({
-      seconds: process.uptime()
-    });
-
-    const currentTime = DateTime.now();
-
-    const diff = currentTimePlusUptime.diff(currentTime, [
-      'years',
-      'months',
-      'days',
-      'hours',
-      'minutes',
-      'seconds'
-    ]);
-
     return res.status(200).json({
       active: true,
       scrapingIntervalInMinutes: interval / 60000,
-      uptime: diff.toObject()
+      uptime: getUptime()
     });
   } catch {
     return next('Could not get API status.');
