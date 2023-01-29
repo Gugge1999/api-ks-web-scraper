@@ -53,8 +53,14 @@ router.get('/all-watches', async (req, res, next) => {
 router.put('/toggle-active-status', async (req, res, next) => {
   try {
     const newStatus = !req.body.isActive;
-    const status = await db.toggleActiveStatus(newStatus, req.body.id);
-    return res.status(200).json({ isActive: status, label: req.body.label });
+    const watch = (await db.toggleActiveStatus(
+      newStatus,
+      req.body.id
+    )) as Watch;
+
+    return res
+      .status(200)
+      .json({ id: watch.id, active: watch.active, label: watch.label });
   } catch {
     return next('Could not toggle status.');
   }

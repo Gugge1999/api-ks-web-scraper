@@ -64,7 +64,7 @@ export async function toggleActiveStatus(newStatus: boolean, id: string) {
 
     await watchRepository.save(watchToUpdate);
 
-    return newStatus;
+    return watchToUpdate;
   } catch (err) {
     return errorLogger.error({
       message: 'Function toggleActiveStatus failed.',
