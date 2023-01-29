@@ -85,7 +85,7 @@ export async function addNewWatch(
     watch.label = label;
     watch.watches = newScrapedWatches;
     watch.active = true;
-    watch.lastEmailSent = new Date();
+    watch.lastEmailSent = null;
     watch.linkToThread = linkToThread;
 
     const newWatch = await watchRepository
