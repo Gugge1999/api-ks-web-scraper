@@ -19,6 +19,9 @@ export async function scrapeWatchInfo(searchTerm: string) {
     return { errorMessage: 'API - Could not get link to thread' };
   }
 
+  // TODO: Det går att skippa fetch.
+  // I puppeteer-funktionen är vi inne på sidan så en till fetch behöver inte göras
+
   const response = await fetch(url);
   const body = await response.text();
 
@@ -92,8 +95,8 @@ export async function compareStoredWithScraped() {
 
     const storedWatchesArr = storedWatchRow.watches;
 
-    const scrapedWatchArr = (await scrapeWatchInfo(
-      storedWatchRow.linkToThread
+    const scrapedWatchesArr = (await scrapeWatchInfo(
+      storedWatchRow.watchToScrape
     )) as ScrapedWatches[];
 
     // Vänta 1 sekund mellan varje anrop till KS
@@ -103,7 +106,7 @@ export async function compareStoredWithScraped() {
 
     // Just nu jämförs de lagrade klockorna och de scrape:ade endast på postedDate.
     // TODO: Är det unikt nog ?
-    const newScrapedWatches = scrapedWatchArr.filter(
+    const newScrapedWatches = scrapedWatchesArr.filter(
       ({ postedDate: id1 }: { postedDate: string }) =>
         !storedWatchesArr.some(
           ({ postedDate: id2 }: { postedDate: string }) => id2 === id1
@@ -111,7 +114,7 @@ export async function compareStoredWithScraped() {
     );
 
     if (newScrapedWatches.length > 0) {
-      updateStoredWatches(scrapedWatchArr, storedWatchRow.id);
+      updateStoredWatches(scrapedWatchesArr, storedWatchRow.id);
 
       // Loopa över varje ny klocka och skicka mail
       for (let j = 0; j < newScrapedWatches.length; j += 1) {
@@ -146,7 +149,7 @@ export async function getUrlForSearchResult(searchTerm: string) {
   try {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    page.setDefaultNavigationTimeout(20_000);
+    page.setDefaultNavigationTimeout(10_000);
 
     await page.goto('https://klocksnack.se/search/?type=post');
 

@@ -25,7 +25,7 @@ router.get('/api-status', async (req, res, next) => {
 router.post('/add-watch', async (req, res, next) => {
   const form = req.body as NewWatchFormDTO;
 
-  const scrapedWatchesResult = await scrapeWatchInfo(form.linkToThread);
+  const scrapedWatchesResult = await scrapeWatchInfo(form.watchToScrape);
 
   if ('errorMessage' in scrapedWatchesResult) {
     return res.status(400).json(scrapedWatchesResult.errorMessage);
@@ -33,8 +33,7 @@ router.post('/add-watch', async (req, res, next) => {
 
   try {
     const newWatch = await db.addNewWatch(
-      form.label,
-      form.linkToThread,
+      form,
       scrapedWatchesResult as ScrapedWatches[]
     );
     return res.status(200).json(newWatch);
@@ -46,6 +45,8 @@ router.post('/add-watch', async (req, res, next) => {
 router.get('/all-watches', async (req, res, next) => {
   try {
     const allWatches = (await db.getAllWatchesOnlyLatest()) as Watch[];
+
+    // istället för att returnera watches som en array gör det till ett objekt
     return res.status(200).json(allWatches);
   } catch {
     return next('Could not retrieve all watches.');

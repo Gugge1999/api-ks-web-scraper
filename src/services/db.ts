@@ -2,6 +2,7 @@ import 'reflect-metadata';
 
 import { AppDataSource } from '../data-source.js';
 import { Watch } from '../entity/Watch.js';
+import { NewWatchFormDTO } from '../models/new-watch-form-dto.js';
 import { ScrapedWatches } from '../models/scraped-watches.js';
 import { errorLogger } from './logger.js';
 
@@ -39,14 +40,14 @@ export async function getAllWatchesOnlyLatest() {
   try {
     const watchRepository = AppDataSource.getRepository(Watch);
 
-    let allWatches = await watchRepository.find({ order: { added: 'ASC' } });
-
-    allWatches = allWatches.map((element, index) => {
-      allWatches[index].watches.splice(1, allWatches[index].watches.length);
+    const allWatchesOnlyLatest = (
+      await watchRepository.find({ order: { added: 'ASC' } })
+    ).map((element) => {
+      element.watches.splice(1, element.watches.length);
       return element;
     });
 
-    return allWatches;
+    return allWatchesOnlyLatest;
   } catch (err) {
     return errorLogger.error({
       message: 'Function getAllWatchesOnlyLatest failed.',
@@ -74,30 +75,17 @@ export async function toggleActiveStatus(newStatus: boolean, id: string) {
 }
 
 export async function addNewWatch(
-  label: string,
-  linkToThread: string,
+  form: NewWatchFormDTO,
   newScrapedWatches: ScrapedWatches[]
 ) {
   try {
-    const watchRepository = AppDataSource.getRepository(Watch);
-
     const watch = new Watch();
-    watch.label = label;
+    watch.label = form.label;
     watch.watches = newScrapedWatches;
     watch.active = true;
-    watch.lastEmailSent = null;
-    watch.linkToThread = linkToThread;
+    watch.watchToScrape = form.watchToScrape;
 
-    const newWatch = await watchRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Watch)
-      .values(watch)
-      .returning('*')
-      .execute();
-
-    watch.id = newWatch.generatedMaps[0].id;
-    watch.watches = [newWatch.generatedMaps[0].watches[0]];
+    await AppDataSource.getRepository(Watch).save(watch);
 
     return watch;
   } catch (err) {
@@ -109,15 +97,17 @@ export async function addNewWatch(
 }
 
 export async function updateStoredWatches(
-  newWatchArr: ScrapedWatches[],
+  newWatchesArr: ScrapedWatches[],
   id: string
 ) {
   try {
     const watchRepository = AppDataSource.getRepository(Watch);
 
     const watchToUpdate = await watchRepository.findOneBy({ id });
-    watchToUpdate.watches = newWatchArr;
+
+    watchToUpdate.watches = newWatchesArr;
     watchToUpdate.lastEmailSent = new Date();
+
     await watchRepository.save(watchToUpdate);
   } catch (err) {
     errorLogger.error({

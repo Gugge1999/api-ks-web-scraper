@@ -13,7 +13,7 @@ export class Watch {
   id: string;
 
   @Column()
-  linkToThread: string;
+  watchToScrape: string;
 
   @Column()
   label: string;
@@ -27,6 +27,6 @@ export class Watch {
   @Column({ type: 'timestamptz', precision: 3, nullable: true })
   lastEmailSent: Date;
 
-  @CreateDateColumn({ type: 'timestamptz', precision: 3 })
-  added: Date;
+  @Column({ type: 'timestamptz', precision: 3 })
+  added: Date = new Date();
 }

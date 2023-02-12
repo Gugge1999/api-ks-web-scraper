@@ -1,4 +1,4 @@
 export interface NewWatchFormDTO {
   label: string;
-  linkToThread: string;
+  watchToScrape: string;
 }
