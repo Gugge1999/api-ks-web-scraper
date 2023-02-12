@@ -8,6 +8,6 @@ export const email = {
   emailTo: process.env.EMAILTO
 };
 
-const minutes: number = 10;
+const minutes = 10;
 
 export const interval = minutes * 60000; // minutes × 60,000 = milliseconds

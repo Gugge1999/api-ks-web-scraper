@@ -3,6 +3,17 @@ Tips för Typescript prestanda
 https://github.com/microsoft/TypeScript/wiki/Performance
 
 
+
+Fixa eslint för typescript. Setup idag funkar inte riktigt bra
+https://typescript-eslint.io/
+
+
+
+Läs igenom den här guiden. Tror det är bättre error handling 
+https://feqy.medium.com/error-handling-in-nodets-f051e385e87e
+
+
+
 För att migrera till Supabase läs: https://github.com/supabase-community/heroku-to-supabase
 
 
