@@ -13,17 +13,11 @@ import {
 import * as timeService from './time-and-date.js';
 
 export async function scrapeWatchInfo(searchTerm: string) {
-  const url = await getUrlForSearchResult('rolex');
+  const body = await getContentFromSearchTerm(searchTerm);
 
-  if (url === '') {
+  if (body === '') {
     return { errorMessage: 'API - Could not get link to thread' };
   }
-
-  // TODO: Det går att skippa fetch.
-  // I puppeteer-funktionen är vi inne på sidan så en till fetch behöver inte göras
-
-  const response = await fetch(url);
-  const body = await response.text();
 
   const $ = cheerio.load(body);
 
@@ -107,9 +101,9 @@ export async function compareStoredWithScraped() {
     // Just nu jämförs de lagrade klockorna och de scrape:ade endast på postedDate.
     // TODO: Är det unikt nog ?
     const newScrapedWatches = scrapedWatchesArr.filter(
-      ({ postedDate: id1 }: { postedDate: string }) =>
+      ({ postedDate: a }: { postedDate: string }) =>
         !storedWatchesArr.some(
-          ({ postedDate: id2 }: { postedDate: string }) => id2 === id1
+          ({ postedDate: b }: { postedDate: string }) => b === a
         )
     );
 
@@ -145,16 +139,13 @@ export async function compareStoredWithScraped() {
   setTimeout(compareStoredWithScraped, interval);
 }
 
-export async function getUrlForSearchResult(searchTerm: string) {
+export async function getContentFromSearchTerm(searchTerm: string) {
   try {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     page.setDefaultNavigationTimeout(10_000);
 
     await page.goto('https://klocksnack.se/search/?type=post');
-
-    // TODO: Behövs den när man gör headless?
-    await page.setViewport({ width: 1080, height: 1024 });
 
     // Acceptera cookies, klick 2 gånger verkar funka bäst
     await page.waitForSelector('[mode="primary"]');
@@ -178,11 +169,11 @@ export async function getUrlForSearchResult(searchTerm: string) {
       page.click('.formSubmitRow-controls .button--primary')
     ]);
 
-    const url = page.url();
+    const testing = page.content();
 
     await browser.close();
 
-    return url;
+    return testing;
   } catch (err) {
     errorLogger.error({
       message: 'Function getUrlForSearchResult failed.',
