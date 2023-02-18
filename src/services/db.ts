@@ -84,6 +84,7 @@ export async function addNewWatch(
     watch.watches = newScrapedWatches;
     watch.active = true;
     watch.watchToScrape = form.watchToScrape;
+    watch.lastEmailSent = null;
 
     await AppDataSource.getRepository(Watch).save(watch);
 
