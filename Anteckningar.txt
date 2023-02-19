@@ -1,28 +1,24 @@
 ---------------------------------- TODO ----------------------------------
 Tips för Typescript prestanda
-https://github.com/microsoft/TypeScript/wiki/Performance
+       https://github.com/microsoft/TypeScript/wiki/Performance
 
 
 
 Fixa eslint för typescript. Setup idag funkar inte riktigt bra
-https://typescript-eslint.io/
+       https://typescript-eslint.io/
 
 
 
 Läs igenom den här guiden. Tror det är bättre error handling 
-https://feqy.medium.com/error-handling-in-nodets-f051e385e87e
+       https://feqy.medium.com/error-handling-in-nodets-f051e385e87e
 
 
 
-För att migrera till Supabase läs: https://github.com/supabase-community/heroku-to-supabase
-
+Migrera från Heroku till fly.io :
+       https://fly.io/launch/heroku
 
 Byt till TypeScript 5.0 när det släpps
-https://devblogs.microsoft.com/typescript/announcing-typescript-5-0-beta/#const-type-parameters
-
-
-För att testa deploy.
-       Länk: https://www.youtube.com/watch?v=QdHvS0D1zAI
+       https://devblogs.microsoft.com/typescript/announcing-typescript-5-0-beta/#const-type-parameters
 
 
 
