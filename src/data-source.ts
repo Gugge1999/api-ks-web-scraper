@@ -25,10 +25,9 @@ const devConfig: PostgresConnectionOptions = {
 const prodConfig: PostgresConnectionOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
-  synchronize: false,
+  synchronize: true,
   logging: false,
   entities: [Watch],
-  migrations: ['src/migrations/*.js'],
   subscribers: [],
   ssl: true,
   extra: {
