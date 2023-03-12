@@ -1,4 +1,7 @@
 ---------------------------------- TODO ----------------------------------
+Skapa GitHub actions för fly.io
+
+
 Tips för Typescript prestanda
        https://github.com/microsoft/TypeScript/wiki/Performance
 
@@ -13,9 +16,6 @@ Läs igenom den här guiden. Tror det är bättre error handling
        https://feqy.medium.com/error-handling-in-nodets-f051e385e87e
 
 
-
-Migrera från Heroku till fly.io :
-       https://fly.io/launch/heroku
 
 Byt till TypeScript 5.0 när det släpps
        https://devblogs.microsoft.com/typescript/announcing-typescript-5-0-beta/#const-type-parameters
