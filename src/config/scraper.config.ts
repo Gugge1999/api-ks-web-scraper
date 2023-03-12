@@ -11,3 +11,14 @@ export const email = {
 const minutes = 10;
 
 export const interval = minutes * 60000; // minutes × 60,000 = milliseconds
+
+export const prodPuppeteerConfig = {
+  headless: true,
+  executablePath: '/usr/bin/google-chrome',
+  args: [
+    '--disable-gpu',
+    '--disable-dev-shm-usage',
+    '--disable-setuid-sandbox',
+    '--no-sandbox'
+  ]
+};

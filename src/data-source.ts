@@ -22,6 +22,7 @@ const devConfig: PostgresConnectionOptions = {
   subscribers: []
 };
 
+// TODO David: Byt till gammal config
 const prodConfig: PostgresConnectionOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,

@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import puppeteer, { ElementHandle } from 'puppeteer';
 
-import { interval } from '../config/scraper.config.js';
+import { interval, prodPuppeteerConfig } from '../config/scraper.config.js';
 import { Watch } from '../entity/Watch.js';
 import { ScrapedWatches } from '../models/scraped-watches.js';
 import { getAllActiveWatches, updateStoredWatches } from './db.js';
@@ -141,9 +141,14 @@ export async function compareStoredWithScraped() {
 
 export async function getContentFromSearchTerm(searchTerm: string) {
   try {
-    const browser = await puppeteer.launch();
+    const browser =
+      process.env.NODE_ENV === 'develop'
+        ? await puppeteer.launch()
+        : await puppeteer.launch(prodPuppeteerConfig);
+
     const page = await browser.newPage();
-    page.setDefaultNavigationTimeout(10_000);
+
+    page.setDefaultNavigationTimeout(60_000);
 
     await page.goto('https://klocksnack.se/search/?type=post');
 
@@ -169,11 +174,11 @@ export async function getContentFromSearchTerm(searchTerm: string) {
       page.click('.formSubmitRow-controls .button--primary')
     ]);
 
-    const testing = page.content();
+    const pageContent = await page.content();
 
     await browser.close();
 
-    return testing;
+    return pageContent;
   } catch (err) {
     errorLogger.error({
       message: 'Function getUrlForSearchResult failed.',
