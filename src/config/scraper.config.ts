@@ -14,7 +14,7 @@ export const interval = minutes * 60000; // minutes × 60,000 = milliseconds
 
 export const prodPuppeteerConfig = {
   headless: true,
-  executablePath: '/usr/bin/google-chrome',
+  executablePath: '/usr/bin/google-chrome-stable',
   args: [
     '--disable-gpu',
     '--disable-dev-shm-usage',
