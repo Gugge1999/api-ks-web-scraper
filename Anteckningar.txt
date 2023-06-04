@@ -1,4 +1,7 @@
 ---------------------------------- TODO ----------------------------------
+Det verkar som att puppeteer inte längre behövs. Byt tillbaka till gamla lösningen
+
+
 Skapa GitHub actions för fly.io
 
 

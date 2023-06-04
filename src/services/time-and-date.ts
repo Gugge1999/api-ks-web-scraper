@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime } from "luxon";
 
 // Tabell över format: https://moment.github.io/luxon/#/formatting
 

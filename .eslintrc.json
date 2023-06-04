@@ -3,12 +3,7 @@
     "es2022": true,
     "node": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:node/recommended",
-    "airbnb-base",
-    "prettier"
-  ],
+  "extends": ["eslint:recommended", "plugin:node/recommended", "airbnb-base", "prettier"],
   "plugins": ["prettier"],
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -42,17 +37,14 @@
     "space-in-parens": "error",
     "space-infix-ops": "error",
     "space-unary-ops": "error",
-    "quotes": ["error", "single"],
+    "quotes": ["error", "double"],
     "keyword-spacing": "error",
     "multiline-ternary": ["error", "never"],
     "no-mixed-operators": "error",
     "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
     "no-whitespace-before-property": "error",
     "nonblock-statement-body-position": "error",
-    "object-property-newline": [
-      "error",
-      { "allowAllPropertiesOnSameLine": true }
-    ],
+    "object-property-newline": ["error", { "allowAllPropertiesOnSameLine": true }],
     // End enhance readability
     // Start best Practices
     "eqeqeq": "warn",

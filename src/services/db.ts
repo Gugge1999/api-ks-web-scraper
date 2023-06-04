@@ -1,10 +1,11 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 
-import { AppDataSource } from '../data-source.js';
-import { Watch } from '../entity/Watch.js';
-import { NewWatchFormDTO } from '../models/new-watch-form-dto.js';
-import { ScrapedWatches } from '../models/scraped-watches.js';
-import { errorLogger } from './logger.js';
+import { AppDataSource } from "../data-source.js";
+import { Email } from "../entity/email.js";
+import { Watch } from "../entity/watch.js";
+import { NewWatchFormDTO } from "../models/new-watch-form-dto.js";
+import { ScrapedWatches } from "../models/scraped-watches.js";
+import { errorLogger } from "./logger.js";
 
 export async function getAllWatches() {
   try {
@@ -13,7 +14,7 @@ export async function getAllWatches() {
     return allWatches;
   } catch (err) {
     return errorLogger.error({
-      message: 'Function getAllWatches failed.',
+      message: "Function getAllWatches failed.",
       stacktrace: err
     });
   }
@@ -30,7 +31,7 @@ export async function getAllActiveWatches() {
     return allActiveWatches;
   } catch (err) {
     return errorLogger.error({
-      message: 'Function getAllActiveWatches failed.',
+      message: "Function getAllActiveWatches failed.",
       stacktrace: err
     });
   }
@@ -40,9 +41,7 @@ export async function getAllWatchesOnlyLatest() {
   try {
     const watchRepository = AppDataSource.getRepository(Watch);
 
-    const allWatchesOnlyLatest = (
-      await watchRepository.find({ order: { added: 'ASC' } })
-    ).map((element) => {
+    const allWatchesOnlyLatest = (await watchRepository.find({ order: { added: "ASC" } })).map((element) => {
       element.watches.splice(1, element.watches.length);
       return element;
     });
@@ -50,7 +49,7 @@ export async function getAllWatchesOnlyLatest() {
     return allWatchesOnlyLatest;
   } catch (err) {
     return errorLogger.error({
-      message: 'Function getAllWatchesOnlyLatest failed.',
+      message: "Function getAllWatchesOnlyLatest failed.",
       stacktrace: err
     });
   }
@@ -68,16 +67,13 @@ export async function toggleActiveStatus(newStatus: boolean, id: string) {
     return watchToUpdate;
   } catch (err) {
     return errorLogger.error({
-      message: 'Function toggleActiveStatus failed.',
+      message: "Function toggleActiveStatus failed.",
       stacktrace: err
     });
   }
 }
 
-export async function addNewWatch(
-  form: NewWatchFormDTO,
-  newScrapedWatches: ScrapedWatches[]
-) {
+export async function addNewWatch(form: NewWatchFormDTO, newScrapedWatches: ScrapedWatches[]) {
   try {
     const watch = new Watch();
     watch.label = form.label;
@@ -91,16 +87,13 @@ export async function addNewWatch(
     return watch;
   } catch (err) {
     return errorLogger.error({
-      message: 'Function addNewWatch failed.',
+      message: "Function addNewWatch failed.",
       stacktrace: err
     });
   }
 }
 
-export async function updateStoredWatches(
-  newWatchesArr: ScrapedWatches[],
-  id: string
-) {
+export async function updateStoredWatches(newWatchesArr: ScrapedWatches[], id: string) {
   try {
     const watchRepository = AppDataSource.getRepository(Watch);
 
@@ -112,7 +105,7 @@ export async function updateStoredWatches(
     await watchRepository.save(watchToUpdate);
   } catch (err) {
     errorLogger.error({
-      message: 'Function updateStoredWatch failed.',
+      message: "Function updateStoredWatch failed.",
       stacktrace: err
     });
   }
@@ -128,7 +121,21 @@ export async function deleteWatchById(id: string) {
     return id;
   } catch (err) {
     return errorLogger.error({
-      message: 'Function deleteWatch failed.',
+      message: "Function deleteWatch failed.",
+      stacktrace: err
+    });
+  }
+}
+
+export async function newEmail(watchId: string) {
+  try {
+    const emailRepository = AppDataSource.getRepository(Email);
+
+    const watchToRemove = await emailRepository.findOneBy({ id: watchId });
+    await emailRepository.remove(watchToRemove);
+  } catch (err) {
+    return errorLogger.error({
+      message: "Function deleteWatch failed.",
       stacktrace: err
     });
   }

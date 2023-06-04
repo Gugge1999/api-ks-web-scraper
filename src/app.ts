@@ -1,13 +1,13 @@
-import cors from 'cors';
-import express, { json } from 'express';
-import { Settings } from 'luxon';
-import morgan from 'morgan';
+import cors from "cors";
+import express, { json } from "express";
+import { Settings } from "luxon";
+import morgan from "morgan";
 
-import { AppDataSource } from './data-source.js';
-import routes from './routes/routes.js';
-import { errorLogger, requestLogger } from './services/logger.js';
-import errorHandler from './services/middleware.js';
-import { compareStoredWithScraped } from './services/scraper.js';
+import { AppDataSource } from "./data-source.js";
+import routes from "./routes/routes.js";
+import { errorLogger, requestLogger } from "./services/logger.js";
+import errorHandler from "./services/middleware.js";
+import { compareStoredWithScraped } from "./services/scraper.js";
 
 const app = express();
 
@@ -17,7 +17,7 @@ AppDataSource.initialize()
     app.use(
       morgan(
         // För att vilken webbläsare använd: :user-agent
-        '::remote-addr :remote-user :method :url - Response time: :response-time ms - :user-agent',
+        "::remote-addr :remote-user :method :url - Response time: :response-time ms - :user-agent",
         {
           stream: {
             write: (message) =>
@@ -35,8 +35,8 @@ AppDataSource.initialize()
 
     const port = process.env.PORT || 3000;
 
-    Settings.defaultZone = 'Europe/Stockholm';
-    Settings.defaultLocale = 'sv';
+    Settings.defaultZone = "Europe/Stockholm";
+    Settings.defaultLocale = "sv";
 
     app.listen(port);
 
@@ -44,7 +44,7 @@ AppDataSource.initialize()
   })
   .catch((error: Error) => {
     errorLogger.error({
-      message: 'Function AppDataSource.initialize failed.',
+      message: "Function AppDataSource.initialize failed.",
       stacktrace: error
     });
   });
