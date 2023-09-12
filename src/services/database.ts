@@ -7,19 +7,6 @@ import { NewWatchFormDTO } from "../models/new-watch-form-dto.js";
 import { ScrapedWatches } from "../models/scraped-watches.js";
 import { errorLogger } from "./logger.js";
 
-export async function getAllWatches() {
-  try {
-    const allWatches = await AppDataSource.manager.find(Watch);
-
-    return allWatches;
-  } catch (err) {
-    return errorLogger.error({
-      message: "Function getAllWatches failed.",
-      stacktrace: err
-    });
-  }
-}
-
 export async function getAllActiveWatches() {
   try {
     const watchRepository = AppDataSource.getRepository(Watch);
@@ -30,10 +17,12 @@ export async function getAllActiveWatches() {
 
     return allActiveWatches;
   } catch (err) {
-    return errorLogger.error({
+    errorLogger.error({
       message: "Function getAllActiveWatches failed.",
       stacktrace: err
     });
+
+    return null;
   }
 }
 
@@ -60,16 +49,22 @@ export async function toggleActiveStatus(newStatus: boolean, id: string) {
     const watchRepository = AppDataSource.getRepository(Watch);
 
     const watchToUpdate = await watchRepository.findOneBy({ id });
-    watchToUpdate.active = newStatus;
 
-    await watchRepository.save(watchToUpdate);
+    if (watchToUpdate) {
+      watchToUpdate.active = newStatus;
+      await watchRepository.save(watchToUpdate);
 
-    return watchToUpdate;
+      return watchToUpdate;
+    } else {
+      return null;
+    }
   } catch (err) {
-    return errorLogger.error({
+    errorLogger.error({
       message: "Function toggleActiveStatus failed.",
       stacktrace: err
     });
+
+    return null;
   }
 }
 
@@ -99,15 +94,19 @@ export async function updateStoredWatches(newWatchesArr: ScrapedWatches[], id: s
 
     const watchToUpdate = await watchRepository.findOneBy({ id });
 
-    watchToUpdate.watches = newWatchesArr;
-    watchToUpdate.lastEmailSent = new Date();
+    if (watchToUpdate) {
+      watchToUpdate.watches = newWatchesArr;
+      watchToUpdate.lastEmailSent = new Date();
 
-    await watchRepository.save(watchToUpdate);
+      await watchRepository.save(watchToUpdate);
+    }
   } catch (err) {
     errorLogger.error({
       message: "Function updateStoredWatch failed.",
       stacktrace: err
     });
+
+    throw Error(err);
   }
 }
 
@@ -116,14 +115,21 @@ export async function deleteWatchById(id: string) {
     const watchRepository = AppDataSource.getRepository(Watch);
 
     const watchToRemove = await watchRepository.findOneBy({ id });
-    await watchRepository.remove(watchToRemove);
 
-    return id;
+    if (watchToRemove) {
+      await watchRepository.remove(watchToRemove);
+
+      return id;
+    } else {
+      return null;
+    }
   } catch (err) {
-    return errorLogger.error({
+    errorLogger.error({
       message: "Function deleteWatch failed.",
       stacktrace: err
     });
+
+    return null;
   }
 }
 
@@ -132,9 +138,9 @@ export async function newEmail(watchId: string) {
     const emailRepository = AppDataSource.getRepository(Email);
 
     const watchToRemove = await emailRepository.findOneBy({ id: watchId });
-    await emailRepository.remove(watchToRemove);
+    if (watchToRemove) await emailRepository.remove(watchToRemove);
   } catch (err) {
-    return errorLogger.error({
+    errorLogger.error({
       message: "Function deleteWatch failed.",
       stacktrace: err
     });

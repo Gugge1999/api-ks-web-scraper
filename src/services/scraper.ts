@@ -4,10 +4,10 @@ import puppeteer, { ElementHandle } from "puppeteer";
 import { interval, prodPuppeteerConfig } from "../config/scraper.config.js";
 import { Watch } from "../entity/watch.js";
 import { ScrapedWatches } from "../models/scraped-watches.js";
-import { getAllActiveWatches, updateStoredWatches } from "./db.js";
+import { getAllActiveWatches, updateStoredWatches } from "./database.js";
 import { errorLogger, infoLogger } from "./logger.js";
 import { sendErrorNotification, sendWatchNotification } from "./notification.js";
-import * as timeService from "./time-and-date.js";
+import { dateAndTime, time } from "./time-and-date.js";
 
 export async function scrapeWatchInfo(searchTerm: string) {
   const body = await getContentFromSearchTerm(searchTerm);
@@ -69,16 +69,20 @@ export async function scrapeWatchInfo(searchTerm: string) {
 }
 
 export async function compareStoredWithScraped() {
-  const allWatches = (await getAllActiveWatches()) as Watch[];
+  const allWatches = await getAllActiveWatches();
 
-  console.log(`Scraping ${allWatches.length} ${allWatches.length === 1 ? "watch" : "watches"} @ ${timeService.time()}`);
+  if (allWatches === null) return;
+
+  console.log(`Scraping ${allWatches.length} ${allWatches.length === 1 ? "watch" : "watches"} @ ${dateAndTime()}`);
 
   for (let i = 0; i < allWatches.length; i += 1) {
     const storedWatchRow = allWatches[i];
 
     const storedWatchesArr = storedWatchRow.watches;
 
-    const scrapedWatchesArr = (await scrapeWatchInfo(storedWatchRow.watchToScrape)) as ScrapedWatches[];
+    const scrapedWatchesArr = await scrapeWatchInfo(storedWatchRow.watchToScrape);
+
+    if ("errorMessage" in scrapedWatchesArr) return;
 
     // Vänta 1 sekund mellan varje anrop till KS
     await new Promise((resolve) => {
@@ -91,6 +95,7 @@ export async function compareStoredWithScraped() {
       return storedWatchesArr.some(({ postedDate: b }: { postedDate: string }) => b === a);
     });
 
+    // TODO: Bryta ut i funktion?
     if (newScrapedWatches.length > 0) {
       // TODO David: Ska det vara scrapedWatchesArr eller newScrapedWatches?
       updateStoredWatches(scrapedWatchesArr, storedWatchRow.id);
@@ -164,7 +169,5 @@ async function getContentFromSearchTerm(searchTerm: string) {
 }
 
 function getEmailText(newScrapedWatches: ScrapedWatches) {
-  return `${newScrapedWatches.name}\n\nLänk: ${
-    newScrapedWatches.link
-  }\n\nDetta mail skickades: ${timeService.dateAndTime()}`;
+  return `${newScrapedWatches.name}\n\nLänk: ${newScrapedWatches.link}\n\nDetta mail skickades: ${time()}`;
 }

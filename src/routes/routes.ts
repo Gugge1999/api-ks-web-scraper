@@ -1,9 +1,8 @@
 import express, { Request } from "express";
 
 import { interval } from "../config/scraper.config.js";
-import { Watch } from "../entity/watch.js";
 import { NewWatchFormDTO } from "../models/new-watch-form-dto.js";
-import * as db from "../services/db.js";
+import * as db from "../services/database.js";
 import { scrapeWatchInfo } from "../services/scraper.js";
 import { getUptime } from "../services/uptime.js";
 
@@ -38,7 +37,7 @@ router.post("/add-watch", async (req: Request<{}, {}, NewWatchFormDTO>, res, nex
 
 router.get("/all-watches", async (req, res, next) => {
   try {
-    const allWatches = (await db.getAllWatchesOnlyLatest()) as Watch[];
+    const allWatches = await db.getAllWatchesOnlyLatest();
 
     return res.status(200).json(allWatches);
   } catch {
@@ -49,9 +48,13 @@ router.get("/all-watches", async (req, res, next) => {
 router.put("/toggle-active-status", async (req, res, next) => {
   try {
     const newStatus = !req.body.isActive;
-    const watch = (await db.toggleActiveStatus(newStatus, req.body.id)) as Watch;
+    const watch = await db.toggleActiveStatus(newStatus, req.body.id);
 
-    return res.status(200).json({ id: watch.id, active: watch.active, label: watch.label });
+    if (watch) {
+      return res.status(200).json({ id: watch.id, active: watch.active, label: watch.label });
+    } else {
+      return next(`Could not toggle status on watch with id: ${req.body.id}`);
+    }
   } catch {
     return next("Could not toggle status.");
   }
@@ -59,8 +62,12 @@ router.put("/toggle-active-status", async (req, res, next) => {
 
 router.delete("/delete-watch/:id", async (req, res, next) => {
   try {
-    const id = (await db.deleteWatchById(req.params.id)) as string;
-    return res.status(200).json({ deletedWatchId: id });
+    const id = await db.deleteWatchById(req.params.id);
+    if (id) {
+      return res.status(200).json({ deletedWatchId: id });
+    } else {
+      return next(`Could not delete watch with id: ${id}`);
+    }
   } catch {
     return next("Could not delete watch.");
   }
