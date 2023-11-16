@@ -12,7 +12,7 @@ Fixa eslint för typescript. Setup idag funkar inte riktigt bra
 
 
 
-Läs igenom den här guiden. Tror det är bättre error handling 
+Läs igenom den här guiden. Tror det är bättre error handling asdf
        https://feqy.medium.com/error-handling-in-nodets-f051e385e87e
 
 
