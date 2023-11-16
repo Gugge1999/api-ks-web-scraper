@@ -2,8 +2,7 @@
 Skapa GitHub actions för fly.io
 
 
-Tips för Typescript prestanda
-       https://github.com/microsoft/TypeScript/wiki/Performance
+Tips för Typescript prestanda:  https://github.com/microsoft/TypeScript/wiki/Performance
 
 
 
@@ -12,7 +11,7 @@ Fixa eslint för typescript. Setup idag funkar inte riktigt bra
 
 
 
-Läs igenom den här guiden. Tror det är bättre error handling asdf
+Läs igenom den här guiden. Tror det är bättre error handling
        https://feqy.medium.com/error-handling-in-nodets-f051e385e87e
 
 
