@@ -11,7 +11,7 @@ dotenv.config();
 const devConfig: PostgresConnectionOptions = {
   type: "postgres",
   host: process.env.PGHOST,
-  port: parseInt(process.env.PGPORT ?? "5432"),
+  port: parseInt(process.env.PGPORT!),
   username: process.env.PGUSERNAME,
   password: process.env.PGPASSWORD,
   database: process.env.PGDATABASE,

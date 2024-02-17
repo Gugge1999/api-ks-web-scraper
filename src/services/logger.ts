@@ -2,9 +2,11 @@ import { createLogger, format, transports } from "winston";
 
 const { combine, timestamp, prettyPrint, errors, printf } = format;
 
+const timeFormat = "HH:mm:ss YYYY-MM-DD";
+
 const customFormat = format.combine(
   timestamp({
-    format: "HH:mm:ss YYYY-MM-DD"
+    format: timeFormat
   }),
   printf((info) => `${info.message} [${info.timestamp}]`)
 );
@@ -13,7 +15,7 @@ export const errorLogger = createLogger({
   format: combine(
     errors({ stack: true }), // <-- use errors format
     timestamp({
-      format: "HH:mm:ss YYYY-MM-DD"
+      format: timeFormat
     }),
     prettyPrint()
   ),

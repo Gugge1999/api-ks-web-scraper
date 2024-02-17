@@ -5,22 +5,22 @@ import { ScrapedWatches } from "../models/scraped-watches.js";
 @Entity()
 export class Watch {
   @PrimaryGeneratedColumn("uuid")
-  id: string;
+  id!: string;
 
   @Column()
-  watchToScrape: string;
+  watchToScrape!: string;
 
   @Column()
-  label: string;
+  label!: string;
 
   @Column({ type: "jsonb" })
-  watches: ScrapedWatches[];
+  watches!: ScrapedWatches[];
 
   @Column()
-  active: boolean;
+  active!: boolean;
 
   @Column({ type: "timestamptz", precision: 3, nullable: true })
-  lastEmailSent: Date | null;
+  lastEmailSent!: Date | null;
 
   @Column({ type: "timestamptz", precision: 3 })
   added: Date = new Date();

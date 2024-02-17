@@ -1,20 +1,18 @@
 import cheerio from "cheerio";
-import puppeteer, { ElementHandle } from "puppeteer";
 
-import { interval, prodPuppeteerConfig } from "../config/scraper.config.js";
-import { Watch } from "../entity/watch.js";
+import { interval } from "../config/scraper.config.js";
 import { ScrapedWatches } from "../models/scraped-watches.js";
 import { getAllActiveWatches, updateStoredWatches } from "./database.js";
 import { errorLogger, infoLogger } from "./logger.js";
 import { sendErrorNotification, sendWatchNotification } from "./notification.js";
 import { dateAndTime, time } from "./time-and-date.js";
 
-export async function scrapeWatchInfo(searchTerm: string) {
-  const body = await getContentFromSearchTerm(searchTerm);
+export async function scrapeWatchInfo(watchToScrape: string) {
+  const scrapedWatchArr: ScrapedWatches[] = [];
 
-  if (body === "") {
-    return { errorMessage: "API - Could not get link to thread" };
-  }
+  const response = await fetch(watchToScrape);
+
+  const body = await response.text();
 
   const $ = cheerio.load(body);
 
@@ -23,15 +21,15 @@ export async function scrapeWatchInfo(searchTerm: string) {
     return { errorMessage: "Watch name yielded no results" };
   }
 
-  const titlesArr: string[] = [];
-  const datesArr: string[] = [];
-  const linksArr: string[] = [];
+  const titles: string[] = [];
+  const dates: string[] = [];
+  const links: string[] = [];
 
   // Titel
   $(".contentRow-title")
     .get()
     .map((element: cheerio.Element) => {
-      return titlesArr.push(
+      return titles.push(
         $(element)
           .text()
           .replace(
@@ -46,66 +44,64 @@ export async function scrapeWatchInfo(searchTerm: string) {
   // Datum
   $(".u-dt")
     .get()
-    .map((element: cheerio.Element) => datesArr.push($(element).attr("datetime")!));
+    .map((element: cheerio.Element) => dates.push($(element).attr("datetime")!));
 
   // Länk
   $(".contentRow-title")
     .get()
-    .map((element: cheerio.Element) => linksArr.push("https://klocksnack.se" + $(element).find("a").attr("href")));
+    .map((element: cheerio.Element) => links.push("https://klocksnack.se" + $(element).find("a").attr("href")));
 
-  const scrapedWatchArr: ScrapedWatches[] = [];
+  const scrapedWatch: ScrapedWatches[] = [];
 
   // Lägg titel, datum och länk i ett objekt och pusha till array:en
-  titlesArr.forEach((element, index) => {
+  titles.forEach((_, index) => {
     const currentWatchInfo: ScrapedWatches = {
-      name: titlesArr[index],
-      postedDate: datesArr[index],
-      link: linksArr[index]
+      name: titles[index],
+      postedDate: dates[index],
+      link: links[index]
     };
-    scrapedWatchArr.push(currentWatchInfo);
+    scrapedWatch.push(currentWatchInfo);
   });
 
-  return scrapedWatchArr;
+  return scrapedWatch;
 }
 
 export async function compareStoredWithScraped() {
-  const allWatches = await getAllActiveWatches();
+  const activeWatches = await getAllActiveWatches();
 
-  if (allWatches === null) return;
+  if (activeWatches === null) return;
 
-  console.log(`Scraping ${allWatches.length} ${allWatches.length === 1 ? "watch" : "watches"} @ ${dateAndTime()}`);
+  console.log(
+    `Scraping ${activeWatches.length} ${activeWatches.length === 1 ? "watch" : "watches"} @ ${dateAndTime()}`
+  );
 
-  for (let i = 0; i < allWatches.length; i += 1) {
-    const storedWatchRow = allWatches[i];
+  for (let i = 0; i < activeWatches.length; i += 1) {
+    const storedWatchRow = activeWatches[i];
 
-    const storedWatchesArr = storedWatchRow.watches;
+    const storedWatches = storedWatchRow.watches;
 
-    const scrapedWatchesArr = await scrapeWatchInfo(storedWatchRow.watchToScrape);
+    const scrapedWatches = await scrapeWatchInfo(storedWatchRow.watchToScrape);
 
-    if ("errorMessage" in scrapedWatchesArr) return;
+    if ("errorMessage" in scrapedWatches) return;
 
     // Vänta 1 sekund mellan varje anrop till KS
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1000);
-    });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Just nu jämförs de lagrade klockorna och de scrape:ade endast på postedDate.
     // TODO: Är det unikt nog ?
-    const newScrapedWatches = scrapedWatchesArr.filter(({ postedDate: a }: { postedDate: string }) => {
-      return storedWatchesArr.some(({ postedDate: b }: { postedDate: string }) => b === a);
+    const newScrapedWatches = scrapedWatches.filter(({ postedDate: a }: { postedDate: string }) => {
+      return storedWatches.some(({ postedDate: b }: { postedDate: string }) => b === a);
     });
 
     // TODO: Bryta ut i funktion?
     if (newScrapedWatches.length > 0) {
-      // TODO David: Ska det vara scrapedWatchesArr eller newScrapedWatches?
-      updateStoredWatches(scrapedWatchesArr, storedWatchRow.id);
+      // TODO David: Ska det vara scrapedWatches eller newScrapedWatches?
+      updateStoredWatches(scrapedWatches, storedWatchRow.id);
 
       // Loopa över varje ny klocka och skicka mail
       for (let j = 0; j < newScrapedWatches.length; j += 1) {
-        const emailText = getEmailText(newScrapedWatches[j]);
-
         try {
-          // await sendWatchNotification(emailText);
+          // await sendWatchNotification(getEmailText(newScrapedWatches[j]));
 
           infoLogger.info({ message: "Email sent." });
           // Skriv till databas (skapa tabell) om när ett mail skickades.
@@ -125,49 +121,6 @@ export async function compareStoredWithScraped() {
   setTimeout(compareStoredWithScraped, interval);
 }
 
-async function getContentFromSearchTerm(searchTerm: string) {
-  try {
-    const browser =
-      process.env.NODE_ENV === "develop" ? await puppeteer.launch() : await puppeteer.launch(prodPuppeteerConfig);
-
-    const page = await browser.newPage();
-
-    page.setDefaultNavigationTimeout(60_000);
-
-    await page.goto("https://klocksnack.se/search/?type=post");
-
-    // Acceptera cookies, klick 2 gånger verkar funka bäst
-    await page.waitForSelector('[mode="primary"]');
-    page.click('[mode="primary"]');
-    page.click('[mode="primary"]');
-
-    await page.waitForSelector('input[type="search"]');
-    await page.click('input[type="search"]');
-    await page.type('input[type="search"]', searchTerm);
-
-    const sokBaraTitlarElement = await page.$x("//span[contains(., 'Sök bara titlar')]");
-    await (sokBaraTitlarElement[1] as ElementHandle<Element>).click();
-
-    // 11 = Handla - Säljes, bytes
-    await page.select('select[name="c[nodes][]"]', "11");
-
-    await Promise.all([page.waitForNavigation(), page.click(".formSubmitRow-controls .button--primary")]);
-
-    const pageContent = await page.content();
-
-    await browser.close();
-
-    return pageContent;
-  } catch (err) {
-    errorLogger.error({
-      message: "Function getUrlForSearchResult failed.",
-      stacktrace: err
-    });
-
-    return "";
-  }
-}
-
-function getEmailText(newScrapedWatches: ScrapedWatches) {
+export function getEmailText(newScrapedWatches: ScrapedWatches) {
   return `${newScrapedWatches.name}\n\nLänk: ${newScrapedWatches.link}\n\nDetta mail skickades: ${time()}`;
 }

@@ -64,7 +64,7 @@ router.delete("/delete-watch/:id", async (req, res, next) => {
   try {
     const id = await db.deleteWatchById(req.params.id);
     if (id) {
-      return res.status(200).json({ deletedWatchId: id });
+      return res.status(200).json();
     } else {
       return next(`Could not delete watch with id: ${id}`);
     }

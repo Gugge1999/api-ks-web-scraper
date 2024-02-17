@@ -88,14 +88,14 @@ export async function addNewWatch(form: NewWatchFormDTO, newScrapedWatches: Scra
   }
 }
 
-export async function updateStoredWatches(newWatchesArr: ScrapedWatches[], id: string) {
+export async function updateStoredWatches(newWatches: ScrapedWatches[], id: string) {
   try {
     const watchRepository = AppDataSource.getRepository(Watch);
 
     const watchToUpdate = await watchRepository.findOneBy({ id });
 
     if (watchToUpdate) {
-      watchToUpdate.watches = newWatchesArr;
+      watchToUpdate.watches = newWatches;
       watchToUpdate.lastEmailSent = new Date();
 
       await watchRepository.save(watchToUpdate);
@@ -106,7 +106,7 @@ export async function updateStoredWatches(newWatchesArr: ScrapedWatches[], id: s
       stacktrace: err
     });
 
-    throw Error(err);
+    //  throw Error(err);
   }
 }
 
