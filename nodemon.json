@@ -2,5 +2,5 @@
   "watch": ["src"],
   "ext": "ts,json",
   "ignore": ["src/**/*.spec.ts"],
-  "exec": "cross-env NODE_ENV=develop ts-node ./src/app.ts"
+  "exec": "cross-env NODE_ENV=develop tsx watch --clear-screen=false ./src/app.ts"
 }

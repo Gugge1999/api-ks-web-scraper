@@ -16,7 +16,7 @@ const devConfig: PostgresConnectionOptions = {
   password: process.env.PGPASSWORD,
   database: process.env.PGDATABASE,
   synchronize: false,
-  logging: false,
+  logging: false, // Byt till true om konstiga fel kastas från postgres
   entities: [Watch],
   migrations: ["src/migrations/*.ts"],
   subscribers: []

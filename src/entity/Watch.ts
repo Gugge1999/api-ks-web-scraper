@@ -7,16 +7,16 @@ export class Watch {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   watchToScrape!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   label!: string;
 
   @Column({ type: "jsonb" })
   watches!: ScrapedWatches[];
 
-  @Column()
+  @Column({ type: "boolean" })
   active!: boolean;
 
   @Column({ type: "timestamptz", precision: 3, nullable: true })

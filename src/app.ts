@@ -5,7 +5,7 @@ import morgan from "morgan";
 
 import { AppDataSource } from "./data-source.js";
 import routes from "./routes/routes.js";
-import { compareStoredWithScraped } from "./services/compareStoredWithScraped.js";
+import { compareStoredWithScraped } from "./services/compare-stored-with-scraped.js";
 import { errorLogger, requestLogger } from "./services/logger.js";
 import { errorHandler } from "./services/middleware.js";
 

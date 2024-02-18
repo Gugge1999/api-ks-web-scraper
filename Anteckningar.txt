@@ -2,7 +2,11 @@
 Byt till bun
 
 
+Byt machine size på fly.io. Den behöver inte vara så stor nu när puppeeter inte används
+
+
 Skapa GitHub actions för fly.io
+       https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
 
 
 Tips för Typescript prestanda
@@ -18,10 +22,6 @@ Fixa eslint för typescript. Setup idag funkar inte riktigt bra
 Läs igenom den här guiden. Tror det är bättre error handling 
        https://feqy.medium.com/error-handling-in-nodets-f051e385e87e
 
-
-
-Byt till TypeScript 5.0 när det släpps
-       https://devblogs.microsoft.com/typescript/announcing-typescript-5-0-beta/#const-type-parameters
 
 
 
