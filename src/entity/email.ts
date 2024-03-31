@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-import { Watch } from "./watch.js";
+import { Watch } from "./watch";
 
 @Entity()
 export class Email {

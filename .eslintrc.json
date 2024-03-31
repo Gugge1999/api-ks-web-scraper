@@ -1,60 +1,25 @@
 {
+  "parser": "@typescript-eslint/parser",
+  "extends": ["plugin:prettier/recommended", "prettier", "eslint:recommended"],
+  "plugins": ["@typescript-eslint"],
+  "ignorePatterns": ["*.txt"],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module",
+    "project": "tsconfig.json"
+  },
   "env": {
-    "es2022": true,
+    "es6": true,
     "node": true
   },
-  "extends": ["eslint:recommended", "plugin:node/recommended", "airbnb-base", "prettier"],
-  "plugins": ["prettier"],
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module"
-  },
   "rules": {
-    "prettier/prettier": ["error", { "endOfLine": "auto" }],
-    "no-unused-vars": "warn",
-    "node/exports-style": ["error", "module.exports"],
-    "node/file-extension-in-import": ["error", "always"],
-    "node/prefer-global/buffer": ["error", "always"],
-    "node/prefer-global/console": ["error", "always"],
-    "node/prefer-global/process": ["error", "always"],
-    "node/prefer-global/url-search-params": ["error", "always"],
-    "node/prefer-global/url": ["error", "always"],
-    "node/prefer-promises/dns": "error",
-    "node/prefer-promises/fs": "error",
-    "spaced-comment": ["error", "always"],
-    // Start airbnb
-    "import/extensions": ["error", "always"],
-    "no-continue": "off",
-    "no-promise-executor-return": "off",
-    "no-await-in-loop": "off",
-    "prefer-destructuring": "off",
-    "no-console": "off",
-    // End airbnb
-    // Alla nedanför är från: https://medium.com/geekculture/eslint-with-node-js-in-simple-words-cee0a0cf9167
-    // Start enhance readability
-    "no-mixed-spaces-and-tabs": "warn",
-    "space-before-blocks": "error",
-    "space-in-parens": "error",
-    "space-infix-ops": "error",
-    "space-unary-ops": "error",
-    "quotes": ["error", "double"],
-    "keyword-spacing": "error",
-    "multiline-ternary": ["error", "never"],
-    "no-mixed-operators": "error",
-    "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
-    "no-whitespace-before-property": "error",
-    "nonblock-statement-body-position": "error",
-    "object-property-newline": ["error", { "allowAllPropertiesOnSameLine": true }],
-    // End enhance readability
-    // Start best Practices
-    "eqeqeq": "warn",
-    "no-useless-return": "error",
-    "no-constant-condition": "warn",
-    // End best Practices
-    // Start ES6
     "no-var": "error",
+    "semi": "error",
+    "no-multi-spaces": "error",
+    "space-in-parens": "error",
+    "no-multiple-empty-lines": "error",
     "prefer-const": "error",
-    "prefer-template": "warn"
-    // End ES6
+    "no-unused-vars": "warn",
+    "eqeqeq": "error"
   }
 }

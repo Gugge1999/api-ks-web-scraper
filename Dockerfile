@@ -1,6 +1,6 @@
 FROM debian:bullseye as builder
 
-ARG NODE_VERSION=18.14.2
+ARG NODE_VERSION=20.9.0
 
 RUN apt-get update; apt install -y curl python-is-python3 pkg-config build-essential
 RUN curl https://get.volta.sh | bash
@@ -13,13 +13,13 @@ RUN volta install node@${NODE_VERSION}
 RUN mkdir /app
 WORKDIR /app
 
-# NPM will not install any package listed in "devDependencies" when NODE_ENV is set to "production",
-# to install all modules: "npm install --production=false".
-# Ref: https://docs.npmjs.com/cli/v9/commands/npm-install#description
-
 ENV NODE_ENV production
 
 COPY . .
+
+# NPM will not install any package listed in "devDependencies" when NODE_ENV is set to "production",
+# to install all modules: "npm install --production=false".
+# Ref: https://docs.npmjs.com/cli/v9/commands/npm-install#description
 
 RUN npm install --production=false && npm run build
 FROM debian:bullseye

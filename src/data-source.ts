@@ -2,9 +2,9 @@ import "reflect-metadata";
 
 import dotenv from "dotenv";
 import { DataSource } from "typeorm";
-import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions.js";
+import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
-import { Watch } from "./entity/watch.js";
+import { Watch } from "./entity/watch";
 
 dotenv.config();
 

@@ -1,14 +1,14 @@
 import express, { Request } from "express";
 
-import { interval } from "../config/scraper.config.js";
-import { NewWatchFormDTO } from "../models/new-watch-form-dto.js";
-import * as db from "../services/database.js";
-import { scrapeWatchInfo } from "../services/scraper.js";
-import { getUptime } from "../services/uptime.js";
+import { interval } from "../config/scraper.config";
+import { NewWatchFormDTO } from "../models/new-watch-form-dto";
+import * as db from "../services/database";
+import { scrapeWatchInfo } from "../services/scraper";
+import getUptime from "../services/uptime";
 
 const router = express.Router();
 
-router.get("/api-status", async (req, res, next) => {
+router.get("/api-status", async (_, res, next) => {
   try {
     return res.status(200).json({
       active: true,
@@ -20,14 +20,15 @@ router.get("/api-status", async (req, res, next) => {
   }
 });
 
-router.post("/add-watch", async (req: Request<{}, {}, NewWatchFormDTO>, res, next) => {
-  const scrapedWatchesResult = await scrapeWatchInfo(req.body.watchToScrape);
+router.post("/save-watch", async (req: Request<{}, {}, NewWatchFormDTO>, res, next) => {
+  const result = await scrapeWatchInfo(req.body.watchToScrape);
 
-  if ("errorMessage" in scrapedWatchesResult) {
-    return res.status(400).json(scrapedWatchesResult.errorMessage);
+  if ("errorMessage" in result) {
+    return res.status(400).json(result);
   } else {
     try {
-      const newWatch = await db.addNewWatch(req.body, scrapedWatchesResult);
+      const newWatch = await db.addNewWatch(req.body, result);
+
       return res.status(200).json(newWatch);
     } catch {
       return next("Could not save watch");
@@ -35,7 +36,7 @@ router.post("/add-watch", async (req: Request<{}, {}, NewWatchFormDTO>, res, nex
   }
 });
 
-router.get("/all-watches", async (req, res, next) => {
+router.get("/all-watches", async (_, res, next) => {
   try {
     const allWatches = await db.getAllWatchesOnlyLatest();
 
@@ -49,11 +50,8 @@ router.put("/toggle-active-status", async (req, res, next) => {
   try {
     const newStatus = !req.body.isActive;
     const watch = await db.toggleActiveStatus(newStatus, req.body.id);
-
     if (watch) {
       return res.status(200).json({ id: watch.id, active: watch.active, label: watch.label });
-    } else {
-      return next(`Could not toggle status on watch with id: ${req.body.id}`);
     }
   } catch {
     return next("Could not toggle status.");

@@ -1,11 +1,11 @@
 import "reflect-metadata";
 
-import { AppDataSource } from "../data-source.js";
-import { Email } from "../entity/email.js";
-import { Watch } from "../entity/watch.js";
-import { NewWatchFormDTO } from "../models/new-watch-form-dto.js";
-import { ScrapedWatches } from "../models/scraped-watches.js";
-import { errorLogger } from "./logger.js";
+import { AppDataSource } from "../data-source";
+import { Email } from "../entity/email";
+import { Watch } from "../entity/watch";
+import { NewWatchFormDTO } from "../models/new-watch-form-dto";
+import { ScrapedWatches } from "../models/scraped-watches";
+import { errorLogger } from "./logger";
 
 export async function getAllActiveWatches() {
   try {
@@ -22,7 +22,7 @@ export async function getAllActiveWatches() {
       stacktrace: err
     });
 
-    return null;
+    return undefined;
   }
 }
 
@@ -37,10 +37,12 @@ export async function getAllWatchesOnlyLatest() {
 
     return allWatchesOnlyLatest;
   } catch (err) {
-    return errorLogger.error({
+    errorLogger.error({
       message: "Function getAllWatchesOnlyLatest failed.",
       stacktrace: err
     });
+
+    return undefined;
   }
 }
 
@@ -56,7 +58,7 @@ export async function toggleActiveStatus(newStatus: boolean, id: string) {
 
       return watchToUpdate;
     } else {
-      return null;
+      return undefined;
     }
   } catch (err) {
     errorLogger.error({
@@ -64,7 +66,7 @@ export async function toggleActiveStatus(newStatus: boolean, id: string) {
       stacktrace: err
     });
 
-    return null;
+    return undefined;
   }
 }
 
@@ -81,10 +83,12 @@ export async function addNewWatch(form: NewWatchFormDTO, newScrapedWatches: Scra
 
     return watch;
   } catch (err) {
-    return errorLogger.error({
+    errorLogger.error({
       message: "Function addNewWatch failed.",
       stacktrace: err
     });
+
+    return undefined;
   }
 }
 
@@ -106,7 +110,7 @@ export async function updateStoredWatches(newWatches: ScrapedWatches[], id: stri
       stacktrace: err
     });
 
-    //  throw Error(err);
+    return undefined;
   }
 }
 
@@ -121,7 +125,7 @@ export async function deleteWatchById(id: string) {
 
       return id;
     } else {
-      return null;
+      return undefined;
     }
   } catch (err) {
     errorLogger.error({
@@ -129,7 +133,7 @@ export async function deleteWatchById(id: string) {
       stacktrace: err
     });
 
-    return null;
+    return undefined;
   }
 }
 
@@ -137,8 +141,7 @@ export async function newEmail(watchId: string) {
   try {
     const emailRepository = AppDataSource.getRepository(Email);
 
-    const watchToRemove = await emailRepository.findOneBy({ id: watchId });
-    if (watchToRemove) await emailRepository.remove(watchToRemove);
+    const watch = await emailRepository.findOneBy({ id: watchId });
   } catch (err) {
     errorLogger.error({
       message: "Function deleteWatch failed.",

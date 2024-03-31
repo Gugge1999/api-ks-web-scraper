@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-export function getUptime() {
+function getUptime() {
   const currentTimePlusUptime = DateTime.now().plus({
     seconds: process.uptime()
   });
@@ -11,3 +11,5 @@ export function getUptime() {
 
   return uptime.toObject();
 }
+
+export default getUptime;

@@ -1,8 +1,17 @@
 ---------------------------------- TODO ----------------------------------
-Byt till bun
+Går det att byta så att endast try catch används i routes och inte i varje db anrop?
+
+
+Byt till bun. Wsl behövs för det
+       https://code.visualstudio.com/docs/remote/wsl
+       https://learn.microsoft.com/en-gb/windows/wsl/setup/environment
 
 
 Byt machine size på fly.io. Den behöver inte vara så stor nu när puppeeter inte används
+
+
+Fixa paths. Kräver bibliotek
+       https://www.npmjs.com/package/tsconfig-paths
 
 
 Skapa GitHub actions för fly.io

@@ -3,11 +3,11 @@ import express, { json } from "express";
 import { Settings } from "luxon";
 import morgan from "morgan";
 
-import { AppDataSource } from "./data-source.js";
-import routes from "./routes/routes.js";
-import { compareStoredWithScraped } from "./services/compare-stored-with-scraped.js";
-import { errorLogger, requestLogger } from "./services/logger.js";
-import { errorHandler } from "./services/middleware.js";
+import { AppDataSource } from "./data-source";
+import routes from "./routes/routes";
+import { errorLogger, requestLogger } from "./services/logger";
+import { errorHandler } from "./services/middleware";
+import { compareStoredWithScraped } from "./services/scraper";
 
 const app = express();
 
@@ -42,9 +42,9 @@ AppDataSource.initialize()
 
     await compareStoredWithScraped();
   })
-  .catch((error: Error) => {
+  .catch((error: Error) =>
     errorLogger.error({
       message: "Function AppDataSource.initialize failed.",
       stacktrace: error
-    });
-  });
+    })
+  );
