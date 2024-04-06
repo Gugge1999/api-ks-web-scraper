@@ -21,18 +21,18 @@ router.get("/api-status", async (_, res, next) => {
 });
 
 router.post("/save-watch", async (req: Request<{}, {}, NewWatchFormDTO>, res, next) => {
-  const result = await scrapeWatchInfo(req.body.watchToScrape);
+  try {
+    const result = await scrapeWatchInfo(req.body.watchToScrape);
 
-  if ("errorMessage" in result) {
-    return res.status(400).json(result);
-  } else {
-    try {
+    if ("errorMessage" in result) {
+      return res.status(400).json(result);
+    } else {
       const newWatch = await db.addNewWatch(req.body, result);
 
       return res.status(200).json(newWatch);
-    } catch {
-      return next("Could not save watch");
     }
+  } catch {
+    return next("Could not save watch");
   }
 });
 
