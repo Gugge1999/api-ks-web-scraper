@@ -71,4 +71,8 @@ router.delete("/delete-watch/:id", async (req, res, next) => {
   }
 });
 
+router.use((_req, res) => {
+  res.status(404).send("Sorry can't find that!");
+});
+
 export default router;
