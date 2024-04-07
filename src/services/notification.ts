@@ -18,8 +18,8 @@ export async function sendWatchNotification(emailText: string) {
   }
 
   await transporter.sendMail({
-    from: process.env.EMAIL,
-    to: process.env.EMAILTO,
+    from: process.env["EMAIL"],
+    to: process.env["EMAILTO"],
     subject: "Ny klocka tillgänglig! ⌚",
     text: emailText
   });

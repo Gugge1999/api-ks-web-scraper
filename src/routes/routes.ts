@@ -2,7 +2,7 @@ import express, { Request } from "express";
 
 import { interval } from "@config/scraper.config";
 import { NewWatchFormDTO } from "@models/new-watch-form-dto";
-import * as db from "@services/database";
+import { addNewWatch, deleteWatchById, getAllWatchesOnlyLatest, toggleActiveStatus } from "@services/database";
 import { scrapeWatchInfo } from "@services/scraper";
 import getUptime from "@services/uptime";
 
@@ -27,7 +27,7 @@ router.post("/save-watch", async (req: Request<{}, {}, NewWatchFormDTO>, res, ne
     if ("errorMessage" in result) {
       return res.status(400).json(result);
     } else {
-      const newWatch = await db.addNewWatch(req.body, result);
+      const newWatch = await addNewWatch(req.body, result);
 
       return res.status(200).json(newWatch);
     }
@@ -38,7 +38,7 @@ router.post("/save-watch", async (req: Request<{}, {}, NewWatchFormDTO>, res, ne
 
 router.get("/all-watches", async (_, res, next) => {
   try {
-    const allWatches = await db.getAllWatchesOnlyLatest();
+    const allWatches = await getAllWatchesOnlyLatest();
 
     return res.status(200).json(allWatches);
   } catch {
@@ -49,7 +49,7 @@ router.get("/all-watches", async (_, res, next) => {
 router.put("/toggle-active-status", async (req, res, next) => {
   try {
     const newStatus = !req.body.isActive;
-    const watch = await db.toggleActiveStatus(newStatus, req.body.id);
+    const watch = await toggleActiveStatus(newStatus, req.body.id);
     if (watch) {
       return res.status(200).json({ id: watch.id, active: watch.active, label: watch.label });
     }
@@ -60,7 +60,7 @@ router.put("/toggle-active-status", async (req, res, next) => {
 
 router.delete("/delete-watch/:id", async (req, res, next) => {
   try {
-    const id = await db.deleteWatchById(req.params.id);
+    const id = await deleteWatchById(req.params.id);
     if (id) {
       return res.status(200).json({ deletedWatchId: id });
     } else {

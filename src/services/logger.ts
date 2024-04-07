@@ -23,11 +23,6 @@ export const errorLogger = createLogger({
   transports: [new transports.Console(), new transports.File({ filename: "logs/error.log" })]
 });
 
-export const requestLogger = createLogger({
-  format: format.combine(customFormat),
-  transports: [new transports.File({ filename: "logs/requests.log" })]
-});
-
 export const infoLogger = createLogger({
   format: format.combine(customFormat),
   transports: [new transports.Console(), new transports.File({ filename: "logs/info.log" })]

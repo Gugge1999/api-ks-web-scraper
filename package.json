@@ -4,7 +4,7 @@
   "module": "src/app.ts",
   "type": "module",
   "scripts": {
-    "dev": "cross-env NODE_ENV=develop tsx watch --clear-screen=false ./src/app.ts",
+    "dev": "cross-env NODE_ENV=develop bun --watch ./src/app.ts",
     "lint": "eslint ./src/**/*.ts",
     "build": "esbuild src/app.ts --bundle --platform=node --packages=external --outfile=dist/app.js --format=esm",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,12 +25,12 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@types/bun": "^1.0.12",
     "@types/cheerio": "^0.22.35",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/luxon": "^3.4.2",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^20.11.19",
     "@types/nodemailer": "^6.4.14",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
@@ -39,7 +39,6 @@
     "esbuild": "^0.20.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-node": "^11.1.0",
     "lint-staged": "^15.2.2",
     "nodemon": "^3.1.0",
     "tsx": "^4.7.1",

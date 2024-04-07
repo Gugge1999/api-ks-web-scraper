@@ -1,4 +1,4 @@
-import cheerio from "cheerio";
+import { load } from "cheerio";
 
 import { interval } from "@config/scraper.config";
 import { ScrapedWatches } from "@models/scraped-watches";
@@ -12,7 +12,7 @@ export async function scrapeWatchInfo(watchToScrape: string) {
 
   const body = await response.text();
 
-  const $ = cheerio.load(body);
+  const $ = load(body);
 
   // Länken gav inga resultat.
   if ($(".contentRow-title").length === 0) {
@@ -26,7 +26,7 @@ export async function scrapeWatchInfo(watchToScrape: string) {
   // Titel
   $(".contentRow-title")
     .get()
-    .map((element: cheerio.Element) => {
+    .map((element) => {
       return titles.push(
         $(element)
           .text()
@@ -42,12 +42,12 @@ export async function scrapeWatchInfo(watchToScrape: string) {
   // Datum
   $(".u-dt")
     .get()
-    .map((element: cheerio.Element) => dates.push($(element).attr("datetime")!));
+    .map((element) => dates.push($(element).attr("datetime")!));
 
   // Länk
   $(".contentRow-title")
     .get()
-    .map((element: cheerio.Element) => links.push("https://klocksnack.se" + $(element).find("a").attr("href")));
+    .map((element) => links.push("https://klocksnack.se" + $(element).find("a").attr("href")));
 
   const scrapedWatches: ScrapedWatches[] = [];
 
@@ -67,12 +67,14 @@ export async function scrapeWatchInfo(watchToScrape: string) {
 export async function compareStoredWithScraped() {
   const storedActiveWatches = await getAllActiveWatches();
 
-  if (storedActiveWatches === undefined) return;
+  if (storedActiveWatches === undefined) {
+    return;
+  }
 
   console.log(`Scraping ${storedActiveWatches.length} ${storedActiveWatches.length === 1 ? "watch" : "watches"} @ ${dateAndTime()}`);
 
-  storedActiveWatches.forEach(async (elm) => {
-    const storedWatchRow = elm;
+  storedActiveWatches.forEach(async (watch) => {
+    const storedWatchRow = watch;
 
     const storedWatches = storedWatchRow.watches;
 
@@ -81,6 +83,7 @@ export async function compareStoredWithScraped() {
     if ("errorMessage" in scrapedWatches) return;
 
     // Vänta 1 sekund mellan varje anrop till KS
+    // TODO: Byt till Bun.sleepSync(1000); ?
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // TODO: Just nu jämförs de lagrade klockorna och de scrape:ade endast på postedDate. Är det unikt nog ?

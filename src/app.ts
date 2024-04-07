@@ -1,11 +1,10 @@
 import cors from "cors";
 import express, { json } from "express";
 import { Settings } from "luxon";
-import morgan from "morgan";
 
 import { AppDataSource } from "@config/scraper.config";
 import routes from "@routes/routes";
-import { errorLogger, requestLogger } from "@services/logger";
+import { errorLogger } from "@services/logger";
 import { errorHandler } from "@services/middleware";
 import { compareStoredWithScraped } from "@services/scraper";
 
@@ -14,26 +13,12 @@ const app = express();
 AppDataSource.initialize()
   .then(async (con) => {
     con.runMigrations();
-    app.use(
-      morgan(
-        // För att vilken webbläsare använd: :user-agent
-        "::remote-addr :remote-user :method :url - Response time: :response-time ms - :user-agent",
-        {
-          stream: {
-            write: (message) =>
-              // Tar bort ny rad efter att stream.write.
-              // Se: https://stackoverflow.com/questions/27906551/node-js-logging-use-morgan-and-winston/28824464#28824464
-              requestLogger.info(message.trim())
-          }
-        }
-      )
-    );
     app.use(json());
     app.use(cors()); // Lägg till cors FÖRE routes
     app.use(routes);
     app.use(errorHandler);
 
-    const port = process.env.PORT || 3000;
+    const port = process.env["PORT"] || 3000;
 
     Settings.defaultZone = "Europe/Stockholm";
     Settings.defaultLocale = "sv";
