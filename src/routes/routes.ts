@@ -1,10 +1,10 @@
 import express, { Request } from "express";
 
-import { interval } from "../config/scraper.config";
-import { NewWatchFormDTO } from "../models/new-watch-form-dto";
-import * as db from "../services/database";
-import { scrapeWatchInfo } from "../services/scraper";
-import getUptime from "../services/uptime";
+import { interval } from "@config/scraper.config";
+import { NewWatchFormDTO } from "@models/new-watch-form-dto";
+import * as db from "@services/database";
+import { scrapeWatchInfo } from "@services/scraper";
+import getUptime from "@services/uptime";
 
 const router = express.Router();
 

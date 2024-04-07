@@ -3,11 +3,11 @@ import express, { json } from "express";
 import { Settings } from "luxon";
 import morgan from "morgan";
 
-import { AppDataSource } from "./data-source";
-import routes from "./routes/routes";
-import { errorLogger, requestLogger } from "./services/logger";
-import { errorHandler } from "./services/middleware";
-import { compareStoredWithScraped } from "./services/scraper";
+import { AppDataSource } from "@config/scraper.config";
+import routes from "@routes/routes";
+import { errorLogger, requestLogger } from "@services/logger";
+import { errorHandler } from "@services/middleware";
+import { compareStoredWithScraped } from "@services/scraper";
 
 const app = express();
 

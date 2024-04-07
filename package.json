@@ -1,13 +1,14 @@
 {
   "name": "api-ks-web-scraper",
   "description": "API for KS Web Scraper",
-  "main": "index.js",
+  "module": "src/app.ts",
+  "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=develop tsx watch --clear-screen=false ./src/app.ts",
     "lint": "eslint ./src/**/*.ts",
     "build": "esbuild src/app.ts --bundle --platform=node --packages=external --outfile=dist/app.js --format=esm",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=production tsx dist/app.js"
+    "start": "bun dist/app.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
@@ -33,12 +34,14 @@
     "@types/nodemailer": "^6.4.14",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
+    "bun-types": "^1.1.2",
     "cross-env": "^7.0.3",
     "esbuild": "^0.20.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-node": "^11.1.0",
     "lint-staged": "^15.2.2",
+    "nodemon": "^3.1.0",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3"
   },

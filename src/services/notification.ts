@@ -1,6 +1,6 @@
 import { createTransport } from "nodemailer";
 
-import { emailConfig } from "../config/scraper.config";
+import { emailConfig } from "@config/scraper.config";
 
 const transporter = createTransport({
   host: "smtp.zoho.eu",

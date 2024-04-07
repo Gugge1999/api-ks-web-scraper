@@ -1,36 +1,39 @@
-FROM debian:bullseye as builder
+# syntax = docker/dockerfile:1
 
-ARG NODE_VERSION=20.9.0
+# Adjust BUN_VERSION as desired
+ARG BUN_VERSION=1.1.2
+FROM oven/bun:${BUN_VERSION} as base
 
-RUN apt-get update; apt install -y curl python-is-python3 pkg-config build-essential
-RUN curl https://get.volta.sh | bash
-ENV VOLTA_HOME /root/.volta
-ENV PATH /root/.volta/bin:$PATH
-RUN volta install node@${NODE_VERSION}
+LABEL fly_launch_runtime="Bun"
 
-#######################################################################
-
-RUN mkdir /app
+# Bun app lives here
 WORKDIR /app
 
-ENV NODE_ENV production
+# Set production environment
+ENV NODE_ENV=production
 
-COPY . .
 
-# NPM will not install any package listed in "devDependencies" when NODE_ENV is set to "production",
-# to install all modules: "npm install --production=false".
-# Ref: https://docs.npmjs.com/cli/v9/commands/npm-install#description
+# Throw-away build stage to reduce size of final image
+FROM base as build
 
-RUN npm install --production=false && npm run build
-FROM debian:bullseye
+# Install packages needed to build node modules
+RUN apt-get update -qq && \
+    apt-get install -y python-is-python3 pkg-config build-essential 
 
-LABEL fly_launch_runtime="nodejs"
+# Install node modules
+COPY --link bun.lockb package.json ./
+RUN bun install --ci bun run build
 
-COPY --from=builder /root/.volta /root/.volta
-COPY --from=builder /app /app
+# Copy application code
+COPY --link . .
 
-WORKDIR /app
-ENV NODE_ENV production
-ENV PATH /root/.volta/bin:$PATH
 
-CMD [ "npm", "run", "start" ]
+# Final stage for app image
+FROM base
+
+# Copy built application
+COPY --from=build /app /app
+
+# Start the server by default, this can be overwritten at runtime
+EXPOSE 8080
+CMD [ "bun", "run", "start" ]

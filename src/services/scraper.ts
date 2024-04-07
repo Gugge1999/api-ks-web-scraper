@@ -1,11 +1,11 @@
 import cheerio from "cheerio";
 
-import { interval } from "../config/scraper.config";
-import { ScrapedWatches } from "../models/scraped-watches";
-import { getAllActiveWatches, updateStoredWatches } from "./database";
-import { errorLogger, infoLogger } from "./logger";
-import { sendErrorNotification, sendWatchNotification } from "./notification";
-import { dateAndTime, time } from "./time-and-date";
+import { interval } from "@config/scraper.config";
+import { ScrapedWatches } from "@models/scraped-watches";
+import { getAllActiveWatches, updateStoredWatches } from "@services/database";
+import { errorLogger, infoLogger } from "@services/logger";
+import { sendErrorNotification, sendWatchNotification } from "@services/notification";
+import { dateAndTime, time } from "@services/time-and-date";
 
 export async function scrapeWatchInfo(watchToScrape: string) {
   const response = await fetch(watchToScrape);
