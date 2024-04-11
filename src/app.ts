@@ -25,7 +25,7 @@ AppDataSource.initialize()
 
     app.listen(port);
 
-    await compareStoredWithScraped();
+    // await compareStoredWithScraped();
   })
   .catch((error: Error) =>
     errorLogger.error({

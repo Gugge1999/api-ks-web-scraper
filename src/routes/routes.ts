@@ -3,7 +3,7 @@ import express, { Request } from "express";
 import { interval } from "@config/scraper.config";
 import { NewWatchFormDTO } from "@models/new-watch-form-dto";
 import { addNewWatch, deleteWatchById, getAllWatchesOnlyLatest, toggleActiveStatus } from "@services/database";
-import { scrapeWatchInfo } from "@services/scraper";
+// import { scrapeWatchInfo } from "@services/scraper";
 import getUptime from "@services/uptime";
 
 const router = express.Router();
@@ -20,21 +20,21 @@ router.get("/api-status", async (_, res, next) => {
   }
 });
 
-router.post("/save-watch", async (req: Request<{}, {}, NewWatchFormDTO>, res, next) => {
-  try {
-    const result = await scrapeWatchInfo(req.body.watchToScrape);
+// router.post("/save-watch", async (req: Request<{}, {}, NewWatchFormDTO>, res, next) => {
+//   try {
+//     const result = await scrapeWatchInfo(req.body.watchToScrape);
 
-    if ("errorMessage" in result) {
-      return res.status(400).json(result);
-    } else {
-      const newWatch = await addNewWatch(req.body, result);
+//     if ("errorMessage" in result) {
+//       return res.status(400).json(result);
+//     } else {
+//       const newWatch = await addNewWatch(req.body, result);
 
-      return res.status(200).json(newWatch);
-    }
-  } catch {
-    return next("Could not save watch");
-  }
-});
+//       return res.status(200).json(newWatch);
+//     }
+//   } catch {
+//     return next("Could not save watch");
+//   }
+// });
 
 router.get("/all-watches", async (_, res, next) => {
   try {
