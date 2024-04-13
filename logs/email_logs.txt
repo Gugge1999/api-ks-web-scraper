@@ -1,2 +1,0 @@
-Email logs kanske är bra att lagra i databas. 
-Lättare att hämta data och skicka till frontend. 
