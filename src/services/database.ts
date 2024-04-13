@@ -1,8 +1,8 @@
 import "reflect-metadata";
 
 import { AppDataSource } from "@config/scraper.config";
+import { Watch } from "@config/watch";
 import { Email } from "@entity/email";
-import { Watch } from "@entity/watch";
 import { NewWatchFormDTO } from "@models/new-watch-form-dto";
 import { ScrapedWatches } from "@models/scraped-watches";
 import { errorLogger } from "@services/logger";
