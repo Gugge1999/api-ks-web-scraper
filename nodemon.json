@@ -1,7 +1,0 @@
-{
-  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/nodemon.json",
-  "watch": ["src"],
-  "ext": "ts,json",
-  "ignore": ["src/**/*.spec.ts"],
-  "exec": "NODE_ENV=develop bun --watch ./src/app.ts"
-}
