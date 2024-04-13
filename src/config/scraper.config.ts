@@ -1,11 +1,9 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-
-import { Watch } from "@entity/watch";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions.js";
 
-dotenv.config();
+import { Watch } from "@entity/watch";
 
 export const emailConfig = {
   user: process.env["EMAIL"],
