@@ -7,8 +7,8 @@ De rekommenderar att inte använda VS Code extension atm p.g.a den är buggig
 Går det att byta så att endast try catch används i routes och inte i varje db anrop?
 
 
-Skapa en dev drive med ReFS?
 
+Skapa en dev drive med ReFS?
 
 
 
