@@ -22,7 +22,7 @@ export async function getAllActiveWatches() {
       stacktrace: err
     });
 
-    return undefined;
+    return null;
   }
 }
 
@@ -42,23 +42,26 @@ export async function getAllWatchesOnlyLatest() {
       stacktrace: err
     });
 
-    return undefined;
+    return null;
   }
 }
 
-export async function toggleActiveStatus(newStatus: boolean, id: string) {
+export async function toggleActiveStatus(isActive: boolean, id: string) {
   try {
     const watchRepository = AppDataSource.getRepository(Watch);
 
     const watchToUpdate = await watchRepository.findOneBy({ id });
 
     if (watchToUpdate) {
-      watchToUpdate.active = newStatus;
+      watchToUpdate.active = !isActive;
       await watchRepository.save(watchToUpdate);
 
       return watchToUpdate;
     } else {
-      return undefined;
+      errorLogger.error({
+        message: `Could not find watch with id: ${id}`
+      });
+      return null;
     }
   } catch (err) {
     errorLogger.error({
@@ -66,7 +69,7 @@ export async function toggleActiveStatus(newStatus: boolean, id: string) {
       stacktrace: err
     });
 
-    return undefined;
+    return null;
   }
 }
 
@@ -88,7 +91,7 @@ export async function addNewWatch(form: NewWatchFormDTO, newScrapedWatches: Scra
       stacktrace: err
     });
 
-    return undefined;
+    return null;
   }
 }
 
@@ -103,6 +106,10 @@ export async function updateStoredWatches(newWatches: ScrapedWatches[], id: stri
       watchToUpdate.lastEmailSent = new Date();
 
       await watchRepository.save(watchToUpdate);
+
+      return watchToUpdate;
+    } else {
+      return null;
     }
   } catch (err) {
     errorLogger.error({
@@ -110,7 +117,7 @@ export async function updateStoredWatches(newWatches: ScrapedWatches[], id: stri
       stacktrace: err
     });
 
-    return undefined;
+    return null;
   }
 }
 
@@ -125,7 +132,7 @@ export async function deleteWatchById(id: string) {
 
       return id;
     } else {
-      return undefined;
+      return null;
     }
   } catch (err) {
     errorLogger.error({
@@ -133,7 +140,7 @@ export async function deleteWatchById(id: string) {
       stacktrace: err
     });
 
-    return undefined;
+    return null;
   }
 }
 

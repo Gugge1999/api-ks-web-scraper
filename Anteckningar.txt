@@ -1,11 +1,9 @@
 ---------------------------------- TODO ----------------------------------
+Fixa nodemon.json. Funkar inte...
+
+
+
 Går det att byta så att endast try catch används i routes och inte i varje db anrop?
-
-Byt till ElysiaJs. Mycket snabbare än express
-       https://elysiajs.com/at-glance.html
-
-
-Byt machine size på fly.io. Den behöver inte vara så stor nu när puppeeter inte används
 
 
 Skapa en dev drive med ReFS?
@@ -25,9 +23,7 @@ Läs igenom den här guiden. Tror det är bättre error handling
 
 
 
-
 Skapa enhetstester. Kanske använda Jest? Se om det finns andra bättre.
-
 
 
 

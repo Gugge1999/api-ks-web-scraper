@@ -8,7 +8,7 @@ const customFormat = format.combine(
   timestamp({
     format: timeFormat
   }),
-  printf((info) => `${info.message} [${info.timestamp}]`)
+  printf((info) => `${info.message} [${info["timestamp"]}]`)
 );
 
 export const errorLogger = createLogger({

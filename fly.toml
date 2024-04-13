@@ -4,9 +4,11 @@ app = "api-ks-web-scraper"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
+primary_region = "arn"
 
 [env]
   PORT = "8080"
+  PRIMARY_REGION = "arn"
 
 [experimental]
   auto_rollback = true

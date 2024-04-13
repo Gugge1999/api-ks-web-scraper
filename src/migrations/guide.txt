@@ -1,6 +1,6 @@
 Kommando för att skapa en migrering :                                  TODO: ÄNDRA HÄR ↓↓↓↓↓↓↓↓↓
 
-npx cross-env NODE_ENV=develop typeorm-ts-node-esm migration:generate ./src/migrations/ÄNDRA-MIG -d ./src/data-source.ts
+npx NODE_ENV=develop typeorm-ts-node-esm migration:generate ./src/migrations/ÄNDRA-MIG -d ./src/data-source.ts
 
 
 Guide för migrations från Ben Awad:

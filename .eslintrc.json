@@ -1,6 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": ["plugin:prettier/recommended", "prettier", "eslint:recommended"],
+  "extends": ["eslint:recommended"],
   "plugins": ["@typescript-eslint"],
   "ignorePatterns": ["*.txt"],
   "parserOptions": {

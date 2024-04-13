@@ -12,7 +12,6 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 
-
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
@@ -22,11 +21,13 @@ RUN apt-get update -qq && \
 
 # Install node modules
 COPY --link bun.lockb package.json ./
-RUN bun install --ci bun run build
+RUN bun install --ci
 
 # Copy application code
 COPY --link . .
 
+# TODO: Behöver den sättas igen?
+RUN bun run build
 
 # Final stage for app image
 FROM base
