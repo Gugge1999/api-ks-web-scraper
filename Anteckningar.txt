@@ -10,8 +10,6 @@ Går det att byta så att endast try catch används i routes och inte i varje db
 Skapa en dev drive med ReFS?
 
 
-Skapa GitHub actions för fly.io
-       https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
 
 
 Tips för Typescript prestanda
