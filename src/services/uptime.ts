@@ -9,7 +9,10 @@ function getUptime() {
 
   const uptime = currentTimePlusUptime.diff(currentTime, ["years", "months", "days", "hours", "minutes", "seconds"]);
 
-  return uptime.toObject();
+  const uptimeObj = uptime.toObject();
+
+  uptimeObj.seconds = Math.round(uptimeObj.seconds!);
+  return uptimeObj;
 }
 
 export default getUptime;

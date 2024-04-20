@@ -8,8 +8,6 @@ import { sendErrorNotification, sendWatchNotification } from "@services/notifica
 import { dateAndTime, time } from "@services/time-and-date";
 
 export async function scrapeWatchInfo(watchToScrape: string) {
-  console.log("watchToScrape", watchToScrape);
-
   let response: Response;
 
   try {
@@ -61,7 +59,6 @@ export async function scrapeWatchInfo(watchToScrape: string) {
 
   const scrapedWatches: ScrapedWatches[] = [];
 
-  // Lägg titel, datum och länk i ett objekt och pusha till array:en
   titles.forEach((_, index) => {
     const currentWatchInfo: ScrapedWatches = {
       name: titles[index],
@@ -93,8 +90,7 @@ export async function compareStoredWithScraped() {
     if ("errorMessage" in scrapedWatches) return;
 
     // Vänta 1 sekund mellan varje anrop till KS
-    // TODO: Byt till Bun.sleepSync(1000); ?
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    Bun.sleepSync(1000);
 
     // TODO: Just nu jämförs de lagrade klockorna och de scrape:ade endast på postedDate. Är det unikt nog ?
     const newScrapedWatches = scrapedWatches.filter(({ postedDate: a }: { postedDate: string }) => {
