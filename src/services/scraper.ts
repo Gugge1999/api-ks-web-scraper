@@ -2,12 +2,13 @@ import { load } from "cheerio";
 
 import { interval } from "@config/scraper.config";
 import { ScrapedWatches } from "@models/scraped-watches";
+import { ErrorMessage } from "@models/validation-error";
 import { getAllActiveWatches, updateStoredWatches } from "@services/database";
 import { errorLogger, infoLogger } from "@services/logger";
 import { sendErrorNotification, sendWatchNotification } from "@services/notification";
 import { dateAndTime, time } from "@services/time-and-date";
 
-export async function scrapeWatchInfo(watchToScrape: string) {
+export async function scrapeWatchInfo(watchToScrape: string): Promise<ScrapedWatches[] | ErrorMessage> {
   let response: Response;
 
   try {

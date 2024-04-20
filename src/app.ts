@@ -20,13 +20,11 @@ AppDataSource.initialize()
       .use(cors())
       .use(swagger())
       .onError(({ code, error, set }): ErrorMessage => {
-        if (code === "NOT_FOUND") return { errorMessage: "Route not found" };
+        if (code === "NOT_FOUND") {
+          return { errorMessage: "Route not found" };
+        }
 
         set.status = 500;
-        errorLogger.error({
-          message: error.message,
-          stacktrace: error
-        });
 
         return { errorMessage: error.message };
       })
