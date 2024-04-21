@@ -1,14 +1,14 @@
 import { load } from "cheerio";
 
 import { interval } from "@config/scraper.config";
-import { ScrapedWatches } from "@models/scraped-watches";
-import { ErrorMessage } from "@models/validation-error";
+import { ApiError } from "@models/api.error";
+import { ScrapedWatch } from "@models/scraped-watches";
 import { getAllActiveWatches, updateStoredWatches } from "@services/database";
 import { errorLogger, infoLogger } from "@services/logger";
 import { sendErrorNotification, sendWatchNotification } from "@services/notification";
 import { dateAndTime, time } from "@services/time-and-date";
 
-export async function scrapeWatchInfo(watchToScrape: string): Promise<ScrapedWatches[] | ErrorMessage> {
+export async function scrapeWatchInfo(watchToScrape: string): Promise<ScrapedWatch[] | ApiError> {
   let response: Response;
 
   try {
@@ -58,10 +58,10 @@ export async function scrapeWatchInfo(watchToScrape: string): Promise<ScrapedWat
     .get()
     .map((element) => links.push("https://klocksnack.se" + $(element).find("a").attr("href")));
 
-  const scrapedWatches: ScrapedWatches[] = [];
+  const scrapedWatches: ScrapedWatch[] = [];
 
   titles.forEach((_, index) => {
-    const currentWatchInfo: ScrapedWatches = {
+    const currentWatchInfo: ScrapedWatch = {
       name: titles[index],
       postedDate: dates[index],
       link: links[index]
@@ -106,7 +106,7 @@ export async function compareStoredWithScraped() {
   setTimeout(compareStoredWithScraped, interval);
 }
 
-async function handleNewScrapedWatch(scrapedWatches: ScrapedWatches[], newScrapedWatches: ScrapedWatches[], storedWatchRowId: string) {
+async function handleNewScrapedWatch(scrapedWatches: ScrapedWatch[], newScrapedWatches: ScrapedWatch[], storedWatchRowId: string) {
   // TODO David: Ska det vara scrapedWatches eller newScrapedWatches?
   updateStoredWatches(scrapedWatches, storedWatchRowId);
 
@@ -131,6 +131,6 @@ async function handleNewScrapedWatch(scrapedWatches: ScrapedWatches[], newScrape
   });
 }
 
-function getEmailText(newScrapedWatches: ScrapedWatches) {
-  return `${newScrapedWatches.name}\n\nLänk: ${newScrapedWatches.link}\n\nDetta mail skickades: ${time()}`;
+function getEmailText(newScrapedWatch: ScrapedWatch) {
+  return `${newScrapedWatch.name}\n\nLänk: ${newScrapedWatch.link}\n\nDetta mail skickades: ${time()}`;
 }

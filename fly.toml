@@ -32,6 +32,5 @@ primary_region = "arn"
     handlers = ["tls", "http"]
     port = 443
 
-
 [[vm]]
   size = "shared-cpu-1x"

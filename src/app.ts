@@ -4,7 +4,7 @@ import { Elysia } from "elysia";
 import { Settings } from "luxon";
 
 import { AppDataSource } from "@config/scraper.config";
-import { ErrorMessage } from "@models/validation-error";
+import { ApiError } from "@models/api.error";
 import { statusRoutes } from "@routes/status";
 import { watchRoutes } from "@routes/watch";
 import { errorLogger } from "@services/logger";
@@ -19,9 +19,13 @@ AppDataSource.initialize()
     new Elysia()
       .use(cors())
       .use(swagger())
-      .onError(({ code, error, set }): ErrorMessage => {
-        if (code === "NOT_FOUND") {
-          return { errorMessage: "Route not found" };
+      .onError(({ code, error, set }): ApiError => {
+        switch (code) {
+          case "NOT_FOUND":
+            return { errorMessage: "Route not found" };
+
+          case "VALIDATION":
+            return { errorMessage: "Schema validation error. See console for error", verboseErrorMessage: error };
         }
 
         set.status = 500;

@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-import { ScrapedWatches } from "@models/scraped-watches";
+import { ScrapedWatch } from "@models/scraped-watches";
 
 @Entity()
 export class Watch {
@@ -14,7 +14,7 @@ export class Watch {
   label!: string;
 
   @Column({ type: "jsonb" })
-  watches!: ScrapedWatches[];
+  watches!: ScrapedWatch[];
 
   @Column({ type: "boolean" })
   active!: boolean;

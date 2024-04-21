@@ -26,7 +26,6 @@ RUN bun install --ci
 # Copy application code
 COPY --link . .
 
-# TODO: Behöver den sättas igen?
 RUN bun run build
 
 # Final stage for app image

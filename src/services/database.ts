@@ -4,7 +4,8 @@ import { AppDataSource } from "@config/scraper.config";
 import { Email } from "@entity/email";
 import { Watch } from "@entity/watch";
 import { NewWatchFormDTO } from "@models/new-watch-form-dto";
-import { ScrapedWatches } from "@models/scraped-watches";
+import { ScrapedWatch } from "@models/scraped-watches";
+import { WatchDto } from "@models/watch-dto";
 import { errorLogger } from "@services/logger";
 
 export async function getAllActiveWatches() {
@@ -28,6 +29,7 @@ export async function getAllActiveWatches() {
 
 export async function getAllWatchesOnlyLatest() {
   try {
+    console.time("test");
     const watchRepository = AppDataSource.getRepository(Watch);
 
     const allWatchesOnlyLatest = (await watchRepository.find({ order: { added: "ASC" } })).map((element) => {
@@ -35,7 +37,25 @@ export async function getAllWatchesOnlyLatest() {
       return element;
     });
 
-    return allWatchesOnlyLatest;
+    const returnDto: WatchDto[] = [];
+    if (allWatchesOnlyLatest.length > 0) {
+      allWatchesOnlyLatest.forEach((scrapedWatch) => {
+        const dto: WatchDto = {
+          id: scrapedWatch.id,
+          active: scrapedWatch.active,
+          added: scrapedWatch.added,
+          label: scrapedWatch.label,
+          lastEmailSent: scrapedWatch.lastEmailSent,
+          watchToScrape: scrapedWatch.watchToScrape,
+          watch: scrapedWatch.watches[0]
+        };
+        returnDto.push(dto);
+      });
+    }
+
+    console.timeEnd("test");
+
+    return returnDto;
   } catch (err) {
     errorLogger.error({
       message: "Function getAllWatchesOnlyLatest failed.",
@@ -73,7 +93,7 @@ export async function toggleActiveStatus(isActive: boolean, id: string) {
   }
 }
 
-export async function addNewWatch(form: NewWatchFormDTO, newScrapedWatches: ScrapedWatches[]) {
+export async function addNewWatch(form: NewWatchFormDTO, newScrapedWatches: ScrapedWatch[]) {
   try {
     const watch = new Watch();
     watch.label = form.label;
@@ -95,7 +115,7 @@ export async function addNewWatch(form: NewWatchFormDTO, newScrapedWatches: Scra
   }
 }
 
-export async function updateStoredWatches(newWatches: ScrapedWatches[], id: string) {
+export async function updateStoredWatches(newWatches: ScrapedWatch[], id: string) {
   try {
     const watchRepository = AppDataSource.getRepository(Watch);
 

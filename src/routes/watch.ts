@@ -1,18 +1,20 @@
 import { Elysia, t } from "elysia";
 
+import { ApiError } from "@models/api.error";
+import { WatchDto } from "@models/watch-dto";
 import { addNewWatch, deleteWatchById, getAllWatchesOnlyLatest, toggleActiveStatus } from "@services/database";
 import { scrapeWatchInfo } from "@services/scraper";
 
 export const watchRoutes = (app: Elysia) =>
   app
-    .get("/all-watches", async () => {
-      try {
-        const allWatches = await getAllWatchesOnlyLatest();
+    .get("/all-watches", async (): Promise<WatchDto[] | ApiError | null> => {
+      const allWatches = await getAllWatchesOnlyLatest();
 
-        return allWatches;
-      } catch {
+      if (allWatches === null) {
         throw new Error("Could not retrieve all watches");
       }
+
+      return allWatches;
     })
     .post(
       "/save-watch",
@@ -59,15 +61,13 @@ export const watchRoutes = (app: Elysia) =>
     .delete(
       "/delete-watch/:id",
       async ({ params }) => {
-        const id = params.id;
-
-        const result = await deleteWatchById(id);
+        const result = await deleteWatchById(params.id);
 
         if (result === null) {
-          throw new Error(`Could not delete watch with id: ${id}`);
+          throw new Error(`Could not delete watch with id: ${params.id}`);
         }
 
-        return { deleteWatchId: id };
+        return { deleteWatchId: params.id };
       },
       {
         params: t.Object({
