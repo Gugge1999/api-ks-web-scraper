@@ -4,9 +4,9 @@ import { Elysia } from "elysia";
 import { Settings } from "luxon";
 
 import { AppDataSource } from "@config/scraper.config";
-import { ApiError } from "@models/api.error";
-import { statusRoutes } from "@routes/status";
-import { watchRoutes } from "@routes/watch";
+import { ApiErrorDto } from "@models/DTOs/api-error-dto";
+import { statusRoutes } from "@routes/status-routes";
+import { watchRoutes } from "@routes/watch-routes";
 import { errorLogger } from "@services/logger";
 import { compareStoredWithScraped } from "@services/scraper";
 
@@ -19,11 +19,10 @@ AppDataSource.initialize()
     new Elysia()
       .use(cors())
       .use(swagger())
-      .onError(({ code, error, set }): ApiError => {
+      .onError(({ code, error, set }): ApiErrorDto => {
         switch (code) {
           case "NOT_FOUND":
             return { errorMessage: "Route not found" };
-
           case "VALIDATION":
             return { errorMessage: "Schema validation error. See console for error", verboseErrorMessage: error };
         }

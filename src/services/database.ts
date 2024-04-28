@@ -3,9 +3,9 @@ import "reflect-metadata";
 import { AppDataSource } from "@config/scraper.config";
 import { Email } from "@entity/email";
 import { Watch } from "@entity/watch";
-import { NewWatchFormDTO } from "@models/new-watch-form-dto";
+import { NewWatchFormDTO } from "@models/DTOs/new-watch-form-dto";
+import { WatchDto } from "@models/DTOs/watch-dto";
 import { ScrapedWatch } from "@models/scraped-watches";
-import { WatchDto } from "@models/watch-dto";
 import { errorLogger } from "@services/logger";
 
 export async function getAllActiveWatches() {
@@ -29,7 +29,6 @@ export async function getAllActiveWatches() {
 
 export async function getAllWatchesOnlyLatest() {
   try {
-    console.time("test");
     const watchRepository = AppDataSource.getRepository(Watch);
 
     const allWatchesOnlyLatest = (await watchRepository.find({ order: { added: "ASC" } })).map((element) => {
@@ -40,20 +39,10 @@ export async function getAllWatchesOnlyLatest() {
     const returnDto: WatchDto[] = [];
     if (allWatchesOnlyLatest.length > 0) {
       allWatchesOnlyLatest.forEach((scrapedWatch) => {
-        const dto: WatchDto = {
-          id: scrapedWatch.id,
-          active: scrapedWatch.active,
-          added: scrapedWatch.added,
-          label: scrapedWatch.label,
-          lastEmailSent: scrapedWatch.lastEmailSent,
-          watchToScrape: scrapedWatch.watchToScrape,
-          watch: scrapedWatch.watches[0]
-        };
+        const dto = createWatchDtoObj(scrapedWatch);
         returnDto.push(dto);
       });
     }
-
-    console.timeEnd("test");
 
     return returnDto;
   } catch (err) {
@@ -104,7 +93,7 @@ export async function addNewWatch(form: NewWatchFormDTO, newScrapedWatches: Scra
 
     await AppDataSource.getRepository(Watch).save(watch);
 
-    return watch;
+    return createWatchDtoObj(watch);
   } catch (err) {
     errorLogger.error({
       message: "Function addNewWatch failed.",
@@ -175,4 +164,18 @@ export async function newEmail(watchId: string) {
       stacktrace: err
     });
   }
+}
+
+function createWatchDtoObj(watchDbModel: Watch) {
+  const dto: WatchDto = {
+    id: watchDbModel.id,
+    active: watchDbModel.active,
+    added: watchDbModel.added,
+    label: watchDbModel.label,
+    lastEmailSent: watchDbModel.lastEmailSent,
+    watchToScrape: watchDbModel.watchToScrape,
+    watch: watchDbModel.watches[0]
+  };
+
+  return dto;
 }

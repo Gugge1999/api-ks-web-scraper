@@ -1,13 +1,11 @@
 import { Elysia, t } from "elysia";
 
-import { ApiError } from "@models/api.error";
-import { WatchDto } from "@models/watch-dto";
 import { addNewWatch, deleteWatchById, getAllWatchesOnlyLatest, toggleActiveStatus } from "@services/database";
 import { scrapeWatchInfo } from "@services/scraper";
 
 export const watchRoutes = (app: Elysia) =>
   app
-    .get("/all-watches", async (): Promise<WatchDto[] | ApiError | null> => {
+    .get("/all-watches", async () => {
       const allWatches = await getAllWatchesOnlyLatest();
 
       if (allWatches === null) {
@@ -29,7 +27,7 @@ export const watchRoutes = (app: Elysia) =>
             throw new Error("Could not save watch");
           }
 
-          return JSON.stringify(newWatch);
+          return newWatch;
         }
       },
       {
@@ -42,7 +40,7 @@ export const watchRoutes = (app: Elysia) =>
     .put(
       "/toggle-active-status",
       async ({ body }) => {
-        const watch = await toggleActiveStatus(body.isActive, body.id);
+        const watch = await toggleActiveStatus(body.active, body.id);
 
         if (watch === null) {
           throw new Error("Could not toggle status");
@@ -54,7 +52,7 @@ export const watchRoutes = (app: Elysia) =>
         body: t.Object({
           id: t.String(),
           label: t.String(),
-          isActive: t.Boolean()
+          active: t.Boolean()
         })
       }
     )

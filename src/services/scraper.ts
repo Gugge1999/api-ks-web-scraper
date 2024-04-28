@@ -1,14 +1,14 @@
 import { load } from "cheerio";
 
 import { interval } from "@config/scraper.config";
-import { ApiError } from "@models/api.error";
+import { ApiErrorDto } from "@models/DTOs/api-error-dto";
 import { ScrapedWatch } from "@models/scraped-watches";
 import { getAllActiveWatches, updateStoredWatches } from "@services/database";
 import { errorLogger, infoLogger } from "@services/logger";
 import { sendErrorNotification, sendWatchNotification } from "@services/notification";
 import { dateAndTime, time } from "@services/time-and-date";
 
-export async function scrapeWatchInfo(watchToScrape: string): Promise<ScrapedWatch[] | ApiError> {
+export async function scrapeWatchInfo(watchToScrape: string): Promise<ScrapedWatch[] | ApiErrorDto> {
   let response: Response;
 
   try {

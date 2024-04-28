@@ -1,6 +1,6 @@
 import { ValidationError } from "elysia/error";
 
-export interface ApiError {
+export interface ApiErrorDto {
   errorMessage: string;
   verboseErrorMessage?: Readonly<ValidationError> | string;
 }
