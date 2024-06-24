@@ -14,7 +14,7 @@ export async function scrapeWatchInfo(watchToScrape: string): Promise<ScrapedWat
   try {
     response = await fetch(watchToScrape);
   } catch (err) {
-    const message = `Could not fetch url${watchToScrape}`;
+    const message = `Could not fetch url ${watchToScrape}`;
     console.error(message, err);
     return { errorMessage: message };
   }
@@ -79,7 +79,12 @@ export async function compareStoredWithScraped() {
     return;
   }
 
-  console.log(`Scraping ${storedActiveWatches.length} ${storedActiveWatches.length === 1 ? "watch" : "watches"} @ ${dateAndTime()}`);
+  if (storedActiveWatches.length === 0) {
+    console.log(`No active watches @ ${dateAndTime()}`);
+  } else {
+    const length = storedActiveWatches.length;
+    console.log(`Scraping ${length} ${length === 1 ? "watch" : "watches"} @ ${dateAndTime()}`);
+  }
 
   storedActiveWatches.forEach(async (watch) => {
     const storedWatchRow = watch;
@@ -107,12 +112,12 @@ export async function compareStoredWithScraped() {
 }
 
 async function handleNewScrapedWatch(scrapedWatches: ScrapedWatch[], newScrapedWatches: ScrapedWatch[], storedWatchRowId: string) {
-  // TODO David: Ska det vara scrapedWatches eller newScrapedWatches?
+  // TODO: Ska det vara scrapedWatches eller newScrapedWatches?
   updateStoredWatches(scrapedWatches, storedWatchRowId);
 
   // Loopa över varje ny klocka och skicka mail
-
   newScrapedWatches.forEach(async (element) => {
+    // TODO: Ska inte try catch täcka hela compareStoredWithScraped?
     try {
       await sendWatchNotification(getEmailText(element));
 

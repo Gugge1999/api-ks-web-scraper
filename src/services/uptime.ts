@@ -11,7 +11,7 @@ function getUptime() {
 
   const uptimeObj = uptime.toObject();
 
-  uptimeObj.seconds = Math.round(uptimeObj.seconds!);
+  uptimeObj.seconds = Math.round(uptimeObj.seconds ?? 0);
   return uptimeObj;
 }
 
