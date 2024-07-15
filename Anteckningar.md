@@ -2,6 +2,8 @@
 
 För debug: https://bun.sh/guides/runtime/web-debugger De rekommenderar att inte använda VS Code extension atm p.g.a den är buggig
 
+Issue för debug: https://github.com/oven-sh/bun/issues/8851
+
 Skapa en dev drive med ReFS?
 
 Tips för Typescript prestanda https://github.com/microsoft/TypeScript/wiki/Performance

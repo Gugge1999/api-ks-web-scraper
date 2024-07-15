@@ -106,6 +106,6 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "allowImportingTsExtensions": true
   },
-  "include": ["src"],
+  "include": ["src", "eslint.config.js"],
   "exclude": ["**/node_modules", "**/.*/"]
 }
