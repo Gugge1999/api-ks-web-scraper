@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "NODE_ENV=develop bun --watch ./src/app.ts",
     "debug": "NODE_ENV=develop bun --inspect ./src/app.ts",
-    "lint": "eslint ./src/**/*.ts",
+    "lint": "npx @biomejs/biome lint ./src",
     "build": "bun build ./src/app.ts --target=bun --outdir ./dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "bun --watch ./dist/app.js"
@@ -12,7 +12,6 @@
   "dependencies": {
     "@elysiajs/cors": "^1.0.2",
     "@elysiajs/swagger": "^1.0.5",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
     "cheerio": "^1.0.0-rc.12",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
@@ -26,19 +25,16 @@
     "winston": "^3.13.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.5.0",
+    "@biomejs/biome": "1.8.3",
     "@types/bun": "^1.1.1",
     "@types/cheerio": "^0.22.35",
     "@types/cors": "^2.8.17",
     "@types/luxon": "^3.4.2",
     "@types/morgan": "^1.9.9",
     "@types/nodemailer": "^6.4.15",
-    "@typescript-eslint/parser": "^7.8.0",
     "bun-types": "^1.1.7",
-    "eslint": "^9.5.0",
     "globals": "^15.6.0",
     "nodemon": "^3.1.0",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.13.1"
+    "typescript": "^5.4.5"
   }
 }

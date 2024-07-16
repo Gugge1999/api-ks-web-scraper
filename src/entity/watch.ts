@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-import { ScrapedWatch } from "@models/scraped-watches";
+import type { ScrapedWatch } from "@models/scraped-watches";
 
 @Entity()
 export class Watch {

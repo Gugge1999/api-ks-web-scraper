@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import type { MigrationInterface, QueryRunner } from "typeorm";
 
 export class renameColumnLinkToThreadToWatchToScrape1676220490329 implements MigrationInterface {
   name = "renameColumnLinkToThreadToWatchToScrape1676220490329";

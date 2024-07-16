@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import type { MigrationInterface, QueryRunner } from "typeorm";
 
 export class renameLastEmailSent1674387137492 implements MigrationInterface {
   name = "renameLastEmailSent1674387137492";

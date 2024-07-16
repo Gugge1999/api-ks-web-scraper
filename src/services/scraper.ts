@@ -1,8 +1,8 @@
 import { load } from "cheerio";
 
 import { interval } from "@config/scraper.config";
-import { ApiErrorDto } from "@models/DTOs/api-error-dto";
-import { ScrapedWatch } from "@models/scraped-watches";
+import type { ApiErrorDto } from "@models/DTOs/api-error-dto";
+import type { ScrapedWatch } from "@models/scraped-watches";
 import { getAllActiveWatches, updateStoredWatches } from "@services/database";
 import { errorLogger, infoLogger } from "@services/logger";
 import { sendErrorNotification, sendWatchNotification } from "@services/notification";
@@ -44,6 +44,7 @@ export async function scrapeWatchInfo(watchToScrape: string): Promise<ScrapedWat
             /Tillbakadragen|Avslutad|Säljes\/Bytes|Säljes|Bytes|OHPF|\//i,
             ""
           )
+
           .trim()
       );
     });
@@ -51,12 +52,17 @@ export async function scrapeWatchInfo(watchToScrape: string): Promise<ScrapedWat
   // Datum
   $(".u-dt")
     .get()
-    .map((element) => dates.push($(element).attr("datetime")!));
+    .map((element) => {
+      const date = $(element).attr("datetime");
+      if (date) {
+        dates.push(date);
+      }
+    });
 
   // Länk
   $(".contentRow-title")
     .get()
-    .map((element) => links.push("https://klocksnack.se" + $(element).find("a").attr("href")));
+    .map((element) => links.push(`https://klocksnack.se${$(element).find("a").attr("href")}`));
 
   const scrapedWatches: ScrapedWatch[] = [];
 
@@ -86,7 +92,7 @@ export async function compareStoredWithScraped() {
     console.log(`Scraping ${length} ${length === 1 ? "watch" : "watches"} @ ${dateAndTime()}`);
   }
 
-  storedActiveWatches.forEach(async (watch) => {
+  for (const watch of storedActiveWatches) {
     const storedWatchRow = watch;
 
     const storedWatches = storedWatchRow.watches;
@@ -106,7 +112,7 @@ export async function compareStoredWithScraped() {
     if (newScrapedWatches.length > 0) {
       handleNewScrapedWatch(scrapedWatches, newScrapedWatches, storedWatchRow.id);
     }
-  });
+  }
 
   setTimeout(compareStoredWithScraped, interval);
 }
@@ -116,7 +122,7 @@ async function handleNewScrapedWatch(scrapedWatches: ScrapedWatch[], newScrapedW
   updateStoredWatches(scrapedWatches, storedWatchRowId);
 
   // Loopa över varje ny klocka och skicka mail
-  newScrapedWatches.forEach(async (element) => {
+  for (const element of newScrapedWatches) {
     // TODO: Ska inte try catch täcka hela compareStoredWithScraped?
     try {
       await sendWatchNotification(getEmailText(element));
@@ -133,7 +139,7 @@ async function handleNewScrapedWatch(scrapedWatches: ScrapedWatch[], newScrapedW
         stacktrace: err
       });
     }
-  });
+  }
 }
 
 function getEmailText(newScrapedWatch: ScrapedWatch) {

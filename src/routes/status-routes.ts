@@ -1,5 +1,5 @@
 import { interval } from "@config/scraper.config";
-import { Elysia } from "elysia";
+import type { Elysia } from "elysia";
 
 import getUptime from "@services/uptime";
 

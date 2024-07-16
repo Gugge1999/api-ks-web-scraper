@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import type { MigrationInterface, QueryRunner } from "typeorm";
 
 export class addColumnLinkToThread1674322316707 implements MigrationInterface {
   name = "addColumnLinkToThread1674322316707";

@@ -1,4 +1,4 @@
-import { Elysia, t } from "elysia";
+import { type Elysia, t } from "elysia";
 
 import { addNewWatch, deleteWatchById, getAllWatchesOnlyLatest, toggleActiveStatus } from "@services/database";
 import { scrapeWatchInfo } from "@services/scraper";
@@ -20,15 +20,15 @@ export const watchRoutes = (app: Elysia) =>
         const result = await scrapeWatchInfo(body.watchToScrape);
         if ("errorMessage" in result) {
           return result;
-        } else {
-          const newWatch = await addNewWatch(body, result);
-
-          if (newWatch === null) {
-            throw new Error("Could not save watch");
-          }
-
-          return newWatch;
         }
+
+        const newWatch = await addNewWatch(body, result);
+
+        if (newWatch === null) {
+          throw new Error("Could not save watch");
+        }
+
+        return newWatch;
       },
       {
         body: t.Object({

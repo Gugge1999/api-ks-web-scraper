@@ -1,4 +1,4 @@
-import { ValidationError } from "elysia/error";
+import type { ValidationError } from "elysia/error";
 
 export interface ApiErrorDto {
   errorMessage: string;

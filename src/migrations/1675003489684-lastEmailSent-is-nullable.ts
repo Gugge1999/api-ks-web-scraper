@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import type { MigrationInterface, QueryRunner } from "typeorm";
 
 export class lastEmailSentIsNullable1675003489684 implements MigrationInterface {
   name = "lastEmailSentIsNullable1675003489684";

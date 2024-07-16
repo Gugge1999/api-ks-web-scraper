@@ -3,9 +3,9 @@ import "reflect-metadata";
 import { AppDataSource } from "@config/scraper.config";
 import { Email } from "@entity/email";
 import { Watch } from "@entity/watch";
-import { NewWatchFormDTO } from "@models/DTOs/new-watch-form-dto";
-import { WatchDto } from "@models/DTOs/watch-dto";
-import { ScrapedWatch } from "@models/scraped-watches";
+import type { NewWatchFormDTO } from "@models/DTOs/new-watch-form-dto";
+import type { WatchDto } from "@models/DTOs/watch-dto";
+import type { ScrapedWatch } from "@models/scraped-watches";
 import { errorLogger } from "@services/logger";
 
 export async function getAllActiveWatches() {
@@ -38,10 +38,10 @@ export async function getAllWatchesOnlyLatest() {
 
     const returnDto: WatchDto[] = [];
     if (allWatchesOnlyLatest.length > 0) {
-      allWatchesOnlyLatest.forEach((scrapedWatch) => {
+      for (const scrapedWatch of allWatchesOnlyLatest) {
         const dto = createWatchDtoObj(scrapedWatch);
         returnDto.push(dto);
-      });
+      }
     }
 
     return returnDto;
@@ -66,12 +66,12 @@ export async function toggleActiveStatus(isActive: boolean, id: string) {
       await watchRepository.save(watchToUpdate);
 
       return watchToUpdate;
-    } else {
-      errorLogger.error({
-        message: `Could not find watch with id: ${id}`
-      });
-      return null;
     }
+
+    errorLogger.error({
+      message: `Could not find watch with id: ${id}`
+    });
+    return null;
   } catch (err) {
     errorLogger.error({
       message: "Function toggleActiveStatus failed.",
@@ -117,9 +117,9 @@ export async function updateStoredWatches(newWatches: ScrapedWatch[], id: string
       await watchRepository.save(watchToUpdate);
 
       return watchToUpdate;
-    } else {
-      return null;
     }
+
+    return null;
   } catch (err) {
     errorLogger.error({
       message: "Function updateStoredWatch failed.",
@@ -140,9 +140,9 @@ export async function deleteWatchById(id: string) {
       await watchRepository.remove(watchToRemove);
 
       return id;
-    } else {
-      return null;
     }
+
+    return null;
   } catch (err) {
     errorLogger.error({
       message: "Function deleteWatch failed.",

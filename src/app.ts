@@ -4,7 +4,7 @@ import { Elysia } from "elysia";
 import { Settings } from "luxon";
 
 import { AppDataSource } from "@config/scraper.config";
-import { ApiErrorDto } from "@models/DTOs/api-error-dto";
+import type { ApiErrorDto } from "@models/DTOs/api-error-dto";
 import { statusRoutes } from "@routes/status-routes";
 import { watchRoutes } from "@routes/watch-routes";
 import { errorLogger } from "@services/logger";
@@ -33,7 +33,7 @@ AppDataSource.initialize()
       })
       .use(statusRoutes)
       .use(watchRoutes)
-      .listen(process.env["PORT"] || 3000);
+      .listen(process.env.PORT || 3000);
 
     Settings.defaultZone = "Europe/Stockholm";
     Settings.defaultLocale = "sv";
