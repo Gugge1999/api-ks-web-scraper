@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
+    "@tsconfig/bun": "^1.0.7",
     "@types/bun": "^1.1.1",
     "@types/cheerio": "^0.22.35",
     "@types/cors": "^2.8.17",

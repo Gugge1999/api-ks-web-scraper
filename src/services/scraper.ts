@@ -122,10 +122,10 @@ async function handleNewScrapedWatch(scrapedWatches: ScrapedWatch[], newScrapedW
   updateStoredWatches(scrapedWatches, storedWatchRowId);
 
   // Loopa över varje ny klocka och skicka mail
-  for (const element of newScrapedWatches) {
+  for (const watch of newScrapedWatches) {
     // TODO: Ska inte try catch täcka hela compareStoredWithScraped?
     try {
-      await sendWatchNotification(getEmailText(element));
+      await sendWatchNotification(getEmailText(watch));
 
       infoLogger.info({ message: "Email sent." });
       // Skriv till databas (skapa tabell) om när ett mail skickades.
@@ -142,6 +142,4 @@ async function handleNewScrapedWatch(scrapedWatches: ScrapedWatch[], newScrapedW
   }
 }
 
-function getEmailText(newScrapedWatch: ScrapedWatch) {
-  return `${newScrapedWatch.name}\n\nLänk: ${newScrapedWatch.link}\n\nDetta mail skickades: ${time()}`;
-}
+const getEmailText = (newScrapedWatch: ScrapedWatch) => `${newScrapedWatch.name}\n\nLänk: ${newScrapedWatch.link}\n\nDetta mail skickades: ${time()}`;
