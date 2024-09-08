@@ -1,5 +1,7 @@
 # TODO
 
+Uppgradera till TypeScript 5.5 och fixa https://blog.angular.dev/using-isolatedmodules-in-angular-18-2-68a7d3a6c03d
+
 För debug: https://bun.sh/guides/runtime/web-debugger De rekommenderar att inte använda VS Code extension atm p.g.a den är buggig
 
 Issue för debug: https://github.com/oven-sh/bun/issues/8851
