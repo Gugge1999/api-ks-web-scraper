@@ -3,8 +3,10 @@ import type { Elysia } from "elysia";
 
 import getUptime from "@services/uptime";
 
+const STATUS_BASE_URL = "/api";
+
 export const statusRoutes = (app: Elysia) =>
-  app.get("/api-status", () => {
+  app.get(`${STATUS_BASE_URL}/api-status`, () => {
     try {
       return {
         active: true,

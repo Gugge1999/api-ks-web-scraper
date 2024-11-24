@@ -110,7 +110,7 @@ export async function compareStoredWithScraped() {
     });
 
     if (newScrapedWatches.length > 0) {
-      handleNewScrapedWatch(scrapedWatches, newScrapedWatches, storedWatchRow.id);
+      await handleNewScrapedWatch(scrapedWatches, newScrapedWatches, storedWatchRow.id);
     }
   }
 
@@ -119,7 +119,7 @@ export async function compareStoredWithScraped() {
 
 async function handleNewScrapedWatch(scrapedWatches: ScrapedWatch[], newScrapedWatches: ScrapedWatch[], storedWatchRowId: string) {
   // TODO: Ska det vara scrapedWatches eller newScrapedWatches?
-  updateStoredWatches(scrapedWatches, storedWatchRowId);
+  await updateStoredWatches(scrapedWatches, storedWatchRowId);
 
   // Loopa över varje ny klocka och skicka mail
   for (const watch of newScrapedWatches) {

@@ -3,9 +3,11 @@ import { type Elysia, t } from "elysia";
 import { addNewWatch, deleteWatchById, getAllWatchesOnlyLatest, toggleActiveStatus } from "@services/database";
 import { scrapeWatchInfo } from "@services/scraper";
 
+const BEVAKNINGAR_BASE_URL = "/api/bevakningar";
+
 export const watchRoutes = (app: Elysia) =>
   app
-    .get("/all-watches", async () => {
+    .get(`${BEVAKNINGAR_BASE_URL}/all-watches`, async () => {
       const allWatches = await getAllWatchesOnlyLatest();
 
       if (allWatches === null) {
@@ -15,7 +17,7 @@ export const watchRoutes = (app: Elysia) =>
       return allWatches;
     })
     .post(
-      "/save-watch",
+      `${BEVAKNINGAR_BASE_URL}/save-watch`,
       async ({ body }) => {
         const result = await scrapeWatchInfo(body.watchToScrape);
         if ("errorMessage" in result) {
@@ -38,7 +40,7 @@ export const watchRoutes = (app: Elysia) =>
       }
     )
     .put(
-      "/toggle-active-status",
+      `${BEVAKNINGAR_BASE_URL}/toggle-active-status`,
       async ({ body }) => {
         const watch = await toggleActiveStatus(body.active, body.id);
 
@@ -57,7 +59,7 @@ export const watchRoutes = (app: Elysia) =>
       }
     )
     .delete(
-      "/delete-watch/:id",
+      `${BEVAKNINGAR_BASE_URL}/delete-watch/:id`,
       async ({ params }) => {
         const result = await deleteWatchById(params.id);
 
